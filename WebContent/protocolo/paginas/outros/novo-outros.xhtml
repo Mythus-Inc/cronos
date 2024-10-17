@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Protocolo</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+	<!-- barra de progresso -->
+	<p:ajaxStatus onstart="PF('statusDialog').show()"
+		onsuccess="PF('statusDialog').hide()" />
+
+	<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+		closable="false" resizable="false" showHeader="false">
+		<h4>Aguarde...</h4>
+
+		<f:facet name="start">
+			<p:graphicImage name="../../../resources/img/aguarde.gif" />
+		</f:facet>
+	</p:dialog>
+
+
+	<h:form id="formProtocoloExterno">
+
+
+
+		<div class="ui-fluid">
+
+
+			<div class="col-md-12">
+				<label>Requerente *</label>
+				<p:inputText value="#{protocoloPessoaExternaMB.pessoaExterna.nome}"
+					rendered="true"
+					requiredMessage="O campo Requerente não deve ser nulo" />
+			</div>
+
+			<div class="col-md-12">
+				<label>E-mail *</label>
+				<p:inputText title="E-mail" styleClass="col-md-12" alt="usuário"
+					value="#{protocoloPessoaExternaMB.pessoaExterna.email}" required="true"
+					rendered="true" requiredMessage="O campo Email não deve ser nulo" />
+			</div>
+
+
+		</div>
+
+		<div class="ui-fluid">
+			<div class="col-md-6">
+				<label>RG *</label>
+				<p:inputText value="#{protocoloPessoaExternaMB.pessoaExterna.rg}"
+					required="true" requiredMessage="O campo RG não deve ser nulo" />
+
+			</div>
+			<div class="col-md-6">
+				<label>CPF *</label>
+				<p:inputText value="#{protocoloPessoaExternaMB.pessoaExterna.cpf}"
+					required="true" requiredMessage="O campo CPF não deve ser nulo" />
+			</div>
+
+
+		</div>
+
+
+		<div class="ui-fluid">
+			<div class="col-md-6">
+				<label>Telefone </label>
+				<p:inputText
+					value="#{protocoloPessoaExternaMB.pessoaExterna.telefone}" />
+			</div>
+
+			<div class="col-md-6">
+				<label>Celular </label>
+				<p:inputText
+					value="#{protocoloPessoaExternaMB.pessoaExterna.telefone2}" />
+			</div>
+
+		</div>
+
+		<div class="ui-fluid">
+			<div class="col-md-12">
+				<label>Tipo Requerimento *</label>
+				<p:autoComplete dropdown="true" required="true"
+					requiredMessage="Campo Requerimento não deve ser nulo"
+					value="#{protocoloPessoaExternaMB.pessoaExterna.requerimento}"
+					scrollHeight="170"
+					completeMethod="#{protocoloPessoaExternaMB.completeRequerimento}"
+					forceSelection="true" var="set"
+					converter="#{converterRequerimento}" itemLabel="#{set.nome}"
+					itemValue="#{set}">
+
+					<p:ajax event="itemSelect" update="codNecessarioExterno "
+						listener="#{protocoloPessoaExternaMB.preencherDadosRequerimentoExterno()}" />
+
+
+
+				</p:autoComplete>
+			</div>
+
+			<div class="col-md-12">
+				<label>Documentos Necessários *</label>
+				<p:inputText id="codNecessarioExterno"
+					value="#{protocoloPessoaExternaMB.pessoaExterna.requerimento.documetosNecessarios}"
+					readonly="true" />
+			</div>
+
+			<div class="col-md-12">
+				<label>Descrição Requerente *</label>
+				<p:inputText
+					value="#{protocoloPessoaExternaMB.pessoaExterna.descricaoRequerente}"
+					required="true"
+					requiredMessage="O campo descrição requerente não pode ser nulo" />
+			</div>
+
+			<div class="col-md-12">
+				<label> </label>
+
+			</div>
+
+			<div class="col-md-2">
+				<p:commandButton value="Anexar Arquivo"
+					oncomplete="PF('dlgAnexo').show();"
+					actionListener="#{protocoloPessoaExternaMB.criarNovoAnexo()}"
+					update=":formAnexo :formTabelaUp" />
+
+
+			</div>
+			<div class="col-md-10"></div>
+			<div class="col-md-12">
+				<label>Total de Anexos : </label>
+				<h:outputText id="qtdAnexo"
+					value="#{protocoloPessoaExternaMB.quantidadeArquivos}" />
+			</div>
+
+			<div class="col-md-12">
+				<label> </label>
+
+			</div>
+		</div>
+
+		<div class="modal-footer">
+			<label> </label>
+			<p:commandButton value="Protocolar" styleClass="ui-priority-primary"
+				actionListener="#{protocoloPessoaExternaMB.salvarExterno()}"
+				update=":dlgInformacao :formProtocoloExterno" />
+
+		</div>
+
+
+
+	</h:form>
+
+
+
+	<!-- DIALOG SALVAR -->
+	<p:dialog header="Anexos" widgetVar="dlgAnexo" modal="true"
+		responsive="true" width="60%" id="dlgAnexo" closable="true"
+		closeOnEscape="true" resizable="false" draggable="false"
+		showEffect="scale">
+
+		<h:form id="formAnexo">
+
+
+
+			<div class="ui-fluid">
+
+
+
+
+				<div class="col-md-12">
+					<p:outputLabel for="upload" value="Anexar Arquivo PDF" id="pdfID" />
+
+
+
+
+					<p:fileUpload mode="advanced" id="upload" fileLimit="10000"
+						fileLimitMessage="É possível selecionar apenas 100000 arquivo"
+						invalidFileMessage="Tipo de arquivo inválido" auto="true"
+						fileUploadListener="#{protocoloPessoaExternaMB.upload}"
+						allowTypes="/(\.|\/)(pdf)$/" sizeLimit="2000000" multiple="true"
+						invalidSizeMessage="Tamanho do arquivo inválido"
+						showButtons="true"
+						update=":formAnexo:pdfID  :formTabelaUp :formAnexo :formProtocoloExterno:qtdAnexo" />
+
+
+				</div>
+			</div>
+
+		</h:form>
+
+		<h:form id="formTabelaUp">
+
+			<!-- TABELA-->
+			<div class="col-md-12">
+
+				<p:dataTable id="tabelaUpload"
+					value="#{protocoloPessoaExternaMB.listDocumentosAnexo}" var="lis"
+					resizableColumns="true" reflow="true" rows="10" paginator="true"
+					paginatorPosition="bottom"
+					emptyMessage="Nenhum protocolo cadastrado"
+					rowsPerPageTemplate="5,10,15,30,50,100">
+
+
+					<p:column headerText="Caminho">
+						<h:outputText value="#{lis.caminho}" />
+					</p:column>
+
+					<p:column headerText="Remover" style="width:72px">
+						<p:commandButton alt="Movimentação" title="Movimentação"
+							styleClass="btn btn-block"
+							update=":formAnexo :formProtocoloExterno:qtdAnexo :dlgInformacao :formTabelaUp"
+							actionListener="#{protocoloPessoaExternaMB.removerDocumento(lis)}"
+							icon="ui-icon-trash">
+
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+
+				<samp>São aceitos arquivos apenas no formato PDF</samp>
+			</div>
+
+			<div class="modal-footer">
+
+
+				<p:commandButton value="Salvar e Sair"
+					styleClass="ui-priority-primary" onclick="PF('dlgAnexo').hide();" />
+
+
+
+			</div>
+
+		</h:form>
+
+	</p:dialog>
+
+
+
+
+
+
+
+</h:body>
+</html>

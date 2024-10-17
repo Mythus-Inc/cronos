@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="grupo" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fe166493-b712-4ad9-88ef-0150cb98ee09">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="relat\NEW_DATAADAPTER.xml"/>
+	<parameter name="IDINVENTARIO" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select count(*) as quantidade
+
+from tab_equipamentoInventario ei inner join tab_tombamento t on 
+ei.tombamento_id = t.id inner join tab_equipamento e on 
+t.equipamento_id = e.id inner join tab_localInventario loc on
+loc.id =ei.localInventario_id inner join   tab_Localidades l on 
+loc.local_id =l.id inner join tab_inventario invs on 
+loc.Inventario_id = invs.id 
+
+where ei.status = true and invs.id =  $P{IDINVENTARIO} and ei.naoTombado = false]]>
+	</queryString>
+	<field name="quantidade" class="java.lang.Long"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="29">
+			<textField>
+				<reportElement x="0" y="-20" width="100" height="20" uuid="20f1ae3f-a5e1-4298-a047-1854b8fa3b70"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{quantidade}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

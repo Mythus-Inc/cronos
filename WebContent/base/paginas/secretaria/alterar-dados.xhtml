@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Alterar dados</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+	<h:form id="frmModalSalvar">
+		<div class="ui-fluid">
+			<div class="col-md-12">
+				<label>Nome </label>
+				<p:inputText title="Nome" styleClass="col-md-12" id="nome"
+					alt="nome" value="#{alterarDadosSecretariaMB.secretaria.nome}" />
+			</div>
+		</div>
+		<div class="ui-fluid">
+			<div class="col-md-12">
+				<label>E-mail </label>
+				<p:inputText title="E-mail" styleClass="col-md-12" id="email"
+					alt="email"
+					value="#{alterarDadosSecretariaMB.secretaria.usuario}" />
+			</div>			
+		</div>
+
+		<div class="ui-fluid">
+			<div class="col-md-6">
+				<label>Senha </label>
+				<p:password title="Senha" styleClass="col-md-12" id="senha"
+					feedback="true" promptLabel="Senha" weakLabel="Fraca"
+					validatorMessage="Senhas diferentes" goodLabel="Boa"
+					strongLabel="Forte" alt="senha" match="senha2"
+					value="#{alterarDadosSecretariaMB.senha}" />
+			</div>
+			<div class="col-md-6">
+				<label>Repita a senha </label>
+				<p:password title="Senha" styleClass="col-md-12" id="senha2"
+					alt="repita a senha" value="#{alterarDadosSecretariaMB.senha2}" />
+			</div>
+		</div>
+		<div class="ui-fluid">
+			<div class="col-md-6">
+				<label>Chefe </label>
+				<p:selectOneRadio id="console"
+					requiredMessage="O campo chefe não deve ser nulo"
+					value="#{alterarDadosSecretariaMB.secretaria.chefe}">
+					<f:selectItem itemLabel="Sim" itemValue="#{true}" />
+					<f:selectItem itemLabel="Não" itemValue="#{false}" />
+				</p:selectOneRadio>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+				actionListener="#{alterarDadosSecretariaMB.alterarSecretaria()}"
+				update=":dlgInformacao :frmModalSalvar" alt="Sim" />
+
+			<p:commandButton value="Cancelar"
+				actionListener="#{alterarDadosSecretariaMB.preencherSecretaria()}"
+				alt="Cancelar" update=":frmModalSalvar" />
+		</div>
+	</h:form>
+
+</h:body>
+</html>

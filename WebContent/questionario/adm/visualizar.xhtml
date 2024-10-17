@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:body>
+	<ui:composition
+		template="../../resources/template/template-admquestionario.xhtml">
+		<ui:define name="mensagem">
+			<ui:include src="../../componentes/mensagem.xhtml" />
+		</ui:define>
+
+		<ui:define name="conteudo">
+
+
+
+			<!-- Pagina do menubar -->
+			<div class="row">
+				<div class="col-md-12">
+					<nav class="navbar navbar-default">
+						<div class="container-fluid">
+							<div class="navbar-header" style="min-height: 100px;">
+								<button type="button" class="navbar-toggle"
+									data-toggle="collapse" data-target="#navBarUser">
+									<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+										class="icon-bar"></span>
+								</button>
+								<a class="navbar-brand" style="color: teal;" href="#"><img
+									src="../../resources/img/questionario_logo.png"
+									alt="Questionário de Egressos" style="max-height: 64px;"
+									class="img-responsive" /></a>
+							</div>
+							<div class="collapse navbar-collapse" id="navBarUser"></div>
+
+						</div>
+					</nav>
+				</div>
+			</div>
+
+
+			<div class="col-md-11 col-sm-11 col-xs-11"
+				style="margin-left: 5%; background-color: white; border: 2px #e7e7e7 solid; border-radius: 10px; padding: 20px; margin-top: 10px;">
+				<a class="navbar-brand" style="color: teal; margin-left: 40%"
+					href="#"><img src="../../resources/img/visualizar.png"
+					alt="Questionário de Egressos" style="max-height: 100px;"
+					class="img-responsive" /></a>
+
+
+				<div class="ui-fluid" style="margin-top: 200px;">
+					<h:form id="frmTurma">
+						<div class="col-md-12">
+							<label>Turma </label> <BR />
+
+							<div class="col-md-9">
+								<p:autoComplete id="turma" dropdown="true"
+									value="#{EmailMB.turma}" scrollHeight="170"
+									completeMethod="#{EmailMB.completarTurma}"
+									forceSelection="true" converter="#{converterTurma}" var="cur"
+									itemLabel="#{cur.descricao}" itemValue="#{cur}" />
+							</div>
+
+							<div class="col-md-2" style="margin-left: 25px; width: 22%;">
+								<p:commandButton id="buscarTurma" value="Buscar"
+									actionListener="#{EmailMB.buscarGraficoTurma()}"
+									icon="ui-icon-search" styleClass="ui-priority-primary"
+									alt="Sim" update=":dlgInformacao :grafc :frmTurma :frmCurso" />
+
+							</div>
+						</div>
+						<div class="col-md-12">
+							<label></label>
+						</div>
+
+					</h:form>
+
+					<h:form id="frmCurso">
+
+						<div class="col-md-12">
+
+							<label>Curso:</label> <br />
+
+							<div class="col-md-9">
+								<p:autoComplete id="curso" dropdown="true"
+									value="#{EmailMB.curso}" scrollHeight="170"
+									completeMethod="#{EmailMB.completarCursos}"
+									forceSelection="true" converter="#{converterCurso}" var="cur"
+									itemLabel="#{cur.nome}" itemValue="#{cur}" />
+							</div>
+							<div class="col-md-2" style="margin-left: 25px; width: 22%;">
+								<p:commandButton value="Buscar" styleClass="ui-priority-primary"
+									icon="ui-icon-search" update=":dlgInformacao :grafc :frmCurso :frmTurma"
+									actionListener="#{EmailMB.buscarGraficoCurso()}" />
+							</div>
+						</div>
+
+						<label></label>
+					</h:form>
+
+				</div>
+
+
+
+
+
+
+
+
+
+
+				<div class="ui-g">
+					<div class="ui-g-12">
+						<div class="ui-fluid">
+							<h:form id="grafc">
+
+								<p:chart type="bar" model="#{EmailMB.graficoPizzaPesquisa}"
+									responsive="true" style="height:300px;" />
+
+								<p:separator />
+
+								<p:chart type="bar" model="#{EmailMB.graficoP2}"
+									responsive="true" style="height:300px;" />
+
+								<p:separator />
+
+								<p:chart type="bar" model="#{EmailMB.graficoP3}"
+									responsive="true" style="height:300px;" />
+
+								<p:separator />
+
+								<p:chart type="bar" style="height:300px;"
+									model="#{EmailMB.graficoP4}" responsive="true" />
+
+								<p:separator />
+
+								<p:chart type="bar" style="height:300px;"
+									model="#{EmailMB.graficoP5}" responsive="true" />
+
+								<p:separator />
+
+								<p:chart type="bar" style="height:300px;"
+									model="#{EmailMB.graficoP6}" responsive="true" />
+
+								<p:separator />
+
+								<p:chart type="bar" style="height:300px;"
+									model="#{EmailMB.graficoP7}" responsive="true" />
+
+
+								<p:chart type="bar" style="height:300px;"
+									model="#{EmailMB.graficoP8}" responsive="true" />
+
+
+								<p:chart type="bar" style="height:300px;"
+									model="#{EmailMB.graficoP9}" responsive="true" />
+
+								<p:chart type="bar" style="height:300px;"
+									model="#{EmailMB.graficoP10}" responsive="true" />
+
+								<p:chart type="bar" style="height:300px;"
+									model="#{EmailMB.graficoP11}" responsive="true" />
+
+								<p:chart type="bar" style="height:300px;"
+									model="#{EmailMB.graficoP12}" responsive="true" />
+
+								<p:chart type="bar" style="height:300px;"
+									model="#{EmailMB.graficoP13}" responsive="true" />
+
+								<p:chart type="bar" style="height:300px;"
+									model="#{EmailMB.graficoP14}" responsive="true" />
+
+								<p:chart type="bar" style="height:300px;"
+									model="#{EmailMB.graficoP15}" responsive="true" />
+
+								<p:chart type="bar" style="height:300px;"
+									model="#{EmailMB.graficoP16}" responsive="true" />
+
+								<p:chart type="bar" style="height:300px;"
+									model="#{EmailMB.graficoP17}" responsive="true" />
+
+								<p:chart type="bar" style="height:300px;"
+									model="#{EmailMB.graficoP18}" responsive="true" />
+
+
+								<p:chart type="bar" style="height:300px;"
+									model="#{EmailMB.graficoP19}" responsive="true" />
+
+
+
+
+
+
+
+
+
+							</h:form>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+
+
+
+
+
+		</ui:define>
+		<ui:define name="modal-confirmacao">
+			<ui:include src="../../componentes/dialog-confirmacao.xhtml" />
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

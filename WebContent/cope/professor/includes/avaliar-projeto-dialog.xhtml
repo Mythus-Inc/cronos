@@ -1,0 +1,79 @@
+<div xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+	<!-- barra de progresso -->
+	<p:ajaxStatus onstart="PF('statusDialog').show()"
+		onsuccess="PF('statusDialog').hide()" />
+
+	<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+		closable="false" resizable="false" showHeader="false">
+		<h4>Aguarde...</h4>
+
+		<f:facet name="start">
+			<p:graphicImage name="../../../resources/img/aguarde.gif" />
+		</f:facet>
+	</p:dialog>
+
+	<p:dialog header="Avaliação" widgetVar="dlgAvaliacao" modal="true"
+		responsive="true" width="60%" closable="true" closeOnEscape="true"
+		resizable="false" draggable="true" dynamic="true">
+		<div class="ui-fluid">
+
+			<div class="col-md-12">
+				<p:commandButton  value="Critérios avaliativos"
+					actionListener="#{projetoAvaliacaoMB.buscarCriterios()}"
+					oncomplete="PF('dlgCriterios').show();"
+					styleClass="btn btn-default pull-right" style="width:auto" />
+			</div>
+
+			<div class="col-md-12">
+				<p:outputLabel value="Observação" />
+				<p:editor
+					controls="bold italic underline strikethrough subscript superscript font size style color highlight bullets numbering alignleft center alignright justify undo redo rule image link "
+					value="#{projetoAvaliacaoMB.avaliacao.observacoes1}" />
+					
+					<!-- unlink cut copy paste pastetext print source  -->
+			</div>
+			<div class="col-md-12">
+				<p:outputLabel value="Parecer" />
+				<p:selectOneMenu value="#{projetoAvaliacaoMB.avaliacao.parecer1}"
+					required="true">
+					<f:selectItem itemLabel="PENDENTE"  itemValue="PENDENTE"/>
+					<f:selectItem itemLabel="ACEITO"  itemValue="ACEITO"/>
+					<f:selectItem itemLabel="ACEITO COM RESSALVAS"  itemValue="ACEITO COM RESSALVAS"/>
+				</p:selectOneMenu>
+			</div>
+			<div class="clearfix"></div>
+			<p:commandButton update=":pnLista :pnAvaliacao" value="avaliar"
+				actionListener="#{projetoAvaliacaoMB.salvarParecer()}"
+				oncomplete="PF('dlgAvaliacao').hide();"
+				styleClass="btn btn-default pull-right" style="width:auto" />
+
+
+		</div>
+	</p:dialog>
+
+
+	<p:dialog header="Critérios" widgetVar="dlgCriterios" modal="true"
+		responsive="true" width="60%" closable="true" closeOnEscape="true"
+		resizable="false" draggable="false" dynamic="true">
+		 
+			<p:dataTable value="#{projetoAvaliacaoMB.listaCriterios}" var="obj"
+				resizableColumns="true" rows="10" paginator="true"
+				paginatorPosition="bottom" reflow="true"
+				emptyMessage="Nenhum critério encontrado"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+				<p:column headerText="Descrição">
+					<h:outputText value="#{obj.descricao}" />
+				</p:column>
+				<p:column headerText="Critério">
+					<h:outputText value="#{obj.criterio}" escape="false" />
+				</p:column>
+
+			</p:dataTable>
+	 
+
+
+	</p:dialog>
+</div>

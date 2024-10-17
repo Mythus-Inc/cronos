@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:body>
+	<ui:composition
+		template="../../resources/template/template-administrador.xhtml">
+		<ui:define name="mensagem">
+			<ui:include src="../../componentes/mensagem.xhtml" />
+		</ui:define>
+		<ui:define name="conteudo">
+
+			<!-- TITULO -->
+			<div class="row">
+				<div class="col-md-12">
+					<h1 class="page-header">Relatórios</h1>
+				</div>
+			</div>
+			<!-- FIM TITULO -->
+
+			<p:tabView>
+
+				<p:tab title="ALUNOS - POR TURMA">
+
+					<h:form id="formAlunosPorTurma">
+						<div class="ui-fluid">
+							<div class="row">
+								<div class="col-md-6">
+								
+									<label>Selecione um curso</label>
+									<p:autoComplete id="selectCurso" dropdown="true" scrollHeight="170"
+										value="#{relatorioBaseMB.curso}"
+										completeMethod="#{relatorioBaseMB.preencherListaCurso()}"
+										forceSelection="true" converter="#{converterCurso}"
+										var="cur" itemLabel="#{cur.nome}" itemValue="#{cur}"
+										required="true" requiredMessage="Informe um curso">
+
+										<p:ajax event="itemSelect" update="selectTurma"
+											listener="#{relatorioBaseMB.preencherListaTurmaPorCurso()}" />
+
+									</p:autoComplete>
+									
+									<br />
+									<br /> 
+									
+									<label>Selecione uma turma</label>
+									<p:autoComplete id="selectTurma" dropdown="true"
+										scrollHeight="170"
+										value="#{relatorioBaseMB.turma}"
+										completeMethod="#{relatorioBaseMB.preencherListaTurmaPorCurso()}"
+										forceSelection="true" converter="#{converterTurma}"
+										var="tur" itemLabel="#{tur.abreviacaoTurma}"
+										itemValue="#{tur}" required="true"
+										active="#{relatorioBaseMB.curso != null}"
+										requiredMessage="O campo Turma não deve ser nulo">
+
+									</p:autoComplete>
+
+									<br />
+									<br />
+
+									<p:commandButton value="Gerar Relatório"
+										title="Gerar Relatório" ajax="false" alt="Gerar Relatório"
+										action="#{relatorioBaseMB.imprimirRelatorioAlunoPorTurma()}"
+										update=":dlgInformacao">
+									</p:commandButton>
+								</div>
+
+								<div class="col-md-6"></div>
+							</div>
+						</div>
+					</h:form>
+
+				</p:tab>
+
+			</p:tabView>
+
+		</ui:define>
+		<ui:define name="modal-confirmacao">
+			<ui:include src="../../componentes/dialog-confirmacao.xhtml" />
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>
+

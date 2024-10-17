@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Requerimentos</h1>
+
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+	<!-- BOTÃO CADASTRAR -->
+	<div class="row container-fluid">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+				<h:form id="frmNovoRequerimento">
+					<p:commandButton value="Requerimento"
+						actionListener="#{requerimentoMB.criarNovoObjeto()}"
+						onclick="PF('dlgRequerimento').show();" update=":formRequerimento" />
+
+
+
+				</h:form>
+			</ol>
+		</div>
+	</div>
+
+
+	<!-- FIM DO BOTÃO CADASTRAR -->
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+			<p:dataTable id="tabela" reflow="true" rows="10" paginator="true"
+				paginatorPosition="bottom" resizableColumns="true"
+				emptyMessage="Nenhum Requerimento Encontrado"
+				rowsPerPageTemplate="5,10,15,30,50,100"
+				value="#{requerimentoMB.listRequerimento}" var="lista">
+				<p:column headerText="Numero" filterBy="#{nome}">
+					<h:outputText value="#{lista.id}" />
+				</p:column>
+				<p:column headerText="Requerimento">
+					<h:outputText value="#{lista.nome}" />
+
+				</p:column>
+
+				<p:column headerText="Setor Destino" filterBy="#{nome}">
+					<h:outputText value="#{lista.setorDestino.descricao}" />
+				</p:column>
+
+				<p:column headerText="Prazo Total Dias" filterBy="#{nome}">
+					<h:outputText value="#{lista.prazoTotalDias}" />
+				</p:column>
+
+				<p:column headerText="Formulário Específico" filterBy="#{nome}">
+					<h:outputText value="#{lista.formularioEspecifico}" />
+				</p:column>
+				 
+				<p:column headerText="Alterar" style="width: 80px;">
+					<p:commandButton icon="ui-icon-wrench"
+						onclick="PF('dlgEditarRequerimento').show()"
+						update=":formEditarRequerimento"
+						actionListener="#{requerimentoMB.abrirDetalhado(lista)}" />
+
+				</p:column>
+
+				<p:column headerText="Remover" style="width: 80px;">
+					<p:commandButton icon="ui-icon-trash"
+						onclick="PF('dlgRemoveRequerimento').show()"
+						update=":frmDadosRemover"
+						actionListener="#{requerimentoMB.abrirDetalhado(lista)}" />
+				</p:column>
+
+
+
+			</p:dataTable>
+		</h:form>
+
+	</div>
+	<!--FIM DA TABELA-->
+
+	<!-- inicio do dialog requerimento -->
+
+	<p:dialog header="Requerimento" modal="true" responsive="true"
+		width="70%" id="dlgNovoRequerimento" closable="true"
+		closeOnEscape="true" draggable="false" showEffect="scale"
+		resizable="false" widgetVar="dlgRequerimento">
+
+		<h:form id="formRequerimento">
+
+
+
+
+			<div class="ui-fluid">
+
+				<div class="col-md-12">
+					<label>Tipo *</label>
+					<p:inputText value="#{requerimentoMB.requerimento.nome}"
+						required="true" requiredMessage="Campo tipo não deve ser nulo" />
+				</div>
+				<div class="col-md-12">
+					<label>Documentos Necessários *</label>
+					<p:inputText
+						value="#{requerimentoMB.requerimento.documetosNecessarios}" />
+				</div>
+
+				<div class="col-md-4">
+					<label>Prazo Total Dias *</label>
+					<p:inputText value="#{requerimentoMB.requerimento.prazoTotalDias}"
+						required="true"
+						requiredMessage="Campo Prazo total dias não deve ser nulo" />
+				</div>
+				<div class="col-md-4">
+					<label>Prazo Encaminhamento *</label>
+					<p:inputText
+						value="#{requerimentoMB.requerimento.prazoEncaminhamentoInicial}"
+						required="true"
+						requiredMessage="Campo Prazo encaminhamento não deve ser nulo" />
+				</div>
+				<div class="col-md-4">
+					<label>Prazo Parecer *</label>
+					<p:inputText
+						value="#{requerimentoMB.requerimento.prazoParecerDias}"
+						required="true"
+						requiredMessage="Campo Prazo parecer não deve ser nulo" />
+				</div>
+
+				<div class="col-md-12">
+					<label>Formulário Especifico *</label>
+					<p:inputText
+						value="#{requerimentoMB.requerimento.formularioEspecifico}" />
+				</div>
+				
+				<div class="col-md-12">
+					<label>Tramites Necessários *</label>
+					<p:inputText
+						value="#{requerimentoMB.requerimento.tramitesNecessarios}" />
+				</div>
+
+				<div class="col-md-12">
+					<label>Setor Destino*</label>
+					<p:autoComplete dropdown="true" required="true"
+						requiredMessage="Campo Destino não deve ser nulo"
+						value="#{requerimentoMB.requerimento.setorDestino}"
+						scrollHeight="170"
+						completeMethod="#{requerimentoMB.completeSetor}"
+						forceSelection="true" var="set" converter="#{converterSetor}"
+						itemLabel="#{set.descricao}" itemValue="#{set}">
+
+
+					</p:autoComplete>
+				</div>
+
+				<div class="col-md-12">
+					<label>Setor Encerramento*</label>
+					<p:autoComplete dropdown="true" required="true"
+						requiredMessage="Campo Setor Encerramento não deve ser nulo"
+						value="#{requerimentoMB.requerimento.setorEncerramento}"
+						scrollHeight="170"
+						completeMethod="#{requerimentoMB.completeSetor}"
+						forceSelection="true" var="set" converter="#{converterSetor}"
+						itemLabel="#{set.descricao}" itemValue="#{set}">
+
+
+					</p:autoComplete>
+				</div>
+
+				<div class="col-md-12">
+					<label>Procedimentos Adicionais *</label>
+					<p:inputText value="#{requerimentoMB.requerimento.procedimentos}" />
+				</div>
+
+				<div class="col-md-12">
+
+					<p:outputLabel value="Ciencia E-mail Professor: " />
+					<p:selectOneRadio
+						value="#{requerimentoMB.requerimento.cienciaEmailProfessores}">
+						<f:selectItem itemLabel="Sim" itemValue="true" />
+						<f:selectItem itemLabel="Não" itemValue="false" />
+
+					</p:selectOneRadio>
+
+				</div>
+
+				<div class="col-md-12">
+					<p:outputLabel value="Secretaria: " />
+					<p:selectOneRadio
+						value="#{requerimentoMB.requerimento.cienciaEmailSecretaria}">
+						<f:selectItem itemLabel="Sim" itemValue="true" />
+						<f:selectItem itemLabel="Não" itemValue="false" />
+
+					</p:selectOneRadio>
+
+				</div>
+				<div class="col-md-12">
+					<p:outputLabel value="Coordenação: " />
+					<p:selectOneRadio
+						value="#{requerimentoMB.requerimento.cienciaEmailCoordenador}">
+						<f:selectItem itemLabel="Sim" itemValue="true" />
+						<f:selectItem itemLabel="Não" itemValue="false" />
+
+					</p:selectOneRadio>
+
+				</div>
+				<div class="col-md-12">
+					<p:outputLabel value="Direção Ensino: " />
+					<p:selectOneRadio
+						value="#{requerimentoMB.requerimento.cienciaEmailDirecaoEnsino}">
+						<f:selectItem itemLabel="Sim" itemValue="true" />
+						<f:selectItem itemLabel="Não" itemValue="false" />
+
+					</p:selectOneRadio>
+
+				</div>
+				<div class="col-md-12">
+					<p:outputLabel value="Coordenação Pedagogica " />
+					<p:selectOneRadio
+						value="#{requerimentoMB.requerimento.cienciaEmailcoordenacaoPedagogica}">
+						<f:selectItem itemLabel="Sim" itemValue="true" />
+						<f:selectItem itemLabel="Não" itemValue="false" />
+
+					</p:selectOneRadio>
+
+				</div>
+				<div class="col-md-12">
+
+					<p:outputLabel value="Requerente: " />
+					<p:selectOneRadio
+						value="#{requerimentoMB.requerimento.cienciaEmailRequerente}">
+						<f:selectItem itemLabel="Sim" itemValue="true" />
+						<f:selectItem itemLabel="Não" itemValue="false" />
+
+					</p:selectOneRadio>
+
+				</div>
+
+
+
+				<div class="col-md-12">
+					<label>Outro E-mail *</label>
+					<p:inputText
+						value="#{requerimentoMB.requerimento.cienciaOutroEmail}" />
+				</div>
+
+				<div class="col-md-12">
+
+
+					<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+						<p:outputLabel value="Autenticação Necessária de Documentos: *" />
+						<p:selectOneRadio
+							value="#{requerimentoMB.requerimento.autenticacaoNecessariaDocumentos}">
+							<f:selectItem itemLabel="Sim" itemValue="true" />
+							<f:selectItem itemLabel="Não" itemValue="false" />
+						</p:selectOneRadio>
+					</h:panelGrid>
+				</div>
+
+				<div class="col-md-12">
+
+
+					<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+						<p:outputLabel value="Notificar Secretaria Parecer Final: *" />
+						<p:selectOneRadio
+							value="#{requerimentoMB.requerimento.notificarSecretariaParecerFinal}">
+							<f:selectItem itemLabel="Sim" itemValue="true" />
+							<f:selectItem itemLabel="Não" itemValue="false" />
+						</p:selectOneRadio>
+					</h:panelGrid>
+				</div>
+
+
+
+
+
+				<samp>Campos Obrigatório *</samp>
+			</div>
+
+			<div class="modal-footer">
+				<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+					actionListener="#{requerimentoMB.salvar()}"
+					update=":dlgInformacao :frmTabela" />
+				<p:commandButton value="Cancelar"
+					onclick="PF('dlgRequerimento').hide();" />
+			</div>
+
+		</h:form>
+	</p:dialog>
+	<!-- fim dialog requerimento -->
+
+
+
+
+	<!-- inicio do dialog editar requerimento -->
+
+	<p:dialog header="Editar Requerimento" modal="true" responsive="true"
+		width="70%" id="reqEditar" closable="true" closeOnEscape="true"
+		draggable="false" showEffect="scale" resizable="false"
+		widgetVar="dlgEditarRequerimento">
+
+		<h:form id="formEditarRequerimento">
+
+
+
+
+			<div class="ui-fluid">
+
+				<div class="col-md-12">
+					<label>Tipo *</label>
+					<p:inputText value="#{requerimentoMB.requerimento.nome}"
+						required="true" requiredMessage="Campo tipo não deve ser nulo" />
+				</div>
+				<div class="col-md-12">
+					<label>Documentos Necessários *</label>
+					<p:inputText
+						value="#{requerimentoMB.requerimento.documetosNecessarios}" />
+				</div>
+
+				<div class="col-md-4">
+					<label>Prazo Total Dias *</label>
+					<p:inputText value="#{requerimentoMB.requerimento.prazoTotalDias}"
+						required="true"
+						requiredMessage="Campo Prazo Total Dias não deve ser nulo" />
+				</div>
+				<div class="col-md-4">
+					<label>Prazo Encaminhamento *</label>
+					<p:inputText
+						value="#{requerimentoMB.requerimento.prazoEncaminhamentoInicial}"
+						required="true"
+						requiredMessage="Campo Prazo Encaminhamento não deve ser nulo" />
+				</div>
+				<div class="col-md-4">
+					<label>Prazo Parecer *</label>
+					<p:inputText
+						value="#{requerimentoMB.requerimento.prazoParecerDias}"
+						required="true"
+						requiredMessage="Campo Prazo Parecer não deve ser nulo" />
+				</div>
+
+				<div class="col-md-12">
+					<label>Formulário Especifico *</label>
+					<p:inputText
+						value="#{requerimentoMB.requerimento.formularioEspecifico}" />
+				</div>
+				
+				<div class="col-md-12">
+					<label>Tramites Necessários *</label>
+					<p:inputText
+						value="#{requerimentoMB.requerimento.tramitesNecessarios}" />
+				</div>
+
+				<div class="col-md-12">
+					<label>Setor Destino*</label>
+					<p:autoComplete dropdown="true"
+						value="#{requerimentoMB.requerimento.setorDestino}"
+						required="true"
+						requiredMessage="Campo Setor Destino não deve ser nulo"
+						scrollHeight="170"
+						completeMethod="#{requerimentoMB.completeSetor}"
+						forceSelection="true" var="set" converter="#{converterSetor}"
+						itemLabel="#{set.descricao}" itemValue="#{set}">
+
+
+
+					</p:autoComplete>
+				</div>
+
+				<div class="col-md-12">
+					<label>Setor Encerramento*</label>
+					<p:autoComplete dropdown="true"
+						value="#{requerimentoMB.requerimento.setorEncerramento}"
+						required="true"
+						requiredMessage="Campo Setor Encerramento não deve ser nulo"
+						scrollHeight="170"
+						completeMethod="#{requerimentoMB.completeSetor}"
+						forceSelection="true" var="set" converter="#{converterSetor}"
+						itemLabel="#{set.descricao}" itemValue="#{set}">
+
+					</p:autoComplete>
+				</div>
+
+				<div class="col-md-12">
+					<label>Procedimentos Adicionais *</label>
+					<p:inputText value="#{requerimentoMB.requerimento.procedimentos}" />
+				</div>
+
+				<div class="col-md-12">
+
+					<p:outputLabel value="Ciencia E-mail Professor: " />
+					<p:selectOneRadio
+						value="#{requerimentoMB.requerimento.cienciaEmailProfessores}">
+						<f:selectItem itemLabel="Sim" itemValue="true" />
+						<f:selectItem itemLabel="Não" itemValue="false" />
+
+					</p:selectOneRadio>
+
+				</div>
+
+				<div class="col-md-12">
+					<p:outputLabel value="Secretaria: " />
+					<p:selectOneRadio
+						value="#{requerimentoMB.requerimento.cienciaEmailSecretaria}">
+						<f:selectItem itemLabel="Sim" itemValue="true" />
+						<f:selectItem itemLabel="Não" itemValue="false" />
+
+					</p:selectOneRadio>
+
+				</div>
+				<div class="col-md-12">
+					<p:outputLabel value="Coordenação: " />
+					<p:selectOneRadio
+						value="#{requerimentoMB.requerimento.cienciaEmailCoordenador}">
+						<f:selectItem itemLabel="Sim" itemValue="true" />
+						<f:selectItem itemLabel="Não" itemValue="false" />
+
+					</p:selectOneRadio>
+
+				</div>
+				<div class="col-md-12">
+					<p:outputLabel value="Direção Ensino: " />
+					<p:selectOneRadio
+						value="#{requerimentoMB.requerimento.cienciaEmailDirecaoEnsino}">
+						<f:selectItem itemLabel="Sim" itemValue="true" />
+						<f:selectItem itemLabel="Não" itemValue="false" />
+
+					</p:selectOneRadio>
+
+				</div>
+				<div class="col-md-12">
+					<p:outputLabel value="Coordenação Pedagogica " />
+					<p:selectOneRadio
+						value="#{requerimentoMB.requerimento.cienciaEmailcoordenacaoPedagogica}">
+						<f:selectItem itemLabel="Sim" itemValue="true" />
+						<f:selectItem itemLabel="Não" itemValue="false" />
+
+					</p:selectOneRadio>
+
+
+				</div>
+				<div class="col-md-12">
+
+					<p:outputLabel value="Requerente: " />
+					<p:selectOneRadio
+						value="#{requerimentoMB.requerimento.cienciaEmailRequerente}">
+						<f:selectItem itemLabel="Sim" itemValue="true" />
+						<f:selectItem itemLabel="Não" itemValue="false" />
+
+					</p:selectOneRadio>
+
+				</div>
+
+
+
+				<div class="col-md-12">
+					<label>Outro E-mail *</label>
+					<p:inputText
+						value="#{requerimentoMB.requerimento.cienciaOutroEmail}" />
+				</div>
+
+				<div class="col-md-12">
+
+
+					<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+						<p:outputLabel value="Autenticação Necessária de Documentos: *" />
+						<p:selectOneRadio
+							value="#{requerimentoMB.requerimento.autenticacaoNecessariaDocumentos}">
+							<f:selectItem itemLabel="Sim" itemValue="true" />
+							<f:selectItem itemLabel="Não" itemValue="false" />
+						</p:selectOneRadio>
+					</h:panelGrid>
+				</div>
+
+				<div class="col-md-12">
+
+
+					<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+						<p:outputLabel value="Notificar Secretaria Parecer Final: *" />
+						<p:selectOneRadio
+							value="#{requerimentoMB.requerimento.notificarSecretariaParecerFinal}">
+							<f:selectItem itemLabel="Sim" itemValue="true" />
+							<f:selectItem itemLabel="Não" itemValue="false" />
+						</p:selectOneRadio>
+					</h:panelGrid>
+				</div>
+
+
+
+
+
+				<samp>Campos Obrigatório *</samp>
+			</div>
+
+			<div class="modal-footer">
+				<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+					actionListener="#{requerimentoMB.salvar()}"
+					update=":dlgInformacao :frmTabela" />
+				<p:commandButton value="Cancelar"
+					onclick="PF('dlgEditarRequerimento').hide();" />
+			</div>
+
+		</h:form>
+	</p:dialog>
+	<!-- fim dialog editar requerimento -->
+
+
+
+
+
+	<!-- remover requerimento -->
+	<p:dialog header="Remover Requerimento"
+		widgetVar="dlgRemoveRequerimento" modal="true" responsive="true"
+		width="60%" id="dlgRemoveRequerimento" closable="true"
+		closeOnEscape="true" resizable="false" draggable="false">
+
+		<div class="ui-fluid">
+			<h:form id="frmDadosRemover">
+				<div class="col-md-12">
+					<label>Nome Requerimento : </label>
+					<h:outputLabel value="#{requerimentoMB.requerimento.nome}" />
+				</div>
+
+				<div class="col-md-12">
+					<label>Setor Destino : </label>
+					<h:outputLabel
+						value="#{requerimentoMB.requerimento.setorDestino.descricao}" />
+				</div>
+
+			</h:form>
+		</div>
+
+		<br />
+		<div class="modal-footer">
+			<p:commandButton actionListener="#{requerimentoMB.remover()}"
+				styleClass="ui-priority-primary" icon="ui-icon-trash" value="Excluir"
+				title="Remover Servidor" update=":dlgInformacao :frmTabela"
+				alt="Remover Requerimento">
+				<p:confirm header="Confirmação"
+					message="Deseja remover Requerimento" />
+			</p:commandButton>
+		</div>
+
+
+	</p:dialog>
+	<!-- FIM remover requerimento -->
+
+
+</h:body>
+</html>
+

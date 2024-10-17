@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="grupo" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fe166493-b712-4ad9-88ef-0150cb98ee09">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="relat\NEW_DATAADAPTER.xml"/>
+	<parameter name="IDPESSOA" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[select  f.totalHorasCadastradasG1 as totalHorasCadastradasG1, f.totalHorasComputadasG1 as totalHorasComputadasG1,
+f.totalHorasComputadasG2 as totalHorasComputadasG2, f.totalHorasCadastradasG2 as totalHorasCadastradasG2,
+f.totalHorasComputadasG3 as totalHorasComputadasG3, f.totalHorasCadastradasG3 as totalHorasCadastradasG3, p.nome as nome
+
+from tab_aluno f inner join tab_pessoa p on
+p.id_pessoa = f.id_pessoa
+where
+f.id_pessoa = $P{IDPESSOA}   and p.status = true]]>
+	</queryString>
+	<field name="totalHorasCadastradasG1" class="java.lang.Double"/>
+	<field name="totalHorasComputadasG1" class="java.lang.Double"/>
+	<field name="totalHorasComputadasG2" class="java.lang.Double"/>
+	<field name="totalHorasCadastradasG2" class="java.lang.Double"/>
+	<field name="totalHorasComputadasG3" class="java.lang.Double"/>
+	<field name="totalHorasCadastradasG3" class="java.lang.Double"/>
+	<field name="nome" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="54" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<staticText>
+				<reportElement x="2" y="-7" width="291" height="16" uuid="f49a7657-7dc2-48eb-8b83-77958a56eed1"/>
+				<text><![CDATA[Atividades de Ensino
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="13" width="291" height="16" uuid="e81a531f-9dfa-4d46-b49e-5ea8ffd51cbd"/>
+				<text><![CDATA[Atividades de Pesquisa, Extensão e Inovação	
+Alterar
+
+Excluir
+
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="31" width="291" height="16" uuid="9c5ba203-98f3-4774-ab5f-526cc485fa0b"/>
+				<text><![CDATA[Atividades de formação social, humana e cultural	
+Alterar
+
+Excluir
+]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="306" y="-6" width="100" height="16" uuid="09ee5378-3c69-4272-b078-5c8ff7506a6f"/>
+				<textFieldExpression><![CDATA[$F{totalHorasCadastradasG1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="434" y="-6" width="100" height="16" uuid="9a4b5154-8cd7-4f99-9029-2b61fca5a4ba"/>
+				<textFieldExpression><![CDATA[$F{totalHorasComputadasG1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="434" y="10" width="100" height="20" uuid="6f4a3fe8-09d2-437f-a4ce-08195658f713"/>
+				<textFieldExpression><![CDATA[$F{totalHorasComputadasG2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="306" y="10" width="100" height="20" uuid="9bbc4cdb-daf3-4bbf-a617-9c66fd68981d"/>
+				<textFieldExpression><![CDATA[$F{totalHorasCadastradasG2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="306" y="30" width="100" height="20" uuid="45d2b67c-75e7-47d6-a1bb-258652d389f0"/>
+				<textFieldExpression><![CDATA[$F{totalHorasCadastradasG3}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="434" y="30" width="100" height="20" uuid="8f1935ce-196f-42fe-8a64-e72376d776ef"/>
+				<textFieldExpression><![CDATA[$F{totalHorasComputadasG3}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

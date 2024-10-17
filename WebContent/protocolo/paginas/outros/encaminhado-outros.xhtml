@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+
+
+
+
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Acompanhamento</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+
+	<div class="ui-fluid">
+		<div class="col-md-12">
+			<h:form id="frmBuscaRequerimento">
+
+				<div class="col-md-12">
+					<div class="col-md-8">
+						<label>Código do Protocolo </label>
+						<p:inputText required="true"
+							value="#{protocoloPessoaExternaMB.protocoloBusca}"
+							requiredMessage="O campo Requerente não pode ser nulo" />
+					</div>
+					<div class="col-md-2">
+						<label> </label>
+						<p:commandButton value="Buscar" update="frmTabela"
+							styleClass="ui-priority-primary"
+							actionListener="#{protocoloPessoaExternaMB.buscarEncaminhamento()}" />
+					</div>
+					<div class="col-md-2"></div>
+				</div>
+
+				<div class="col-md-12">
+					<label> </label>
+				</div>
+
+			</h:form>
+		</div>
+	</div>
+
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+			<p:dataTable id="tabela"
+				value="#{protocoloPessoaExternaMB.listEncaminhamento}" var="list"
+				resizableColumns="true" reflow="true" rows="10" paginator="true"
+				paginatorPosition="bottom"
+				emptyMessage="Nenhum encaminhamento encontrado"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+				
+				<p:column headerText="Código Protocolo">
+					<h:outputText value="#{list.protocolo.id}" />
+				</p:column>
+				
+				<p:column headerText="Solicitante">
+					<h:outputText value="#{list.protocolo.nome}" />
+					<h:outputText value="#{list.protocolo.pessoa.nome}" />
+				</p:column>
+				
+				<p:column headerText="Situação">
+					<h:outputText value="#{list.protocolo.situacao}" /> 
+				</p:column>
+
+				<p:column headerText="Data Solicitação">
+					<h:outputText value="#{list.protocolo.data}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				
+				<p:column headerText="Data Encaminhamento">
+					<h:outputText value="#{list.dataParecer}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				
+				<p:column headerText="Data Parecer">
+					<h:outputText value="#{list.dataParecer}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Parecer">
+					<h:outputText value="#{list.descricao}" />
+				</p:column>
+ 
+			</p:dataTable>
+		</h:form>
+
+	</div>
+	<!--FIM DA TABELA-->
+
+
+
+
+</h:body>
+</html>

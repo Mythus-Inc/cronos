@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:body>
+	<ui:composition
+		template="../resources/template/inventario/template-inventario.xhtml">
+		<ui:define name="mensagem">
+			<ui:include src="../componentes/mensagem.xhtml" />
+		</ui:define>
+		<ui:define name="conteudo">
+
+			<!-- TITULO -->
+			<div class="row">
+				<div class="col-md-12">
+					<h1 class="page-header">Localidade</h1>
+				</div>
+			</div>
+			<!-- FIM TITULO -->
+
+
+
+
+
+			<!-- BOTÃO CADASTRAR NOVO LOCAL-->
+			<div class="row container-fluid">
+				<div class="col-md-12">
+					<ol class="breadcrumb">
+						<h:form id="frmCadastrar">
+							<p:commandButton value="Cadastrar Localidade" id="btnCadastrar"
+								oncomplete="PF('dlgLocal').show();"
+								update=":frmModalSalvar :frmCadastrar" title="Cadastrar"
+								actionListener="#{localMB.criarNovoObjeto()}" />
+						</h:form>
+					</ol>
+				</div>
+			</div>
+			<!-- FIM DO BOTÃO CADASTRAR NOVO LOCAL-->
+
+
+
+			<!-- TABELA-->
+			<div class="col-md-12">
+				<h:form id="frmTabela">
+					<p:dataTable id="tabela" resizableColumns="true" var="obj"
+						reflow="true" rows="10" paginator="true"
+						value="#{localMB.listLocal}" paginatorPosition="bottom"
+						emptyMessage="Nenhum Localidade Cadastrado"
+						rowsPerPageTemplate="5,10,15,30,50,100">
+
+						<p:column headerText="Código Localidade"
+							sortBy="#{obj.codigoLocalidade}"
+							filterBy="#{obj.codigoLocalidade}">
+							<h:outputText value="#{obj.codigoLocalidade}" />
+						</p:column>
+
+						<p:column headerText="Localidade" sortBy="#{obj.descricao}"
+							filterBy="#{obj.descricao}">
+							<h:outputText value="#{obj.descricao}" />
+						</p:column>
+
+						<p:column headerText="Local">
+							<h:outputText value="#{obj.locais.descricao}" />
+						</p:column>
+
+						<p:column headerText="Unidade Responsável">
+							<h:outputText value="#{obj.setorLocal.descricao}" />
+							<h:outputText value="#{obj.setorLocal.descricao}" />
+						</p:column>
+
+						<p:column headerText="Responsável">
+							<h:outputText value="#{obj.setorLocal.servidorResponsavel.nome}" />
+							<h:outputText value="#{obj.setorLocal.servidorResponsavel.nome}" />
+						</p:column>
+						
+						<p:column headerText="QTD Tombamentos">
+							<h:outputText value="#{localMB.buscarTombamento(obj)}" /> 
+						</p:column>
+
+						<p:column headerText="Alterar" style="width:68px">
+							<p:commandButton alt="Alterar" update=":frmModalSalvar"
+								styleClass="btn btn-block" onclick="PF('dlgLocal').show();"
+								icon="ui-icon-pencil"
+								actionListener="#{localMB.buscarLocal(obj)}">
+								<f:setPropertyActionListener value="#{obj}"
+									target="#{localMB.local}" />
+							</p:commandButton>
+						</p:column>
+						<p:column headerText="Excluir" style="width:68px">
+							<p:commandButton icon="ui-icon-trash" title="Excluir"
+								actionListener="#{localMB.inativar(obj)}"
+								styleClass="btn btn-block" alt="Excluir" update=":frmTabela">
+								<p:confirm header="Confirmação" message="Deseja excluir?" />
+							</p:commandButton>
+						</p:column>
+
+
+					</p:dataTable>
+				</h:form>
+			</div>
+			<!--FIM DA TABELA-->
+
+
+
+
+
+
+
+
+			<!-- DIALOG SALVAR -->
+			<p:dialog header="Localidade" widgetVar="dlgLocal" modal="true"
+				responsive=" true" width="60%" id="dlgLocal" closable="true"
+				closeOnEscape="true" resizable="false" draggable="false">
+
+				<h:form id="frmModalSalvar">
+					<div class="ui-fluid">
+					
+					<div class="col-md-12">
+							<label>Código da Localidade *</label>
+							<p:inputText title="Descrição" alt="descrição"
+								styleClass="col-md-12" value="#{localMB.local.codigoLocalidade}" />
+						</div>
+						
+						<div class="col-md-12">
+							<label>Descrição *</label>
+							<p:inputText title="Descrição" alt="descrição"
+								styleClass="col-md-12" value="#{localMB.local.descricao}" />
+						</div>
+
+						<div class="col-md-12">
+							<label>Local *</label>
+							<p:autoComplete id="localidade" dropdown="true"
+								scrollHeight="170" value="#{localMB.local.locais}"
+								completeMethod="#{localMB.completarLocalidade}"
+								forceSelection="true" converter="#{converteLocalidade}"
+								var="serv" itemLabel="#{serv.descricao}" itemValue="#{serv}"  />
+						</div>
+
+						<div class="col-md-12">
+							<label>Unidade Responsável *</label>
+							<p:autoComplete id="setorr" dropdown="true" scrollHeight="170"
+								value="#{localMB.local.setorLocal}"
+								completeMethod="#{localMB.completarSetorLocal}"
+								forceSelection="true" converter="#{converteSetorLocal}"
+								var="serv" itemLabel="#{serv.descricao}" itemValue="#{serv}"  />
+						</div>
+
+						<div class="col-md-12">
+							<label>Observação *</label>
+							<p:inputText title="Observação" alt="observação"
+								styleClass="col-md-12" value="#{localMB.local.observacao}" />
+						</div>
+
+
+						<div class="col-md-12">
+							<small>Campos obrigatórios *</small>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<p:commandButton value="Salvar" id="btnSalvar" alt="Sim"
+							styleClass="ui-priority-primary"
+							actionListener="#{localMB.salvar()}"
+							update=":frmTabela :dlgInformacao" />
+
+					</div>
+				</h:form>
+
+			</p:dialog>
+			<!-- FIM DO DIALOG SALVAR -->
+
+
+
+
+
+		</ui:define>
+		<ui:define name="modal-confirmacao">
+			<ui:include src="../componentes/dialog-confirmacao.xhtml" />
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>
+

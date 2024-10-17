@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+		
+	
+			<!-- TITULO -->
+			<div class="row">
+				<div class="col-md-12">
+					<h1 class="page-header">Protocolos em Andamento Servidor</h1>
+				</div>
+			</div>
+			<!-- FIM TITULO -->
+
+	
+			<!-- TABELA-->
+			<div class="col-md-12">
+				<h:form id="frmTabela">
+					<p:dataTable id="tabela" value="#{protocoloServidorMB.listProtocoloAndamento}"
+			    var="list" resizableColumns="true" 
+				reflow="true" rows="10" paginator="true" paginatorPosition="bottom"
+				emptyMessage="Nenhum protocolo cadastrado"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+
+				<p:column headerText="Ver" style="width:50px">
+				
+				</p:column>
+				<p:column headerText="Número" filterBy="#{list.id}">
+					<h:outputText value="#{list.id}" />
+				</p:column>
+				<p:column headerText="Nome Requerente">
+					<h:outputText value="#{list.pessoa.nome}" />
+				</p:column>
+
+				<p:column headerText="Tipo Requerimento"
+					filterBy="#{list.requerimento.nome}">
+					<h:outputText value="#{list.requerimento.nome}" />
+				</p:column>
+
+				<p:column headerText="Status" filterBy="#{list.situacao}">
+					<h:outputText value="#{list.situacao}" />
+				</p:column>
+
+				<p:column headerText="Data Solicitação" filterBy="#{list.data}">
+					<h:outputText value="#{list.data}" />
+				</p:column>
+				<p:column headerText="Data Resultado"
+					filterBy="#{list.dataResultado}">
+					<h:outputText value="#{list.dataResultado}" />
+				</p:column>
+
+
+			</p:dataTable>
+				</h:form>
+
+			</div>
+			<!--FIM DA TABELA-->
+
+			
+	
+
+</h:body>
+</html>

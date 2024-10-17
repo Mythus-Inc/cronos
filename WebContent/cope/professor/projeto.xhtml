@@ -1,0 +1,64 @@
+
+<html xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+	<ui:composition
+		template="../../resources/template/cope/template-professor.xhtml">
+
+		<ui:define name="tituloPagina">
+		 - COPE
+		</ui:define>
+
+		<ui:define name="titulo">
+			Projetos de Pesquisa Extensao e Inovacao
+		</ui:define>
+
+		<ui:define name="conteudo">
+			<div class="row container-fluid">
+				<p:outputPanel id="pnBotoes" styleClass="col-md-12">
+					<h:form>
+						<p:commandButton value="Novo Projeto"
+							styleClass="btn btn-info pull-right"
+							update=":pnBotoes :pnCadastro :pnLista"
+							rendered="#{!projetoMB.cadastrar}" actionListener="#{projetoMB.criaDesativar()}">
+							<f:setPropertyActionListener value="true"
+								target="#{projetoMB.cadastrar}" />
+							<f:setPropertyActionListener value="true"
+								target="#{projetoMB.botaoProgramaCiencia}" />
+						</p:commandButton>
+						<p:commandButton value="Voltar"
+							styleClass="btn btn-info pull-right"
+							update=":pnBotoes :pnCadastro :pnLista"
+							rendered="#{projetoMB.cadastrar}">
+							<f:setPropertyActionListener value="false"
+								target="#{projetoMB.cadastrar}" />
+						</p:commandButton>
+					</h:form>
+				</p:outputPanel>
+			</div>
+			<p:outputPanel id="pnCadastro">
+				<div style="#{!projetoMB.cadastrar ? 'display:none':'diplay:block'}"> 
+					<ui:include src="includes/projeto-gerencia.xhtml" />
+				</div>
+			</p:outputPanel>
+			<div style="height: 20px"></div>
+			<p:outputPanel id="pnLista">
+				<div style="#{projetoMB.cadastrar ? 'display:none':'diplay:block'}">
+					<ui:include src="includes/projeto-lista.xhtml" />
+				</div>
+			</p:outputPanel>
+
+			<ui:include src="includes/projeto-dialog.xhtml" />
+
+		</ui:define>
+
+		<ui:define name="modal-confirmacao">
+			<ui:include src="../../componentes/dialog-confirmacao.xhtml" />
+		</ui:define>
+
+	</ui:composition>
+</h:body>
+</html>
+

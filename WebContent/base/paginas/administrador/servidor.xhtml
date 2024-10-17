@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Servidores</h1>
+
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+
+	<!-- BOTÃO CADASTRAR -->
+	<div class="row container-fluid">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+				<h:form id="frmCadastrar">
+					<p:commandButton value="Cadastrar"
+						update=":frmModalSalvar :frmModalAdicionarCurso :frmModalAdicionarPermissao :frmModalAdicionarCurso:botaoCursoProfessor
+						 frmModalAdicionarCurso:cursoProfessor frmModalAdicionarCurso:botaoCursoProfessor "
+						actionListener="#{servidorMB.criarNovoObjeto()}"
+						onclick="PF('dlgServidor').show(); PF('dlgServidor').content.scrollTop('0')"
+						title="Cadastrar" />
+				</h:form>
+			</ol>
+		</div>
+	</div>
+	<!-- FIM DO BOTÃO CADASTRAR -->
+
+
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+			<p:dataTable id="tabela" value="#{servidorMB.listServidor}"
+				resizableColumns="true" reflow="true" var="lists" rows="10"
+				paginator="true" paginatorPosition="bottom"
+				emptyMessage="Nenhum administrador cadastrado"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+				<p:column headerText="Nome" filterBy="#{lists.nome}"
+					sortBy="#{lists.nome}" filterMatchMode="contains">
+					<h:outputText value="#{lists.nome}" />
+				</p:column>
+				<p:column headerText="E-mail" filterBy="#{lists.usuario}"
+					sortBy="#{lists.usuario}" filterMatchMode="contains">
+					<h:outputText value="#{lists.usuario}" />
+				</p:column>
+
+				<p:column headerText="Alterar" style="width:68px">
+					<p:commandButton alt="Alterar" icon="ui-icon-pencil"
+						update="  :frmModalSalvar :frmModalAdicionarPermissao :frmModalAdicionarPermissao:permissao :frmModalAdicionarPermissao:tabelaPermissao :frmModalAdicionarCurso:tabelaCurso 
+						:frmModalAdicionarCurso:cursoProfessor :frmModalAdicionarCurso:botaoCursoProfessor"
+						title="Alterar" styleClass="btn btn-block"
+						oncomplete="PF('dlgServidor').show();"
+						actionListener="#{servidorMB.preencherListaServidor(lists)}">
+
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="Senha" style="width:68px">
+					<p:commandButton icon="ui-icon-pencil" styleClass="btn btn-block"
+						actionListener="#{servidorMB.preencherListaServidor(lists)}"
+						onclick="PF('dlgServidorEditarSenha').show();"
+						update="frmModalEditarSenha">
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="Excluir" style="width:68px">
+					<p:commandButton
+						actionListener="#{servidorMB.inativarServidor(lists)}"
+						icon="ui-icon-trash" title="Excluir" styleClass="btn btn-block"
+						update=":frmTabela :dlgInformacao" alt="Excluir">
+						<p:confirm header="Confirmação" message="Deseja excluir?" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+	</div>
+	<!--FIM DA TABELA-->
+
+	<!-- DIALOG SALVAR -->
+	<p:dialog header="Servidor" widgetVar="dlgServidor" modal="true"
+		responsive="true" width="70%" id="dlgServidor" closable="true"
+		closeOnEscape="true" resizable="false" draggable="false">
+
+		<div class="ui-fluid">
+			<h:form id="frmModalAdicionarPermissao">
+				<div class="col-md-12">
+					<label>Tipo Servidor *</label>
+				</div>
+				<div class="col-md-9">
+					<p:autoComplete id="permissao" dropdown="true"
+						value="#{servidorMB.permissao.tipo}" scrollHeight="170"
+						completeMethod="#{servidorMB.completaPermissao}"
+						forceSelection="true" converter="#{converterTipoServidor}"
+						var="cur" itemLabel="#{cur.descricao}" itemValue="#{cur}">
+
+						<p:ajax event="itemSelect" listener="#{servidorMB.controle()}"
+							update="botaoAdd" />
+
+					</p:autoComplete>
+				</div>
+
+				<div class="col-md-2" style="margin-left: 25px; width: 22%;">
+					<p:commandButton id="botaoAdd" value="Cadastrar"
+						actionListener="#{servidorMB.adicionaPermissao()}"
+						styleClass="ui-priority-primary" alt="Sim"
+						update=":frmModalAdicionarCurso:botaoCursoProfessor :frmModalAdicionarPermissao :dlgInformacao 
+						:frmModalAdicionarCurso:cursoProfessor :frmModalSalvar:console :frmModalAdicionarCurso:tabelaCurso"
+						disabled="#{servidorMB.controleAddTipo}" />
+
+				</div>
+				<div class="col-md-12">
+					<label></label>
+
+					<p:dataTable id="tabelaPermissao" value="#{servidorMB.tipoSalvar}"
+						resizableColumns="true" reflow="true" var="lista"
+						paginatorPosition="bottom"
+						emptyMessage="Nenhuma permissão adicionada">
+
+
+						<p:column headerText="Permissao" style="width:68px">
+							<h:outputText value="#{lista.descricao}" />
+						</p:column>
+						<p:column headerText="Observação" style="width:100px">
+							<h:outputText value="#{lista.observacao}" />
+						</p:column>
+						<p:column headerText="Excluir" style="width:30px">
+							<p:commandButton
+								actionListener="#{servidorMB.removerPermissao(lista)}"
+								icon="ui-icon-trash" title="Excluir" styleClass="btn btn-block"
+								update=":frmModalAdicionarCurso:botaoCursoProfessor :frmModalAdicionarPermissao :dlgInformacao :frmModalAdicionarCurso:cursoProfessor :frmModalAdicionarCurso:tabelaCurso :frmModalSalvar:console"
+								alt="Excluir">
+
+
+
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+
+				</div>
+			</h:form>
+
+		</div>
+
+
+		<div class="ui-fluid">
+			<h:form id="frmModalAdicionarCurso">
+				<div class="col-md-12">
+					<label>Professor Curso *</label>
+				</div>
+				<div class="col-md-9">
+					<p:autoComplete id="cursoProfessor" dropdown="true"
+						value="#{servidorMB.professorCurso.curso}" scrollHeight="170"
+						completeMethod="#{servidorMB.completaCurso}" forceSelection="true"
+						converter="#{converterCurso}" var="cur" itemLabel="#{cur.nome}"
+						itemValue="#{cur}" disabled="#{servidorMB.controle}" />
+				</div>
+				<div class="col-md-2" style="margin-left: 25px; width: 22%;">
+					<p:commandButton id="botaoCursoProfessor" value="Cadastrar"
+						actionListener="#{servidorMB.adicionaProfessorCurso()}"
+						styleClass="ui-priority-primary" alt="Sim"
+						update=":frmModalAdicionarCurso :dlgInformacao"
+						disabled="#{servidorMB.controleAddCurso}" />
+				</div>
+
+
+				<div class="col-md-12">
+					<label></label>
+					<p:dataTable id="tabelaCurso"
+						value="#{servidorMB.listCursoSelecionado}" resizableColumns="true"
+						reflow="true" var="listas" paginatorPosition="bottom"
+						emptyMessage="Nenhum curso cadastrado">
+
+						<p:column headerText="Curso" style="width:68px">
+							<h:outputText value="#{listas.nome}" />
+						</p:column>
+
+						<p:column headerText="Excluir" style="width:41px">
+							<p:commandButton
+								actionListener="#{servidorMB.removerCurso(listas)}"
+								icon="ui-icon-trash" title="Excluir" styleClass="btn btn-block"
+								update=":frmModalAdicionarCurso :dlgInformacao :frmModalAdicionarPermissao"
+								alt="Excluir">
+
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</div>
+			</h:form>
+		</div>
+
+		<h:form id="frmModalSalvar">
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Nome *</label>
+					<p:inputText title="Nome" alt="nome" id="n"
+						value="#{servidorMB.servidor.nome}" required="true"
+						requiredMessage="o campo nome não pode ser nulo" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-8">
+					<label>E-mail *</label>
+					<p:inputText title="E-mail" styleClass="col-md-12" alt="usuário"
+						value="#{servidorMB.servidor.usuario}" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-4">
+					<label>Siape *</label>
+					<p:inputText title="Siape" styleClass="col-md-12" alt="usuário"
+						value="#{servidorMB.servidor.siape}" required="true"
+						requiredMessage="o campo siape não pode ser nulo" />
+				</div>
+			</div>
+
+			<div class="ui-fluid">
+
+				<div class="col-md-4">
+					<label>CPF *</label>
+					<p:inputMask title="cpf" styleClass="col-md-12" id="cpf" alt="cpf"
+						value="#{servidorMB.servidor.cpf}" required="true"
+						mask="999.999.999-99"
+						requiredMessage="O campo cpf não deve ser nulo" />
+				</div>
+				<div class="col-md-4">
+					<label>RG *</label>
+					<p:inputText title="rg" styleClass="col-md-12" id="rg" alt="rg"
+						value="#{servidorMB.servidor.rg}" required="true"
+						requiredMessage="O campo rg não deve ser nulo" />
+				</div>
+
+				<div class="col-md-4">
+					<label>Orgão emissor *</label>
+					<p:inputText title="emissor" styleClass="col-md-12" id="emissor"
+						alt="emissor" value="#{servidorMB.servidor.orgaoRg}"
+						required="true"
+						requiredMessage="O campo orgão emissor não deve ser nulo" />
+				</div>
+			</div>
+
+			<div class="ui-fluid">
+
+				<div class="col-md-4">
+					<label>Sexo*</label>
+					<p:selectOneRadio id="sexo" value="#{servidorMB.servidor.sexo}">
+						<f:selectItem itemLabel="Masculino" itemValue="M" />
+
+						<f:selectItem itemLabel="Feminino" itemValue="F" />
+					</p:selectOneRadio>
+				</div>
+				<div class="col-md-4">
+					<label>Natalidade *</label>
+					<p:inputText title="natalidade" styleClass="col-md-12"
+						id="natalidade" alt="natalidade"
+						value="#{servidorMB.servidor.natalidade}" required="true"
+						requiredMessage="O campo natalidade não deve ser nulo" />
+				</div>
+
+				<div class="col-md-4">
+					<label>Data de nascimento *</label>
+					<p:calendar id="dtAbertura"
+						value="#{servidorMB.servidor.dataNascimento}" pattern="dd/MM/yyyy"
+						mask="true" required="true"
+						requiredMessage="O campo data de nascimento não deve ser nulo" />
+
+				</div>
+			</div>
+
+			<div class="ui-fluid">
+
+				<div class="col-md-6">
+					<label>Nome Pai *</label>
+					<p:inputText title="NomePai" styleClass="col-md-12" id="nomePai"
+						alt="nomePai" value="#{servidorMB.servidor.nomePai}"
+						required="true"
+						requiredMessage="O campo Nome Pai não deve ser nulo" />
+				</div>
+				<div class="col-md-6">
+					<label>Nome Mãe *</label>
+					<p:inputText title="NomeMãe" styleClass="col-md-12" id="nomeMae"
+						alt="nomeMae" value="#{servidorMB.servidor.nomeMae}"
+						required="true"
+						requiredMessage="O campo nome mãe não deve ser nulo" />
+				</div>
+
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-6">
+					<label>Telefone </label>
+					<p:inputText title="telefone" styleClass="col-md-12" id="telefone"
+						alt="telefone" value="#{servidorMB.servidor.telefone}" />
+				</div>
+
+				<div class="col-md-6">
+					<label>Celular </label>
+					<p:inputText title="Celular" styleClass="col-md-12" id="celular"
+						alt="celular" value="#{servidorMB.servidor.celular}" />
+				</div>
+
+			</div>
+
+			<div class="ui-fluid">
+				<div class="col-md-6">
+					<h:outputLabel rendered="#{servidorMB.controleSenha}" value="Senha" />
+					<p:password title="Senha" styleClass="col-md-12" id="senha"
+						feedback="true" promptLabel="Senha" weakLabel="Fraca"
+						validatorMessage="Senhas diferentes" goodLabel="Boa"
+						strongLabel="Forte" alt="senha" match="senha2"
+						value="#{servidorMB.servidor.senha}" required="true"
+						requiredMessage="o campo senha não pode ser nulo"
+						rendered="#{servidorMB.controleSenha}" />
+
+				</div>
+				<div class="col-md-6">
+					<h:outputLabel rendered="#{servidorMB.controleSenha}" value="Senha" />
+
+					<p:password title="Senha" styleClass="col-md-12" id="senha2"
+						alt="repita a senha" value="#{servidorMB.servidor.senha}"
+						required="true" requiredMessage="o campo senha não pode ser nulo"
+						rendered="#{servidorMB.controleSenha}" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Observação</label>
+					<p:inputText value="#{servidorMB.servidor.observacao}" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Secretaria Chefe </label>
+					<p:selectOneRadio id="console" value="#{servidorMB.servidor.chefe}">
+						<f:selectItem itemDisabled="#{servidorMB.controleRadio}"
+							itemLabel="sim" itemValue="#{true}" />
+						<f:selectItem itemDisabled="#{servidorMB.controleRadio}"
+							itemLabel="Não" itemValue="#{false}" />
+					</p:selectOneRadio>
+				</div>
+				<div class="col-md-12">
+					<small>Campos obrigatórios *</small>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="modal-footer">
+					<p:commandButton value="Salvar"
+						actionListener="#{servidorMB.salvar()}"
+						styleClass="ui-priority-primary" alt="Sim"
+						update=":frmModalAdicionarPermissao :dlgInformacao :frmModalAdicionarCurso:cursoProfessor :frmModalSalvar:console :frmTabela" />
+				</div>
+
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- FIM DO DIALOG SALVAR -->
+
+
+
+
+
+
+	<!-- DIALOG CURSO senha -->
+	<p:dialog header="Servidor - Senha" widgetVar="dlgServidorEditarSenha"
+		modal="true" id="dlgAlunoEditarSenha" closable="true"
+		closeOnEscape="true" resizable="false" draggable="false"
+		responsive="true" width="60%">
+		<h:form id="frmModalEditarSenha">
+
+			<div class="ui-fluid">
+
+				<div class="col-md-12">
+					<label>Nome : </label>
+				</div>
+				<div class="col-md-12">
+					<h:outputText title="Nome" styleClass="col-md-12"
+						id="nomeEditarSenha" value="#{servidorMB.servidor.nome}"
+						alt="nome" />
+				</div>
+
+
+				<div class="col-md-6">
+					<label>Senha</label>
+					<p:password title="Senha" styleClass="col-md-12" id="senhaas"
+						feedback="true" promptLabel="Senha" weakLabel="Fraca"
+						validatorMessage="Senhas diferentes" goodLabel="Boa"
+						strongLabel="Forte" alt="senha" match="senha2"
+						value="#{servidorMB.servidor.senha}" required="true"
+						requiredMessage="o campo senha não pode ser nulo" />
+
+				</div>
+				<div class="col-md-6">
+					<label>Repita a senha</label>
+
+					<p:password title="Senha" styleClass="col-md-12" id="senha2"
+						alt="repita a senha" value="#{servidorMB.servidor.senha}"
+						required="true" requiredMessage="o campo senha não pode ser nulo" />
+				</div>
+			</div>
+			<div class="col-md-12">
+				<small>Campos obrigatórios *</small>
+			</div>
+
+			<div class="modal-footer">
+
+				<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+					alt="Sim" update=":frmTabela :dlgInformacao"
+					actionListener="#{servidorMB.salvarSenha()}" />
+
+				<p:commandButton value="Cancelar"
+					onclick="PF('dlgServidorEditarSenha').hide();" alt="Cancelar" />
+			</div>
+
+		</h:form>
+	</p:dialog>
+
+</h:body>
+</html>

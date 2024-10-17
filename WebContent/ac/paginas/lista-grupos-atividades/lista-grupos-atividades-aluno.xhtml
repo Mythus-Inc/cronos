@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Grupos/Atividades</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+	<h:form>
+		<div class="ui-fluid">
+			<div class="col-md-12">
+				<label>Turma *</label>
+				<p:selectOneMenu id="console"
+					value="#{listaGrupoTurmaAlunoMB.alunoTurmaSelecionada}"
+					converter="#{converterAlunoTurma}" required="true"
+					requiredMessage="Selecione uma turma">
+
+					<f:selectItem itemLabel="" />
+
+					<f:selectItems value="#{listaGrupoTurmaAlunoMB.listAlunoTurmas}" var="t"
+						itemValue="#{t}" itemLabel="#{t.turma.descricao}" />
+
+					<p:ajax event="change" update=":geral"
+						listener="#{listaGrupoTurmaAlunoMB.preencherGruposTurmas()}" /> 
+					
+				</p:selectOneMenu>
+			</div>
+		</div>
+	</h:form>
+
+
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="geral">
+			<p:tabView>
+				<p:tab title="Grupos">
+					<h:panelGrid columns="2" cellpadding="10">
+						<h:form id="frmTabela">
+							<p:dataTable id="tabela"
+								value="#{listaGrupoTurmaAlunoMB.gruposTurmas}" var="obj"
+								resizableColumns="true" reflow="true" rows="10" paginator="true"
+								paginatorPosition="bottom"
+								emptyMessage="Nenhum grupo para turma selecionada"
+								rowsPerPageTemplate="5,10,15,30,50,100">
+
+								<p:column headerText="Ver" style="width:50px">
+									<p:commandButton update=":frmDetalhesGrupoTurma"
+										styleClass="btn btn-block" title="Ver"
+										alt="Detalhes sobre grupos da turma" icon="ui-icon-search"
+										oncomplete="PF('grupoDetalhe').show()">
+										<f:setPropertyActionListener value="#{obj}"
+											target="#{listaGrupoTurmaAlunoMB.grupoTurma}" />
+									</p:commandButton>
+								</p:column>
+
+								<p:column headerText="Grupo"
+									filterBy="#{obj.grupoTurma.grupo.descricao}"
+									sortBy="#{obj.grupoTurma.grupo.descricao}"
+									filterMatchMode="contains">
+									<h:outputText value="#{obj.grupo.descricao}" />
+								</p:column>
+							</p:dataTable>
+
+						</h:form>
+					</h:panelGrid>
+				</p:tab>
+				<p:tab title="Atividades">
+					<h:panelGrid columns="2" cellpadding="10">
+					
+						<p:dataTable id="tabela"
+							value="#{listaGrupoTurmaAlunoMB.atividadesTurmas}"
+							var="obj" resizableColumns="true" reflow="true" rows="10"
+							paginator="true" paginatorPosition="bottom"
+							emptyMessage="Nenhuma atividade para turma selecionada"
+							rowsPerPageTemplate="5,10,15,30,50,100">
+
+							<p:column headerText="Ver" style="width:50px">
+								<p:commandButton update=":frmDetalhesAtividadeTurma"
+									styleClass="btn btn-block" title="Ver"
+									alt="Detalhes das atividades da turma" icon="ui-icon-search"
+									oncomplete="PF('dlgDetalhes').show()">
+									<f:setPropertyActionListener value="#{obj}"
+										target="#{listaGrupoTurmaAlunoMB.atividadeTurma}" />
+								</p:commandButton>
+							</p:column>
+
+							<p:column headerText="Grupo"
+								filterBy="#{obj.atividade.grupo.descricao}"
+								sortBy="#{obj.atividade.grupo.descricao}"
+								filterMatchMode="contains">
+								<h:outputText value="#{obj.atividade.grupo.descricao}" />
+							</p:column>
+							<p:column headerText="Atividade"
+								filterBy="#{obj.atividade.descricao}"
+								sortBy="#{obj.atividade.descricao}" filterMatchMode="contains">
+								<h:outputText value="#{obj.atividade.descricao}" />
+							</p:column>
+						</p:dataTable>
+					</h:panelGrid>
+				</p:tab>
+
+
+			</p:tabView>
+		</h:form>
+	</div>
+
+
+	<!--FIM DA TABELA-->
+
+	<!-- MODAL DETALHES -->
+	<p:dialog header="Grupo da turma" widgetVar="grupoDetalhe"
+		responsive="true" modal="true" closeOnEscape="true" resizable="false"
+		closable="true" draggable="false">
+		<p:outputPanel id="grupoDetalhe">
+			<h:form id="frmDetalhesGrupoTurma">
+				<h:panelGrid columns="2">
+					<label>Grupo: </label>
+					<h:outputText
+						value="#{listaGrupoTurmaAlunoMB.grupoTurma.grupo.descricao}" />
+
+					<label>Mínimo de horas: </label>
+					<h:outputText
+						value="#{listaGrupoTurmaAlunoMB.grupoTurma.minimoHoras}" />
+
+					<label>Máximo de horas: </label>
+					<h:outputText
+						value="#{listaGrupoTurmaAlunoMB.grupoTurma.maximoHoras}" />
+
+				</h:panelGrid>
+			</h:form>
+		</p:outputPanel>
+	</p:dialog>
+	<!-- FIM DO MODAL DETALHES -->
+
+	<!-- MODAL DETALHES -->
+	<p:dialog header="Atividade da turma" widgetVar="dlgDetalhes"
+		responsive="true" modal="true" closeOnEscape="true" resizable="false"
+		closable="true" draggable="false">
+		<p:outputPanel id="atividadeDetalhe">
+			<h:form id="frmDetalhesAtividadeTurma">
+				<h:panelGrid columns="2">
+					<label>Atividade: </label>
+					<h:outputText
+						value="#{listaGrupoTurmaAlunoMB.atividadeTurma.atividade.descricao}" />
+
+					<label>Mínimo de horas: </label>
+					<h:outputText
+						value="#{listaGrupoTurmaAlunoMB.atividadeTurma.minimoHoras}" /> 
+
+					<label>Máximo de horas: </label>
+					<h:outputText
+						value="#{listaGrupoTurmaAlunoMB.atividadeTurma.maximoHoras}" />
+
+					<label>Equivalência: </label>
+					<h:outputText
+						value="#{listaGrupoTurmaAlunoMB.atividadeTurma.equivalenciaHora} : #{listaGrupoTurmaAlunoMB.atividadeTurma.equivalencia}" />
+
+					<label>Hora única: </label>
+					<h:outputText value="Sim"
+						rendered="#{listaGrupoTurmaAlunoMB.atividadeTurma.horaUnica == true}" />
+				</h:panelGrid>
+			</h:form>
+		</p:outputPanel>
+	</p:dialog>
+	<!-- FIM DO MODAL DETALHES -->
+</h:body>
+</html>
+

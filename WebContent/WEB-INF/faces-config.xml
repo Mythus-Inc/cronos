@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
+	version="2.2">
+
+	<converter>
+		<converter-id>converterAtividadeTurma</converter-id>
+		<converter-class>br.com.cronos.converter.ConverterAtividadeTurma</converter-class>
+	</converter>
+
+	<converter>
+		<converter-id>converterCurso</converter-id>
+		<converter-class>br.com.cronos.converter.ConverterCurso</converter-class>
+	</converter>
+
+	<converter>
+		<converter-id>converterGrupo</converter-id>
+		<converter-class>br.com.cronos.converter.ConverterGrupo</converter-class>
+	</converter>
+
+	<converter>
+		<converter-id>converterTurma</converter-id>
+		<converter-class>br.com.cronos.converter.ConverterTurma</converter-class>
+	</converter>
+
+	<converter>
+		<converter-id>converterGrupoTurma</converter-id>
+		<converter-class>br.com.cronos.converter.ConverterGrupoTurma</converter-class>
+	</converter>
+
+	<converter>
+		<converter-id>converterMovimentacao</converter-id>
+		<converter-class>br.com.cronos.converter.ConverterMovimentacao</converter-class>
+	</converter>
+
+	<converter>
+		<converter-id>converterAtividade</converter-id>
+		<converter-class>br.com.cronos.converter.ConverterAtividade</converter-class>
+	</converter>
+	 
+</faces-config>

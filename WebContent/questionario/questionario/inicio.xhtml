@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition
+	template="../../resources/template/template-padrao.xhtml">
+	<ui:define name="conteudo">
+
+
+		<!-- Pagina do menubar -->
+		<div class="row">
+			<div class="col-md-12">
+				<nav class="navbar navbar-default">
+					<div class="container-fluid">
+						<div class="navbar-header" style="min-height: 100px;">
+
+							<a class="navbar-brand" style="color: teal;" href="../../"><img
+								src="../../resources/img/paranavai-vertical.png"
+								style="max-height: 85px;" alt="Questionário de Egressos"
+								class="img-responsive" /></a>
+						</div>
+
+					</div>
+				</nav>
+			</div>
+		</div>
+
+
+
+		<div class="row" style="margin-top: 1%; margin-bottom: 1%;">
+
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div id="newbaCorousel" class="carousel slide" data-ride="carousel">
+
+					<ol class="carousel-indicators">
+						<li data-target="#newbaCorousel" data-slide-to="0" class="active"></li>
+						<li data-target="#newbaCorousel" data-slide-to="1"></li>
+						<li data-target="#newbaCorousel" data-slide-to="2"></li>
+					</ol>
+
+					<div class="carousel-inner">
+						<div class="item active">
+							<img src="../../resources/img/figura3new.jpg"
+								alt="Questionário de Egressos"
+								class="img-rounded img-responsive" />
+						</div>
+						<div class="item">
+							<img src="../../resources/img/figura2newnew.jpg"
+								alt="Questionário de Egressos"
+								class="img-rounded img-responsive" />
+
+						</div>
+						<div class="item">
+							<img src="../../resources/img/figura1new.jpg"
+								alt="Questionário de Egressoss"
+								class="img-rounded img-responsive" />
+
+						</div>
+					</div>
+
+					<a class="carousel-control left" href="#newbaCorousel"
+						data-slide="prev"> <span
+						class="glyphicon glyphicon-chevron-left"></span>
+					</a> <a class="carousel-control right" href="#newbaCorousel"
+						data-slide="next"> <span
+						class="glyphicon glyphicon-chevron-right"></span>
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+    // Use jQuery com a variavel $j(...)
+    var $j = jQuery.noConflict();
+    $j(document).ready(function() {
+        
+    $j('#irParaResponderFormulario').click(function() {
+    //$j('body,html').animate({scrollTop:0},600);
+    });
+        
+        
+    });
+</script>
+
+
+		<script>
+var $ = jQuery.noConflict();
+$(document).ready(function(){
+    $('[data-toggle="popover"]').popover({
+        html: true,
+        content: function() {
+      return $('#pergunta').html();
+    }
+    });   
+});
+</script>
+
+
+		<div style="clear: both;"></div>
+		<div class="email" style="float: right; margin-right: 50px;">
+			<a href="#" title="Email" class="btn btn-info btn-sm"
+				data-toggle="modal" data-target="#modalEmail"> <span
+				class="glyphicon glyphicon-envelope"></span> E-mail
+			</a>
+		</div>
+		<div class="responder" style="float: right; margin-right: 5px;">
+			<p:commandButton class="btn btn-success btn-sm" data-toggle="popover"
+				onclick="PF('dlgCpf').show();" data-placement="top"
+				value="Responder
+				Questionário " />
+		</div>
+		<div style="clear: both;"></div>
+
+
+
+		<!-- DIALOG ENTRAR -->
+		<p:dialog header="Entrar" widgetVar="dlgCpf" modal="true">
+			<h:form>
+				<p:messages id="messages" showDetail="true" autoUpdate="true"
+					closable="true" />
+
+				<div class="ui-fluid">
+					<div class="col-md-6"></div>
+					<div class="col-md-12">
+						<label> CPF: </label>
+						<p:inputMask mask="999.999.999-99" title="Nome" id="nomeEditarSenha"
+							value="#{FormularioMB.cpf}" alt="nome" />
+					</div>
+				</div>
+
+				<div class="col-md-12">
+					<div class="modal-footer">
+						<p:commandButton value="Entrar" styleClass="ui-priority-primary"
+							alt="Sim" actionListener="#{FormularioMB.verificarCpf()}" />
+						<p:commandButton value="Sair" alt="Nao"
+							onclick="PF('dlgCpf').hide();" />
+					</div>
+				</div>
+
+			</h:form>
+		</p:dialog>
+
+
+
+
+
+	</ui:define>
+</ui:composition>
+
+
+
+</html>

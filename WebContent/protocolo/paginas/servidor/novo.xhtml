@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Protocolo</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+	<!-- Botao Cadastrar -->
+
+	<div class="row container-fluid">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+				<h:form>
+					<p:commandButton value="Cadastrar" update="formProtocoloServidor"
+						onclick="PF('dlgServidor').show();" actionListener="#{protocoloServidorMB.criarNovoObjeto()}"/>
+				</h:form>
+			</ol>
+		</div>
+	</div>
+			<!-- Fim do botao cadastrar -->
+
+
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+			<p:dataTable id="tabela" value="#{protocoloServidorMB.listProtocolo}"
+			    var="list" resizableColumns="true" 
+				reflow="true" rows="10" paginator="true" paginatorPosition="bottom"
+				emptyMessage="Nenhum protocolo cadastrado"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+
+				<p:column headerText="Ver" style="width:50px">
+				
+				</p:column>
+				<p:column headerText="Número" filterBy="#{list.id}">
+					<h:outputText value="#{list.id}" />
+				</p:column>
+				<p:column headerText="Nome Requerente">
+					<h:outputText value="#{list.pessoa.nome}" />
+				</p:column>
+
+				<p:column headerText="Tipo Requerimento"
+					filterBy="#{list.requerimento.nome}">
+					<h:outputText value="#{list.requerimento.nome}" />
+				</p:column>
+
+				<p:column headerText="Status" filterBy="#{list.situacao}">
+					<h:outputText value="#{list.situacao}" />
+				</p:column>
+
+				<p:column headerText="Data Solicitação" filterBy="#{list.data}">
+					<h:outputText value="#{list.data}" />
+				</p:column>
+				<p:column headerText="Data Resultado"
+					filterBy="#{list.dataResultado}">
+					<h:outputText value="#{list.dataResultado}" />
+				</p:column>
+
+
+			</p:dataTable>
+		</h:form>
+
+	</div>
+	<!--FIM DA TABELA-->
+
+		<!-- início dialog servidor -->
+
+	<p:dialog header="Servidor" modal="true" responsive="true" width="70%"
+		id="dlgNovoProtocoloServidor" closable="true" closeOnEscape="true"
+		draggable="false" showEffect="scale" resizable="false" height="500px"
+		widgetVar="dlgServidor">
+
+		<h:form id="formProtocoloServidor">
+			<div class="ui-fluid">
+
+				<div class="col-md-12">
+					<label>Servidor</label>
+					<p:inputText id="nomeServidor"
+						value="#{protocoloServidorMB.servidor.nome}" readonly="true" />
+				</div>
+				<div class="col-md-4">
+					<label>CPF *</label>
+					<p:inputText id="cpfServidor"
+						value="#protocoloServidorMB.servidor.cpf}" readonly="true" />
+				</div>
+				<div class="col-md-4">
+					<label>Rg *</label>
+					<p:inputText id="rgServidor"
+						value="#{protocoloServidorMB.servidor.rg}" readonly="true" />
+				</div>
+				<div class="col-md-4">
+					<label>Siap *</label>
+					<p:inputText id="siapeServidor"
+						value="#{protocoloServidorMB.servidor.siape}" readonly="true" />
+				</div>
+			
+				<div class="col-md-12">
+					<label>Telefone *</label>
+					<p:inputText id="telefoneServidor"
+						value="#{protocoloServidorMB.servidor.telefone}" readonly="true" />
+				</div>
+				<div class="col-md-12">
+					<label>Celular *</label>
+					<p:inputText id="celularServidor"
+						value="#{protocoloServidorMB.servidor.celular}" readonly="true" />
+				</div>
+				<div class="col-md-12">
+					<label>E-mail *</label>
+					<p:inputText id="emailServidor"
+						value="#{protocoloServidorMB.servidor.usuario}" readonly="true" />
+				</div>
+				<div class="col-md-12">
+					<label>Tipo Requerimento *</label>
+					<p:autoComplete dropdown="true" required="true"
+						requiredMessage="Campo Requerimento não deve ser nulo"
+						value="#{protocoloServidorMB.protocoloServidor.requerimento}"
+						scrollHeight="170"
+						completeMethod="#{protocoloServidorMB.completeRequerimento}"
+						forceSelection="true" var="set"
+						converter="#{converterRequerimento}" itemLabel="#{set.nome}"
+						itemValue="#{set}">
+
+						<p:ajax event="itemSelect"
+							update="setorServidor responsavelServidor codNecessarioServidor procedAdicionaisServidor"
+							listener="#{protocoloServidorMB.preencherDadosRequerimentoServidor()}" />
+
+
+
+					</p:autoComplete>
+
+				</div>
+				<div class="col-md-12">
+					<label>Setor Destino *</label>
+					<p:inputText id="setorServidor"
+						value="#{protocoloServidorMB.protocoloServidor.requerimento.setorDestino.descricao}"
+						readonly="true" />
+				</div>
+				<div class="col-md-12">
+					<label>Responsável Setor *</label>
+					<p:inputText id="responsavelServidor"
+						value="#{protocoloServidorMB.responsavelSetor}" readonly="true" />
+				</div>
+				<div class="col-md-12">
+					<label>Documentos Necessários *</label>
+					<p:inputText id="codNecessarioServidor"
+						value="#{protocoloServidorMB.protocoloServidor.requerimento.documetosNecessarios}"
+						readonly="true" />
+				</div>
+
+				<div class="col-md-12">
+					<label>Descrição Requerente *</label>
+					<p:inputText
+						value="#{protocoloServidorMB.protocoloServidor.descricaoRequerente}"
+						required="true"
+						requiredMessage="O campo descrição requerente não pode ser nulo" />
+				</div>
+				
+
+				<div class="col-md-12">
+					<label>Procedimentos Adicionais *</label>
+					<p:inputText id="procedAdicionaisServidor"
+						value="#{protocoloServidorMB.protocoloServidor.requerimento.procedimentos}"
+						readonly="true" />
+				</div>
+
+				<div class="col-md-12">
+					<p:outputLabel for="uploadServidor" value="Anexar Arquivo"
+						id="pdfIDServidor" />
+
+					<p:fileUpload mode="advanced" id="uploadServidor" fileLimit="1"
+						fileLimitMessage="É possível selecionar apenas um arquivo"
+						invalidFileMessage="Tipo de arquivo inválido"
+						fileUploadListener="#{certificadoMB.upload}" auto="true"
+						allowTypes="/(\.|\/)(pdf)$/" sizeLimit="2000000" multiple="false"
+						invalidSizeMessage="Tamanho do arquivo inválido"
+						disabled="#{certificadoMB.permitePDF}" showButtons="false"
+						update=":dlgInformacao" />
+				</div>
+
+
+				<samp>Campos Obrigatório *</samp>
+			</div>
+
+			<div class="modal-footer">
+				<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+					actionListener="#{protocoloServidorMB.salvarServidor()}"
+					update=":dlgInformacao :frmTabela" />
+
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- fim dialog servidor -->
+
+
+
+
+
+</h:body>
+</html>
