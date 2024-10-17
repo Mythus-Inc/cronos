@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+#{certificadoSecretariaMB.preencherListaPendentes()}
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Certificados pendentes</h1>
+
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+	
+	<p:ajaxStatus onstart="PF('statusDialog').show()"
+				onsuccess="PF('statusDialog').hide()" />
+
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+				closable="false" resizable="false" showHeader="false">
+				<h:outputText style="font-weight:bold"
+					value="Aguarde, realizando operação...." />
+				<br />
+				<center>
+					<p:graphicImage name="img/aguarde.gif" />
+				</center>
+			</p:dialog>
+
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+			<p:dataTable id="tabela" resizableColumns="true"
+				value="#{certificadoSecretariaMB.certificadosPendentes}" var="obj"
+				reflow="true" rows="10" paginator="true" paginatorPosition="bottom"
+				emptyMessage="Nenhum certificado cadastrado"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+				<p:ajax event="filter" global="false" />
+
+				<p:column headerText="Ver" style="width:50px">
+					<p:commandButton update=":frmDetalhesCertificado"
+						styleClass="btn btn-block" title="Ver" alt="detlhes evento"
+						icon="ui-icon-search" oncomplete="PF('dlgDetalhes').show()">
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{certificadoSecretariaMB.certificado}" />
+					</p:commandButton>
+				</p:column>
+
+						<p:column headerText="PDF" style="width:50px">
+					<p:commandButton alt="Certificado PDF" title="Certificado PDF"
+						styleClass="btn btn-block" onclick="PF('dlgArquivo').show();"
+						icon="ui-icon-document" update=":uploadCertificado" >
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{certificadoMB.certificado}" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column headerText="Aluno" filterBy="#{obj.aluno.nome}"
+					sortBy="#{obj.aluno.nome}" filterMatchMode="contains">
+					<h:outputText value="#{obj.aluno.nome}" />
+				</p:column>
+
+
+				<!-- Como Estava antes, utilizando a coluna R.A -->
+				<!-- 				<p:column headerText="RA" filterBy="#{obj.alunoTurma.ra}"
+					sortBy="#{obj.alunoTurma.ra}" filterMatchMode="contains">
+					<h:outputText value="#{obj.alunoTurma.ra}" />
+				</p:column>
+				 -->
+				<!-- Como está agora, utilizando a Coluna CURSO -->
+				<p:column headerText="Curso"
+					filterBy="#{obj.alunoTurma.turma.curso.abreviacaoCurso}"
+					sortBy="#{obj.alunoTurma.turma.curso.abreviacaoCurso}"
+					filterMatchMode="contains">
+					<h:outputText value="#{obj.alunoTurma.turma.curso.abreviacaoCurso}" />
+				</p:column>
+
+
+				
+				<p:column headerText="Digital" sortBy="#{obj.certificadoInterno}"
+					filterMatchMode="contains">
+					<h:outputText value="#{obj.certificadoInterno}" />
+				</p:column>
+				<p:column headerText="Autenticar" style="width:100px">
+					<p:commandButton alt="Autenticar" title="Autenticar"
+						onclick="PF('dlgAutenticar').show();" icon="ui-icon-circle-check"
+						styleClass="btn btn-block">
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{certificadoSecretariaMB.certificado}" />
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="Inválidar" style="width:100px">
+					<p:commandButton alt="Inválidar" title="Inválidar" update=":frmModalInvalidar"
+						styleClass="btn btn-block" onclick="PF('dlgInvalidar').show();"
+						icon="ui-icon-circle-close">
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{certificadoSecretariaMB.certificado}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</div>
+	<!--FIM DA TABELA-->
+
+
+	<!-- DIALOG DETALHES  -->
+	<p:dialog header="Certificado" widgetVar="dlgDetalhes" modal="true"
+		closeOnEscape="true" resizable="false" closable="true"
+		responsive="true" draggable="false">
+		<p:outputPanel id="eventoDetalhe">
+			<h:form id="frmDetalhesCertificado">
+				<h:panelGrid columns="2">
+
+					<label>Grupo: </label>
+					<h:outputText
+						value="#{certificadoSecretariaMB.certificado.atividadeTurma.atividade.grupo.descricao}" />
+
+					<label>Atividade: </label>
+					<h:outputText
+						value="#{certificadoSecretariaMB.certificado.atividadeTurma.atividade.descricao}" />
+
+					<label>Turma: </label>
+					<h:outputText
+						value="#{certificadoSecretariaMB.certificado.alunoTurma.turma.abreviacaoTurma}" />
+
+					<label>Matriz: </label>
+					<h:outputText
+						value="#{certificadoSecretariaMB.certificado.alunoTurma.turma.matriz.descricao}" />
+
+					<label>Data de início da turma: </label>
+					<h:outputText
+						value="#{certificadoSecretariaMB.certificado.alunoTurma.turma.dataInicioTurma}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+
+					<label>Curso: </label>
+					<h:outputText
+						value="#{certificadoSecretariaMB.certificado.alunoTurma.turma.curso.abreviacaoCurso}" />
+
+					<label>Descrição: </label>
+					<h:outputText escape="false"
+						value="#{certificadoSecretariaMB.certificado.descricao}" />
+
+					<label>Código de Autenticação: </label>
+					<h:outputText escape="false"
+						value="#{certificadoSecretariaMB.certificado.codigoAutenticacao}" />
+
+					<label>Instituição: </label>
+					<h:outputText
+						value="#{certificadoSecretariaMB.certificado.instituicao}" />
+
+					<label>Data de início: </label>
+					<h:outputText
+						value="#{certificadoSecretariaMB.certificado.dataInicio}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+
+					<label>Data de fim: </label>
+					<h:outputText
+						value="#{certificadoSecretariaMB.certificado.dataFinalizado}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+
+					<label>Data do cadastro: </label>
+					<h:outputText
+						value="#{certificadoSecretariaMB.certificado.dataCadastro}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+
+					<label>Quantidade de horas totais: </label>
+					<h:outputText
+						value="#{certificadoSecretariaMB.certificado.quantidadeMaximaHora}" />
+
+					<label>Quantidade de horas computadas: </label>
+					<h:outputText
+						value="#{certificadoSecretariaMB.certificado.horaComputada}" />
+
+					<label>URL: </label>
+					<h:outputText value="#{certificadoSecretariaMB.certificado.url}" />
+
+					<label>Código autenticação: </label>
+					<h:outputText
+						value="#{certificadoSecretariaMB.certificado.codigoAutenticacao}" />
+
+
+					<label>Certificado: </label>
+					<p:commandButton alt="Certificado PDF" title="Certificado PDF"
+						styleClass="btn btn-block" onclick="PF('dlgArquivo').show();"
+						icon="ui-icon-document" update=":uploadCertificado" >
+						<f:setPropertyActionListener value="#{certificadoSecretariaMB.certificado}"
+							target="#{certificadoMB.certificado}" />
+					</p:commandButton>
+				</h:panelGrid>
+			</h:form>
+		</p:outputPanel>
+	</p:dialog>
+	<!-- FIM DO DIALOG DETALHES -->
+
+	<!-- AUTENTICAR CERTIFICADO-->
+	<p:dialog header="Autenticar" widgetVar="dlgAutenticar" modal="true"
+		width="50%" id="dlgAutenticar" closable="true" closeOnEscape="true"
+		responsive="true" resizable="false" draggable="false">
+		<h:form id="frmModalAutenticar">
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Justificativa</label>
+					<p:inputText id="justificativaAutenticar"
+						value="#{certificadoSecretariaMB.certificado.justificativa}"
+						styleClass="col-md-12" />
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton value="Salvar"
+					actionListener="#{certificadoSecretariaMB.autenticar()}"
+					update=":dlgInformacao :frmTabela" alt="Sim"
+					styleClass="ui-priority-primary" />
+				<p:commandButton value="Cancelar"
+					onclick="PF('dlgAutenticar').hide();" alt="Cancelar" />
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- FIM AUTENTICAR CERTIFICADO -->
+
+	<!-- INVALIDAR CERTIFICADO-->
+	<p:dialog header="Inválidar" widgetVar="dlgInvalidar" modal="true"
+		id="dlgInvalidar" closable="true" closeOnEscape="true" width="50%"
+		responsive="true" resizable="false" draggable="false">
+		<h:form id="frmModalInvalidar">
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Justificativa</label>
+					<p:inputText id="justificativa"
+						value="#{certificadoSecretariaMB.certificado.justificativa}"
+						styleClass="col-md-12" />
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton value="Salvar"
+					actionListener="#{certificadoSecretariaMB.invalidar()}"
+					update=":dlgInformacao :frmTabela" alt="Sim"
+					styleClass="ui-priority-primary" />
+				<p:commandButton value="Cancelar"
+					onclick="PF('dlgInvalidar').hide();" alt="Cancelar" />
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- FIM INVALIDAR CERTIFICADO -->
+
+
+	
+</h:body>
+</html>
+

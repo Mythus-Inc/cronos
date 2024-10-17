@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:body>
+	<ui:composition template="../../resources/template/template-formulario.xhtml">
+		<ui:define name="mensagem">
+			<ui:include src="../../componentes/mensagem.xhtml" />
+		</ui:define>
+
+		<ui:define name="conteudo">
+		
+	 <f:metadata>
+		<f:event type="preRenderView"
+			listener="#{FormularioMB.verf()}" />
+	</f:metadata>
+
+
+
+			<!-- Pagina do menubar -->
+			<div class="row">
+				<div class="col-md-12">
+					<nav class="navbar navbar-default">
+						<div class="container-fluid">
+							<div class="navbar-header" style="min-height: 100px;">
+								<button type="button" class="navbar-toggle"
+									data-toggle="collapse" data-target="#navBarUser">
+									<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+										class="icon-bar"></span>
+								</button>
+								<a class="navbar-brand" style="color: teal;" href="#"><img
+									src="../../resources/img/questionario_logo.png"
+									alt="Questionário de Egressos" style="max-height: 64px;"
+									class="img-responsive" /></a>
+							</div>
+							<div class="collapse navbar-collapse" id="navBarUser"></div>
+
+						</div>
+					</nav>
+				</div>
+			</div>
+
+
+			<!-- corpo formulário -->
+
+
+
+			<h:form id="frmModalSalvar">
+
+				<div class="col-md-8 col-sm-8 col-xs-8"
+					style="margin-left: 15%; background-color: white; border: 2px #e7e7e7 solid; border-radius: 10px; padding: 20px; margin-top: 10px;">
+
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+							<H3>Dados pessoais</H3>
+							<p:separator />
+
+							<label>1 - Ano de conclusão:</label>
+							
+						<p:selectOneMenu
+							value="#{FormularioMB.formulario.anoConclusao}" required="true" requiredMessage="Informe o ano de consulão">
+							<f:selectItem itemLabel="2012" itemValue="2012" />
+							<f:selectItem itemLabel="2013" itemValue="2013" />
+							<f:selectItem itemLabel="2014" itemValue="2014" />
+							<f:selectItem itemLabel="2015" itemValue="2015" />
+							<f:selectItem itemLabel="2016" itemValue="2016" />
+							<f:selectItem itemLabel="2017" itemValue="2017" />
+							<f:selectItem itemLabel="2018" itemValue="2018" />
+							<f:selectItem itemLabel="2019" itemValue="2019" />
+							<f:selectItem itemLabel="2020" itemValue="2020" />
+							<f:selectItem itemLabel="2021" itemValue="2021" />
+						</p:selectOneMenu>
+							
+							
+							<label> </label>
+						</div>
+
+					</div>
+
+
+					<div class="ui-fluid">
+						<div class="col-md-12">
+							<label>2 - Semestre: </label>
+
+							<p:selectOneRadio layout="responsive"
+								value="#{FormularioMB.formulario.semestre}" columns="1"
+								id="semestre" required="true" requiredMessage="Informe o semestre">
+								<f:selectItem itemLabel="1º Semestre" itemValue="1º Semestre" />
+								<f:selectItem itemLabel="2ª Semestre" itemValue="2ª Semestre" />
+							</p:selectOneRadio>
+						</div>
+
+					</div>
+
+
+
+
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+							<H3>Informações sobre o curso</H3>
+							<p:separator />
+
+							<label>1 - Qual o curso que você fez?</label>
+					   <p:autoComplete id="curso" dropdown="true"
+						value="#{FormularioMB.curso}" scrollHeight="170"
+						completeMethod="#{FormularioMB.completarCursos}" forceSelection="true"
+						converter="#{converterCurso}" var="cur" itemLabel="#{cur.nome}"
+						itemValue="#{cur}" required="true"
+						requiredMessage="informe o curso" />
+								
+								
+								
+								
+							<label> </label>
+						</div>
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+							<label>2 - Qual foi o tipo de curso? </label>
+							<p:selectOneRadio layout="responsive" columns="1" id="tipoCurso"
+								value="#{FormularioMB.formulario.ic2}" required="true" requiredMessage="Informe o tipo do curso">
+								<f:selectItem itemLabel="subsequente" itemValue="subsequente" />
+
+								<f:selectItem itemLabel="Concomitante" itemValue="Concomitante" />
+
+							</p:selectOneRadio>
+							<label> </label>
+						</div>
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+							<label>3 - O que achou do curso que fez? </label>
+							<p:selectOneRadio layout="responsive" columns="1" id="opCurso"
+								value="#{FormularioMB.formulario.ic3}">
+								<f:selectItem itemLabel="Muito Satisfatório"
+									itemValue="muito satisfatorio" required="true" requiredMessage="A pergunta 3 sobre informações do curso não deve ser nula"/>
+
+								<f:selectItem itemLabel="Satisfatório" itemValue="satisfatorio" />
+
+								<f:selectItem itemLabel="Insatisfatório"
+									itemValue="insatisfatorio" />
+
+								<f:selectItem itemLabel="Não sei Responder"
+									itemValue="nao sei responder" />
+							</p:selectOneRadio>
+							<label> </label>
+
+						</div>
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+
+							<label>4 - A duração do curso foi suficiente?</label>
+							<p:selectOneRadio layout="responsive" columns="1" id="Duracao"
+								value="#{FormularioMB.formulario.ic4}" required="true" requiredMessage="A pergunta 4 sobre informações do curso não deve ser nula">
+								<f:selectItem itemLabel="sim" itemValue="sim" />
+
+								<f:selectItem itemLabel="não" itemValue="nao" />
+
+								<f:selectItem itemLabel="Não sei Responder"
+									itemValue="nao sei responder" />
+							</p:selectOneRadio>
+
+							<label> </label>
+
+						</div>
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+
+
+							<label>5 - Como foi a parte teórica do curso?</label>
+							<p:selectOneRadio layout="responsive" columns="1" id="teoria"
+								value="#{FormularioMB.formulario.ic5}" required="true" requiredMessage="A pergunta 5 sobre informações do curso não deve ser nula">
+								<f:selectItem itemLabel="Muito Satisfatório"
+									itemValue="muito satisfatorio" />
+
+								<f:selectItem itemLabel="Satisfatório" itemValue="satisfatorio" />
+
+								<f:selectItem itemLabel="Insatisfatório"
+									itemValue="insatisfatario" />
+
+								<f:selectItem itemLabel="Não sei Responder"
+									itemValue="nao sei responder" />
+							</p:selectOneRadio>
+							<label> </label>
+						</div>
+
+
+
+					</div>
+
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+
+							<label>6 - Como foi a parte prática do curso?</label>
+							<p:selectOneRadio layout="responsive" columns="1" id="pratica"
+								value="#{FormularioMB.formulario.ic6}" required="true" requiredMessage="A pergunta 6 sobre informações do curso não deve ser nula">
+								<f:selectItem itemLabel="Muito Satisfatório"
+									itemValue="muito satisfatorio"  />
+
+								<f:selectItem itemLabel="Satisfatório" itemValue="satisfatorio" />
+
+								<f:selectItem itemLabel="Insatisfatório"
+									itemValue="insatisfatario" />
+
+								<f:selectItem itemLabel="Não sei Responder"
+									itemValue="nao sei responder" />
+							</p:selectOneRadio>
+
+							<label> </label>
+
+						</div>
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+
+							<label>7 - Os conhecimentos adquiridos durante o curso
+								foram importantes para formação profissional?</label>
+							<p:selectOneRadio layout="responsive" columns="1"
+								id="conhecimento" value="#{FormularioMB.formulario.ic7}" required="true" requiredMessage="A pergunta 7 sobre informações do curso não deve ser nula">
+								<f:selectItem itemLabel="Muito Satisfatório"
+									itemValue="muito satisfatorio" />
+
+								<f:selectItem itemLabel="Satisfatório" itemValue="satisfatorio" />
+
+								<f:selectItem itemLabel="Insatisfatório"
+									itemValue="insatisfatario" />
+
+								<f:selectItem itemLabel="Não sei Responder"
+									itemValue="nao sei responder" />
+							</p:selectOneRadio>
+
+							<label> </label>
+
+						</div>
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+
+							<label>8 - Como você avalia o nivel de exigência do
+								curso?</label>
+							<p:selectOneRadio layout="responsive" columns="1" id="avaliacao"
+								value="#{FormularioMB.formulario.ic8}" required="true" requiredMessage="A pergunta 8 sobre informações do curso não deve ser nula">
+								<f:selectItem itemLabel="Deveria ter exigido muito mais de mim"
+									itemValue="deveria ter exigido muito mais de mim" />
+
+								<f:selectItem
+									itemLabel="Deveria ter exigido um pouco mais de mim"
+									itemValue="deveria ter exigido um pouco mais de mim" />
+
+								<f:selectItem itemLabel="Deveria ter exigido menos de mim"
+									itemValue="deveria ter exigido menos de mim" />
+
+							</p:selectOneRadio>
+
+							<label> </label>
+
+						</div>
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+
+							<label>9 - Qual foi a principal contribuição do curso?</label>
+							<p:selectOneRadio layout="responsive" columns="1" id="qaul"
+								value="#{FormularioMB.formulario.ic9}" required="true" requiredMessage="A pergunta 9 sobre informações do curso não deve ser nula">
+								<f:selectItem itemLabel="A obtenção de diploma de nível técnico"
+									itemValue="a obtenção de diploma de nível técnico" />
+
+								<f:selectItem itemLabel="A aquisição de cultura geral"
+									itemValue="a aquisição de cultura geral" />
+
+								<f:selectItem
+									itemLabel="A aquisiçaoo de formação profissional e teórica"
+									itemValue="a aquisiçaoo de formação profissional e teórica" />
+
+								<f:selectItem
+									itemLabel="Melhores perspectivas de ganhos materiais"
+									itemValue="melhores perspectivas de ganhos materiais" />
+							</p:selectOneRadio>
+
+							<label> </label>
+
+						</div>
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+
+							<label>10 - Quais foram suas principais dificuldades logo
+								após a conclusÃ£o do curso?</label>
+							<p:selectOneRadio layout="responsive" columns="1" id="sss"
+								value="#{FormularioMB.formulario.ic10}" required="true" requiredMessage="A pergunta 10 sobre informações do curso não deve ser nula">
+								<f:selectItem itemLabel="Encontrar emprego na área"
+									itemValue="encontrar emprego na área" />
+
+								<f:selectItem itemLabel="Adequação salarial"
+									itemValue="adequação salarial" />
+
+								<f:selectItem itemLabel="ser promovido"
+									itemValue="ser promovido" />
+
+								<f:selectItem
+									itemLabel="Tempo para se dedicar a uma qualificação"
+									itemValue="tempo para se dedicar a uma qualificação" />
+							</p:selectOneRadio>
+
+							<label> </label>
+
+						</div>
+					</div>
+
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+							<H3>Informações sobre o corpo docente</H3>
+							<p:separator />
+
+							<label>1 - De modo geral, os professores tinham domínio
+								do conteúdo das disciplinas que deram?</label>
+							<p:selectOneRadio layout="responsive" columns="1" id="das"
+								value="#{FormularioMB.formulario.icd1}" required="true" requiredMessage="A pergunta 1 sobre informações sobre o corpo docente não deve ser nula">
+								<f:selectItem itemLabel="Muito Satisfatório"
+									itemValue="muito satisfatorio" />
+
+								<f:selectItem itemLabel="Satisfatório" itemValue="satisfatorio" />
+
+								<f:selectItem itemLabel="Insatisfatório"
+									itemValue="insatisfatario" />
+
+								<f:selectItem itemLabel="Não sei Responder"
+									itemValue="nao sei responder" />
+							</p:selectOneRadio>
+
+							<label> </label>
+
+						</div>
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+
+							<label>2 - De modo geral, como foram os recursos
+								utilizados pelos professores durante as aulas?</label>
+							<p:selectOneRadio layout="responsive" columns="1" id="geral"
+								value="#{FormularioMB.formulario.icd2}" required="true" requiredMessage="A pergunta 2 sobre informações sobre o corpo docente não deve ser nula">
+								<f:selectItem itemLabel="Muito Satisfatório"
+									itemValue="muito satisfatorio" />
+
+								<f:selectItem itemLabel="Satisfatório" itemValue="satisfatorio" />
+
+								<f:selectItem itemLabel="Insatisfatório"
+									itemValue="insatisfatario" />
+
+								<f:selectItem itemLabel="Não sei Responder"
+									itemValue="nao sei responder" />
+							</p:selectOneRadio>
+
+							<label> </label>
+
+						</div>
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+
+							<label>3 - De Modo geral, como foi a relação do professor
+								com os alunos?</label>
+							<p:selectOneRadio layout="responsive" columns="1" id="como"
+								value="#{FormularioMB.formulario.icd3}" required="true" requiredMessage="A pergunta 3 sobre informações sobre o corpo docente não deve ser nula">
+								<f:selectItem itemLabel="Muito Satisfatório"
+									itemValue="muito satisfatorio" />
+
+								<f:selectItem itemLabel="Satisfatório" itemValue="satisfatorio" />
+
+								<f:selectItem itemLabel="Insatisfatório"
+									itemValue="insatisfatario" />
+
+								<f:selectItem itemLabel="Não sei Responder"
+									itemValue="nao sei responder" />
+							</p:selectOneRadio>
+
+							<label> </label>
+
+						</div>
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+							<H3>Informações pessoais</H3>
+							<p:separator />
+
+							<label>1 - Você já tinha uma profissão antes de fazer o
+								curso?</label>
+						 
+							<p:selectOneRadio layout="responsive" columns="1" id="tinha"
+								value="#{FormularioMB.formulario.ip1}" required="true" requiredMessage="A pergunta 1 sobre informações pessoais não deve ser nula">
+								<f:selectItem itemLabel="Sim" itemValue="sim"  />
+
+								<f:selectItem itemLabel="Não" itemValue="nao" />
+								
+								<p:ajax event="change" update="p1" listener="#{FormularioMB.controle1()}"   />
+ 
+							</p:selectOneRadio>
+							
+							
+							
+							<label> </label> <p:outputLabel  value="Qual?" />
+							<p:inputText id="p1"  disabled="#{FormularioMB.controleP1}"  /> 
+							
+						
+ 									  
+							<label> </label>
+
+						</div>
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+							<label>2 - Você estava trabalhando na área durante o
+								curso?</label>
+							<p:selectOneRadio layout="responsive" columns="1"
+								id="trabalhando" value="#{FormularioMB.formulario.ip2}" required="true" requiredMessage="A pergunta 2 sobre informações pessoais não deve ser nula">
+								<f:selectItem itemLabel="Sim" itemValue="sim" />
+
+								<f:selectItem itemLabel="Não" itemValue="nao" />
+
+								<p:ajax event="change" listener="#{FormularioMB.controle2()}" update="ip2"  />
+
+							</p:selectOneRadio>
+
+							<label> </label> <label>Onde?</label>
+							<p:inputText id="ip2" value="#{FormularioMB.formulario.ip2Complemento}" disabled="#{FormularioMB.controleP2}"/>
+							<label> </label>
+
+						</div> 
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+							<label>3 - Você está trabalhando na área atualmente?</label>
+							<p:selectOneRadio layout="responsive" columns="1" id="na"
+								value="#{FormularioMB.formulario.ip3}" required="true" requiredMessage="A pergunta 3 sobre informações pessoais não deve ser nula">
+								<f:selectItem itemLabel="Sim" itemValue="sim" />
+
+								<f:selectItem itemLabel="Não" itemValue="nao" />
+								
+								<p:ajax event="change" listener="#{FormularioMB.controle3()}" update="ip3"  />
+
+							</p:selectOneRadio>
+
+							<label>Em que/Onde??</label>
+							<p:inputText id="ip3" value="#{FormularioMB.formulario.ip3Complemento}" disabled="#{FormularioMB.controleP3}"/>
+
+						</div>
+					</div>
+
+
+
+
+
+
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+
+							<H3>Informações adicionais</H3>
+							<p:separator />
+
+							<label>1 - Na sua opinião um estudante recêm-formado em
+								sua área que tenha dedicado todo o tempo de estudo somente às
+								atividades acadêmicas, leva mais tempo para se adaptar ao
+								mercado do que um outro que já trabalhava na área durante o dia
+								e estudava a noite?</label>
+							<p:selectOneRadio layout="responsive" columns="1" id="outro"
+								value="#{FormularioMB.formulario.iadc1}" required="true" requiredMessage="A pergunta 1 sobre informações adicionais não deve ser nula">
+								<f:selectItem
+									itemLabel="Sim, pois o contato com a prática é um grande diferencial"
+									itemValue="Sim, pois o contato com a prática é um grande diferencial" />
+
+								<f:selectItem
+									itemLabel="Não, pois os conhecimentos adquiridos com as atividades acadêmicas são suficientes para atuar no mercado"
+									itemValue="Não, pois os conhecimentos adquiridos com as atividades acadêmicas são suficientes para atuar no mercado" />
+
+							</p:selectOneRadio>
+
+							<label> </label>
+
+						</div>
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+							<label>2 - Na contratação de um egresso de sua área, o
+								que é relevante no processo de seleção?</label>
+							<p:selectOneRadio layout="responsive" columns="1" id="processo"
+								value="#{FormularioMB.formulario.iadc2}" required="true" requiredMessage="A pergunta 2 sobre informações adicionais não deve ser nula"> 
+								<f:selectItem
+									itemLabel="O nome da Instituição de Ensino onde estudou"
+									itemValue="O nome da Instituição de Ensino onde estudou" />
+
+								<f:selectItem
+									itemLabel="As respostas ao teste de seleção, ao qual foi submetido"
+									itemValue="As respostas ao teste de seleção, ao qual foi submetido" />
+
+								<f:selectItem itemLabel="A formação teórica"
+									itemValue="A formação teórica" />
+
+								<f:selectItem itemLabel="A experiência prática"
+									itemValue="A experiência prática" />
+
+								<f:selectItem itemLabel="Visão sistámica"
+									itemValue="Visão sistámica" />
+							</p:selectOneRadio>
+
+							<label> </label>
+
+						</div>
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+
+
+							<label>3 - O que tem faltado aos recêm-formados em sua
+								área?</label>
+							<p:selectOneRadio layout="responsive" columns="1" id="faltado"
+								value="#{FormularioMB.formulario.iadc3}" required="true" requiredMessage="A pergunta 3 sobre informações adicionais não deve ser nula">
+								<f:selectItem itemLabel="Maior embasamento conceitual"
+									itemValue="Maior embasamento conceitual" />
+
+								<f:selectItem itemLabel="Maior embasamento técnico"
+									itemValue="Maior embasamento técnico" />
+
+								<f:selectItem itemLabel="Maior embasamento prático"
+									itemValue="Maior embasamento prático" />
+
+								<f:selectItem
+									itemLabel="Maior aproximação com as necessidades da indússtria"
+									itemValue="Maior aproximação com as necessidades da indússtria" />
+
+								<f:selectItem itemLabel="Maior capacidade de liderança"
+									itemValue="Maior capacidade de liderança" />
+
+								<f:selectItem itemLabel="Maior visão sistêmica"
+									itemValue="Maior visão sistêmica" />
+
+
+							</p:selectOneRadio>
+
+							<label> </label>
+
+						</div>
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+
+							<label>4 - Em sua opinião, quanto tempo leva um egresso,
+								recêm-formado em sua area, para tornar-se altamente produtivo,
+								após ser contratado por sua empresa?</label>
+							<p:selectOneRadio value="#{FormularioMB.formulario.iadc4}" layout="responsive" columns="1" id="quanto" required="true" requiredMessage="A pergunta 4 sobre informações adicionais não deve ser nula">
+								<f:selectItem itemLabel="Imediatamente após a contratação"
+									itemValue="Imediatamente após a contratação"  />
+
+								<f:selectItem itemLabel="Algumas semanas"
+									itemValue="Algumas semanas" />
+
+								<f:selectItem itemLabel="Alguns meses" itemValue="Alguns meses" />
+
+								<f:selectItem itemLabel="Entre 1 e 2 anos"
+									itemValue="Entre 1 e 2 anos" />
+
+								<f:selectItem itemLabel="Mais de 2 anos"
+									itemValue="Mais de 2 anos" />
+
+							</p:selectOneRadio>
+
+							<label> </label>
+
+						</div>
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+
+							<label>5 - Você voltaria a estudar no IFPR para fazer
+								outros cursos?</label>
+							<p:selectOneRadio layout="responsive" columns="1" id="estudar"
+								value="#{FormularioMB.formulario.iadc5}" required="true" requiredMessage="A pergunta 5 sobre informações adicionais não deve ser nula">
+								<f:selectItem itemLabel="Sim" itemValue="sim" />
+
+								<f:selectItem itemLabel="Não" itemValue="nao" />
+
+							</p:selectOneRadio>
+
+							<label> </label>
+
+						</div>
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+							
+							<label >6 - Você teria interesse em cursar uma
+								Pós-Graduação ou cursos de qualificação profissional ofertados
+								pelo IFPR?</label>
+							<p:selectOneRadio layout="responsive" columns="1" id="interesse"
+								value="#{FormularioMB.formulario.iadc6}" required="true" requiredMessage="A pergunta 6 sobre informações adicionais não deve ser nula">
+								<f:selectItem itemLabel="Sim" itemValue="sim" />
+
+								<f:selectItem itemLabel="Não" itemValue="nao" />
+
+							</p:selectOneRadio>
+
+							<label> </label>
+
+						</div>
+					</div>
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+							<label>Sugestões (se houver)</label>
+							<p:textEditor value="#{FormularioMB.formulario.sugestao}"></p:textEditor>
+
+
+
+						</div>
+					</div>
+
+					<div class="col-md-12">
+						<div class="modal-footer">
+
+							<p:commandButton value="Finalizar"
+								styleClass="ui-priority-primary" update=":dlgInformacao" actionListener="#{FormularioMB.salvar()}"/>
+							<p:commandButton value="Sair" actionListener="#{FormularioMB.voltar()}"/>
+
+						</div>
+					</div>
+
+				</div>
+
+			</h:form>
+
+
+
+
+		</ui:define>
+		<ui:define name="modal-confirmacao">
+			<ui:include src="../../componentes/dialog-confirmacao.xhtml" />
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

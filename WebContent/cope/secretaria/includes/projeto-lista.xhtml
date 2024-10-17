@@ -1,0 +1,30 @@
+<div xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html">
+	<p:dataTable id="tabela" value="#{projetoSecretariaMB.listaProjeto}"
+		var="obj" resizableColumns="true" rows="10" paginator="true"
+		paginatorPosition="bottom" reflow="true"
+		emptyMessage="Nenhum projeto cadastrado"
+		rowsPerPageTemplate="5,10,15,30,50,100">
+		<p:column headerText="Nº do processo" filterBy="#{obj.numeroProcesso}"
+			width="150">
+			<h:outputText
+				value="#{obj.numeroProcesso == null ? 'SEM NUMERO':obj.numeroProcesso}" />
+		</p:column>
+		<p:column headerText="Título">
+			<h:outputText value="#{obj.nome}" />
+		</p:column>
+		<p:column headerText="Área" width="100">
+			<h:outputText value="#{obj.tipoProjeto}" />
+		</p:column>
+		<p:column headerText="Situação" width="230">
+			<h:outputText value="#{obj.situacao.descricao}" />
+		</p:column>
+		<p:column headerText="Ações" width="90">
+			<!-- 			<p:commandButton actionListener=" { projetoSecretariaMB.selecionaProjeto(obj) }" onclick="PF('dlgProjeto').show();" update=":frmControleProjeto" icon="fa fa-pencil-square-o" styleClass="btn btn-default" title="Encaminhar" disabled="#{obj.situacao.toString() != 'AGUARDANDO_AVALIACAO'}" > <p:confirm header="Confirmação" message="Deseja Encaminhar?" /> </p:commandButton> -->
+			<p:commandButton
+				actionListener="#{projetoSecretariaMB.visualizarProjeto(obj)}"
+				onclick="PF('dlgVisualizar').show();" update=":frmVisualizar"
+				icon="fa fa-eye" styleClass="btn btn-default" title="Visualizar" />
+		</p:column>
+	</p:dataTable>
+</div>

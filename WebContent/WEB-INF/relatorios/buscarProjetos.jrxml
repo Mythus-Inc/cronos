@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="grupo" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fe166493-b712-4ad9-88ef-0150cb98ee09">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="relat\NEW_DATAADAPTER.xml"/>
+	<parameter name="IDPESSOA" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[select proj.nome as nomeProjeto, part.campus as campus, part.dataInicioAtividade as dataInicioAtividade, part.funcao as funcao,
+part.identificacao as identificacao, part.cargaHoraria as cargaHoraria
+
+from  tab_projeto proj inner join  tab_participante part on 
+	proj.id_projeto = part.projeto_id_projeto
+inner join tab_pessoa p on
+	part.pessoa_id_pessoa = p.id_pessoa
+
+
+ where part.status = true and proj.situacao != 'FINALIZADO'  and proj.situacaoProjeto = 'APROVADO'  and part.pessoa_id_pessoa = $P{IDPESSOA}]]>
+	</queryString>
+	<field name="nomeProjeto" class="java.lang.String"/>
+	<field name="campus" class="java.lang.String"/>
+	<field name="dataInicioAtividade" class="java.sql.Timestamp"/>
+	<field name="funcao" class="java.lang.String"/>
+	<field name="identificacao" class="java.lang.String"/>
+	<field name="cargaHoraria" class="java.lang.Integer"/>
+	<background>
+		<band height="8" splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="33" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<textField>
+				<reportElement x="5" y="0" width="180" height="20" uuid="c78e5a70-56c2-4182-9233-cb87027282d6"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{nomeProjeto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="174" y="0" width="90" height="20" uuid="b6ae28c0-9b7b-48a8-8d34-d8e57aaeb9e6"/>
+				<textFieldExpression><![CDATA[$F{cargaHoraria}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="246" y="0" width="70" height="20" uuid="515b9e75-cd34-465a-a140-4662a4a6e771"/>
+				<textFieldExpression><![CDATA[$F{dataInicioAtividade}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="328" y="0" width="80" height="20" uuid="9929eefa-b8d2-458e-bdf6-89fa7505d0f2"/>
+				<textFieldExpression><![CDATA[$F{campus}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="392" y="0" width="70" height="20" uuid="214951f5-5909-4156-b79b-d65f1fc66641"/>
+				<textFieldExpression><![CDATA[$F{funcao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="480" y="0" width="75" height="30" uuid="ab8c1503-d611-42ae-bf1e-d8f59638815d">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{identificacao}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="-10" width="10" height="43" uuid="3406177f-8a19-4e1f-be6e-e8b6d158680a"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="545" y="-10" width="10" height="40" uuid="ba784f5d-6404-465a-8735-ac9c80e2fae4"/>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<text><![CDATA[]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

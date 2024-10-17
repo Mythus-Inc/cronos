@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Professor</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+	<!-- BOTÃO CADASTRAR -->
+	<div class="row container-fluid">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+				<h:form id="frmCadastrar">
+					<p:commandButton actionListener="#{professorMB.criarNovoObjeto()}"
+						value="Cadastrar" update=":frmModalSalvar" id="btnCadastrar"
+						onclick="PF('dlgProfessor').show(); PF('dlgProfessor').content.scrollTop('0')"
+						title="Cadastrar" />
+				</h:form>
+			</ol>
+		</div>
+	</div>
+	<!-- FIM DO BOTÃO CADASTRAR -->
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+			<p:dataTable id="tabela" value="#{professorMB.professores}"
+				resizableColumns="true" reflow="true" var="obj" rows="10"
+				paginator="true" paginatorPosition="bottom"
+				emptyMessage="Nenhum professor cadastrado"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+
+				<p:column headerText="Ver" style="width:50px">
+					<p:commandButton onclick="PF('dlgDetalhes').show();"
+						update=":frmCursosProfessor :frmDados" icon="ui-icon-search"
+						actionListener="#{professorMB.abrirDetalhes(obj)}"
+						alt="detalhes do professor" title="Detalhes do professor"
+						styleClass="btn btn-block">
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="Nome" filterBy="#{obj.nome}"
+					sortBy="#{obj.nome}" filterMatchMode="contains">
+					<h:outputText value="#{obj.nome}" />
+				</p:column>
+
+				<p:column headerText="Usuário" filterBy="#{obj.usuario}"
+					sortBy="#{obj.usuario}" filterMatchMode="contains">
+					<h:outputText value="#{obj.usuario}" />
+				</p:column>
+
+				<p:column headerText="Siape" filterBy="#{obj.siape}"
+					sortBy="#{obj.siape}" filterMatchMode="contains">
+					<h:outputText value="#{obj.siape}" />
+				</p:column>
+
+				<p:column headerText="Alterar" style="width:68px">
+					<p:commandButton alt="Alterar" icon="ui-icon-pencil"
+						update=":frmModalSalvar" title="Alterar"
+						styleClass="btn btn-block" oncomplete="PF('dlgProfessor').show();"
+						actionListener="#{professorMB.preencherCursoProfessor(obj)}">
+
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="Excluir" style="width:68px">
+					<p:commandButton actionListener="#{professorMB.inativar(obj)}"
+						icon="ui-icon-trash" title="Excluir" styleClass="btn btn-block"
+						update=":frmTabela :dlgInformacao" alt="Excluir">
+						<p:confirm header="Confirmação" message="Deseja excluir?" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+	</div>
+	<!--FIM DA TABELA-->
+
+	<!-- DIALOG SALVAR -->
+	<p:dialog header="Professor" widgetVar="dlgProfessor" modal="true"
+		scrollable="true" scrollHeight="25%" responsive="true" width="60%"
+		id="dlgProfessor" closable="true" closeOnEscape="true"
+		resizable="false" draggable="false">
+		<h:form id="frmModalSalvar">
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Nome *</label>
+					<p:inputText title="Nome" styleClass="col-md-12" id="nome"
+						alt="nome" value="#{professorMB.professor.nome}" required="true"
+						requiredMessage="O campo nome não deve ser nulo" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-8">
+					<label>E-mail *</label>
+					<p:inputText title="E-mail" styleClass="col-md-12" id="email"
+						alt="e-mail" value="#{professorMB.professor.usuario}"
+						required="true"
+						requiredMessage="O campo usuário não deve ser nulo" />
+				</div>
+
+				<div class="col-md-4">
+					<label>Siape *</label>
+					<p:inputText title="Siape" styleClass="col-md-12" id="siape"
+						alt="siape" value="#{professorMB.professor.siape}" required="true"
+						requiredMessage="O campo siape não deve ser nulo" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-6">
+					<label>Senha</label>
+					<p:password title="Senha" styleClass="col-md-12" id="senha"
+						feedback="true" promptLabel="Senha" weakLabel="Fraca"
+						validatorMessage="Senhas diferentes" goodLabel="Boa"
+						strongLabel="Forte" alt="senha" match="senha2"
+						value="#{professorMB.professor.senha}" />
+				</div>
+				<div class="col-md-6">
+					<label>Repita a senha</label>
+					<p:password title="Senha" styleClass="col-md-12" id="senha2"
+						alt="repita a senha" value="#{professorMB.professor.senha}" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Curso *</label>
+					<p:selectManyMenu id="curso" style="width:100%" required="true"
+						requiredMessage="O campo curso deve ser nulo"
+						value="#{professorMB.cursosSelecionados}"
+						converter="#{converterCurso}" var="c" filter="true"
+						filterMatchMode="contains" showCheckbox="true" scrollHeight="100">
+						<f:selectItems value="#{professorMB.cursos}" var="curso"
+							itemLabel="#{curso.nome}" itemValue="#{curso}" />
+						<p:column>
+							<h:outputText styleClass="ui-theme ui-theme-#{c.nome}" />
+						</p:column>
+						<p:column>
+							<h:outputText value="#{c.nome}" />
+						</p:column>
+					</p:selectManyMenu>
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<small>Campos obrigatórios *</small>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+					actionListener="#{professorMB.salvar()}"
+					update=":dlgInformacao :frmTabela" />
+
+				<p:commandButton value="Cancelar"
+					onclick="PF('dlgProfessor').hide();" alt="Cancelar" />
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- FIM DO DIALOG SALVAR -->
+
+	<!-- DETALHES PROFESSOR -->
+	<p:dialog header="Detalhes professor" widgetVar="dlgDetalhes"
+		modal="true" responsive="true" width="60%" id="dlgDetalhes"
+		closable="true" closeOnEscape="true" resizable="false"
+		draggable="false">
+
+		<div class="ui-fluid">
+			<h:form id="frmDados">
+				<div class="col-md-12">
+					<label>Nome: </label>
+					<h:outputLabel value="#{professorMB.professor.nome}" />
+				</div>
+				<div class="col-md-12">
+					<label>E-mail: </label>
+					<h:outputLabel value="#{professorMB.professor.usuario}" />
+				</div>
+				<div class="col-md-12">
+					<label>Siape: </label>
+					<h:outputLabel value="#{professorMB.professor.siape}" />
+				</div>
+			</h:form>
+		</div>
+
+		<br />
+		<!-- TABELA-->
+		<div class="col-md-12">
+			<h:form id="frmCursosProfessor">
+				<p:dataTable id="tabelaDetalhes"
+					value="#{professorMB.cursosSelecionados}" reflow="true" var="obj"
+					rows="10" paginator="true" paginatorPosition="bottom"
+					emptyMessage="Nenhum curso cadastrado para o professor"
+					rowsPerPageTemplate="5,10,15,30,50,100">
+					<p:column headerText="Cursos">
+						<h:outputText value="#{obj.nome}" />
+					</p:column>
+					<p:column headerText="Remover" style="width:90px">
+						<p:commandButton actionListener="#{professorMB.removerCurso(obj)}"
+							styleClass="btn btn-block" icon="ui-icon-closethick"
+							title="Remover curso" update=":frmCursosProfessor"
+							alt="Remover curso">
+							<p:confirm header="Confirmação" message="Deseja remover curso" />
+						</p:commandButton>
+
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</div>
+		<!--FIM DA TABELA-->
+
+
+
+	</p:dialog>
+
+
+
+	<!-- FIM DETALHES PROFESSOR -->
+
+</h:body>
+</html>

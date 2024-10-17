@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:body>
+	<ui:composition
+		template="../../resources/template/cope/template-secretaria.xhtml">
+
+		<ui:define name="tituloPagina">
+		 - COPE
+		</ui:define>
+
+		<ui:define name="titulo">
+			Programa
+		</ui:define>
+
+		<ui:define name="conteudo">
+			<div class="row container-fluid">
+				<p:outputPanel id="pnBotoes" styleClass="col-md-12">
+					<h:form>
+						<p:commandButton value="Novo Programa"
+							oncomplete="PF('dlgPrograma').show();"
+							styleClass="btn btn-info pull-right"
+							actionListener="#{programaMB.criarNovoObjt()}"
+							update="frmModalSalvar">
+						</p:commandButton>
+					</h:form>
+				</p:outputPanel>
+			</div>
+
+
+			<!-- DIALOG SALVAR -->
+			<p:dialog header="Programa" widgetVar="dlgPrograma" modal="true"
+				responsive=" true" width="60%" id="dlgPrograma" closable="true"
+				closeOnEscape="true" resizable="false" draggable="false">
+
+				<h:form id="frmModalSalvar">
+					<div class="ui-fluid">
+						<div class="col-md-12">
+							<label>Programa *</label>
+							<p:inputText title="Programa" alt="programa"
+								styleClass="col-md-12" value="#{programaMB.programa.descricao}" />
+						</div>
+
+
+						<div class="col-md-12">
+							<small>Campos obrigatórios *</small>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<p:commandButton value="Salvar" id="btnSalvar" alt="Sim"
+							styleClass="ui-priority-primary" update="frmTabela"
+							actionListener="#{programaMB.cadastrar()}" />
+
+					</div>
+				</h:form>
+
+			</p:dialog>
+			<!-- FIM DO DIALOG SALVAR -->
+
+
+			<!-- TABELA-->
+			<div class="col-md-12">
+				<h:form id="frmTabela">
+					<p:dataTable id="tabela" resizableColumns="true" var="obj"
+						reflow="true" rows="10" paginator="true"
+						value="#{programaMB.listaPrograma}" paginatorPosition="bottom"
+						emptyMessage="Nenhum Local Cadastrado"
+						rowsPerPageTemplate="5,10,15,30,50,100">
+
+						<p:column headerText="Descrição">
+							<h:outputText value="#{obj.descricao}" />
+						</p:column>
+
+						<p:column headerText="Alterar" style="width:68px">
+							<p:commandButton alt="Alterar" update=":frmModalSalvar"
+								styleClass="btn btn-block" onclick="PF('dlgPrograma').show();"
+								icon="ui-icon-pencil"
+								actionListener="#{programaMB.carregarPrograma(obj)}">
+								<f:setPropertyActionListener value="#{obj}"
+									target="#{programaMB.programa}" />
+							</p:commandButton>
+						</p:column>
+						<p:column headerText="Excluir" style="width:68px">
+							<p:commandButton icon="ui-icon-trash" title="Excluir"
+								actionListener="#{programaMB.inativar(obj)}"
+								styleClass="btn btn-block" alt="Excluir"
+								update=":frmModalSalvar :frmTabela">
+								<p:confirm header="Confirmação" message="Deseja excluir?" />
+							</p:commandButton>
+						</p:column>
+
+
+					</p:dataTable>
+				</h:form>
+			</div>
+			<!--FIM DA TABELA-->
+ 
+		</ui:define>
+		
+		
+		<ui:define name="modal-confirmacao">
+			<ui:include src="../../componentes/dialog-confirmacao.xhtml" />
+		</ui:define>
+
+
+
+	</ui:composition>
+</h:body>
+</html>
+

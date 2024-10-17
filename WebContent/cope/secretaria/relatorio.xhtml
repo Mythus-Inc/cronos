@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+	<ui:composition
+		template="../../resources/template/cope/template-secretaria.xhtml">
+		<ui:define name="tituloPagina">
+		 - COPE
+		</ui:define>
+
+		<ui:define name="titulo">
+			Relatório
+		</ui:define>
+
+		<ui:define name="conteudo">
+
+			<p:tabView>
+				<p:tab title="Relatório de projeto professor">
+					<h:form id="RelAluno">
+						<div class="ui-fluid">
+							<div class="col-md-8">
+								<p:commandButton value="Imprimir Relatório"
+									title="Imprimir Relatório" ajax="false"
+									alt="Imprimir Relatório"
+									action="#{relatorioCopeMB.imprimirRelatorioProfessor()}"
+									update=":dlgInformacao" onclick="target = '_blank'">
+								</p:commandButton>
+							</div>
+						</div>
+					</h:form>
+				</p:tab>
+
+				<p:tab title="Relatório de projeto em andamento">
+					<h:form id="RelAndamento">
+						<div class="ui-fluid">
+							<div class="col-md-8">
+								<p:commandButton value="Imprimir Relatório"
+									title="Imprimir Relatório" ajax="false"
+									alt="Imprimir Relatório"
+									action="#{relatorioCopeMB.imprimirRelatorioProjetoAndamento()}"
+									update=":dlgInformacao" onclick="target = '_blank'">
+								</p:commandButton>
+							</div>
+						</div>
+					</h:form>
+				</p:tab>
+
+				<p:tab title="Relatório de projeto em atraso">
+					<h:form id="RelAtraso">
+						<div class="ui-fluid">
+							<div class="col-md-8">
+								<p:commandButton value="Imprimir Relatório"
+									title="Imprimir Relatório" ajax="false"
+									alt="Imprimir Relatório"
+									action="#{relatorioCopeMB.imprimirRelatorioProjetoAtraso()}"
+									update=":dlgInformacao" onclick="target = '_blank'">
+								</p:commandButton>
+							</div>
+						</div>
+					</h:form>
+				</p:tab>
+
+				<p:tab title="Relatório de bolsistas">
+					<h:form id="RelBolsista">
+						<div class="ui-fluid">
+							<div class="col-md-8">
+
+								<label>Informe a data de início</label>
+								<p:calendar value="#{relatorioCopeMB.dataInicio}"
+									pattern="dd/MM/yyyy" />
+
+								<label>Informe a data de fim</label>
+								<p:calendar value="#{relatorioCopeMB.dataFim}"
+									pattern="dd/MM/yyyy" />
+
+								<p:commandButton value="Imprimir Relatório"
+									title="Imprimir Relatório" ajax="false"
+									alt="Imprimir Relatório"
+									action="#{relatorioCopeMB.imprimirRelatorioBolsista()}"
+									update=":dlgInformacao" onclick="target = '_blank'">
+								</p:commandButton>
+							</div>
+						</div>
+					</h:form>
+				</p:tab>
+
+			</p:tabView>
+
+
+
+
+
+
+		</ui:define>
+
+		<ui:define name="modal-confirmacao">
+			<ui:include src="../../componentes/dialog-confirmacao.xhtml" />
+		</ui:define>
+
+
+	</ui:composition>
+</h:body>
+</html>

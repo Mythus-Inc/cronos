@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">
+				<i class="fa fa-book" aria-hidden="true"></i> Manual do aluno
+			</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">
+				<b>Olá usuário(a) do módulo aluno, </b> no sistema você possui
+				permissões de gerenciar seus certificados, visualizar a situação
+				desses, realizar acompanhamento das suas horas computadas por meio
+				de um gráfico, pode também visualizar os grupos e atividades
+				cadastradas para sua turma, verificar suas movimentações na
+				instituição e alterar alguns de seus dados.
+			</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Primeiramente a página de cadastro de
+				certificado, na mesma você poderá cadastrar, alterar e excluir os
+				mesmos.</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<img src="#{request.contextPath}/resources/img/certificado-aluno.png"
+				class="img-responsive" />
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Como pode ser observado, existe um botão
+				cadastrar, acima da tabela que contém todos os certificados
+				cadastrados por você, o mesmo botão abre um dialog onde será
+				possível inserir os dados necessários. Na tabela é apresentados os
+				botões de alterar e excluir o primeiro irá abrir o mesmo dialog
+				mencionado com as informações do registro selecionado, o botão
+				excluir que irá fazer com que o registro daquela linha seja
+				removido. Nesse momento é importante ressaltar que é permitido
+				apenas um upload por cadastro. Também existe o botão ver, onde é
+				possível verificar mais detalhes do que foi cadastrado.</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Em acompanhamento de horas, é possível visualizar
+				um gráfico para realizar o acompanhamento das horas, sendo que as
+				colunas só irão aparecer conforme os certificados serem validados
+				pelo professor.</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<img src="#{request.contextPath}/resources/img/grafico.png"
+				class="img-responsive" />
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Em Grupos/Atividades você pode visualizar quais
+				são os grupos atividades cadastradas para sua turma, como pode ser
+				visto no exemplo das duas imagens abaixo.</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<img src="#{request.contextPath}/resources/img/grupo.png"
+				class="img-responsive" />
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<img src="#{request.contextPath}/resources/img/atividade.png"
+				class="img-responsive" />
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Em movimentações você pode ver todas as
+				alterações de turmas que você teve e trancamentos durante o processo
+				de formação no curso, essa mesma tela é exibida nos dois exemplos
+				das imagens abaixo.</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<img src="#{request.contextPath}/resources/img/turmas.png"
+				class="img-responsive" />
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<img src="#{request.contextPath}/resources/img/movimentacao.png"
+				class="img-responsive" />
+		</div>
+	</div>
+
+	<br />
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Na tela abaixo é possível você alterar alguns
+				dados do seu usuário no software.</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<img
+				src="#{request.contextPath}/resources/img/alterar-dados-aluno.png"
+				class="img-responsive" />
+		</div>
+	</div>
+</h:body>
+</html>

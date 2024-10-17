@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:body>
+	<ui:composition
+		template="../../resources/template/template-admquestionario.xhtml">
+		<ui:define name="mensagem">
+			<ui:include src="../../componentes/mensagem.xhtml" />
+		</ui:define>
+
+		<ui:define name="conteudo">
+
+
+			<!-- Pagina do menubar -->
+			<div class="row">
+				<div class="col-md-12">
+					<nav class="navbar navbar-default">
+						<div class="container-fluid">
+							<div class="navbar-header" style="min-height: 100px;">
+								<button type="button" class="navbar-toggle"
+									data-toggle="collapse" data-target="#navBarUser">
+									<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+										class="icon-bar"></span>
+								</button>
+								<a class="navbar-brand" style="color: teal;" href="#"><img
+									src="../../resources/img/questionario_logo.png"
+									alt="Questionário de Egressos" style="max-height: 64px;"
+									class="img-responsive" /></a>
+							</div>
+							<div class="collapse navbar-collapse" id="navBarUser"></div>
+
+						</div>
+					</nav>
+				</div>
+			</div>
+
+
+			<!-- corpo formulário -->
+
+
+
+
+
+			<div class="col-md-11 col-sm-11 col-xs-11"
+				style="margin-left: 5%; background-color: white; border: 2px #e7e7e7 solid; border-radius: 10px; padding: 20px; margin-top: 10px;">
+				<a class="navbar-brand" style="color: teal; margin-left: 40%"
+					href="#"><img src="../../resources/img/email.png"
+					alt="Questionário de Egressos" style="max-height: 100px;"
+					class="img-responsive" /></a>
+
+
+				<div class="ui-fluid" style="margin-top: 200px;">
+					<h:form id="frmTurma">
+						<div class="col-md-12">
+							<label>Turma </label> <BR />
+
+							<div class="col-md-9">
+								<p:autoComplete id="turma" dropdown="true"
+									value="#{EmailMB.turma}" scrollHeight="170"
+									completeMethod="#{EmailMB.completarTurma}"
+									forceSelection="true" converter="#{converterTurma}" var="cur"
+									itemLabel="#{cur.descricao}" itemValue="#{cur}" />
+							</div>
+
+							<div class="col-md-2" style="margin-left: 25px; width: 22%;">
+								<p:commandButton id="buscarTurma" value="Buscar"
+									actionListener="#{EmailMB.buscarTurma()}" icon="ui-icon-search"
+									styleClass="ui-priority-primary" alt="Sim"
+									update=":dlgInformacao :frmTabela" />
+
+							</div>
+						</div>
+						<div class="col-md-12">
+							<label></label>
+						</div>
+
+					</h:form>
+					<h:form id="frmCurso">
+
+						<div class="col-md-12">
+
+							<label>Curso:</label> <br />
+
+							<div class="col-md-9">
+								<p:autoComplete id="curso" dropdown="true"
+									value="#{EmailMB.curso}" scrollHeight="170"
+									completeMethod="#{EmailMB.completarCursos}"
+									forceSelection="true" converter="#{converterCurso}" var="cur"
+									itemLabel="#{cur.nome}" itemValue="#{cur}" />
+							</div>
+							<div class="col-md-2" style="margin-left: 25px; width: 22%;">
+								<p:commandButton value="Buscar" styleClass="ui-priority-primary"
+									icon="ui-icon-search" update=":dlgInformacao :frmTabela"
+									actionListener="#{EmailMB.buscar()}" />
+							</div>
+						</div>
+					</h:form>
+				</div>
+
+				<div class="col-md-12">
+					<label></label>
+				</div>
+				<h:form id="frmTabela">
+					<div class="col-md-12">
+						<div class="modal-footer">
+							<p:commandButton id="start" value="Enviar" styleClass="ui-priority-primary"
+								icon="ui-icon-arrowthick-1-n" update=":dlgInformacao :frmTabela"
+								actionListener="#{EmailMB.enviar()}" widgetVar="startButton1" onclick="start()" oncomplete="cancel()" />
+								
+							<p:commandButton value="Recarregar" icon="ui-icon-refresh"
+								actionListener="#{FormularioMB.voltar()}"  />
+						</div>
+					</div>
+					
+					<div class="col-md-12">
+					<p:progressBar  id="progressBarClient" widgetVar="pbClient" />
+					</div>
+
+
+
+					<!-- TABELA-->
+					<div class="col-md-12">
+
+						<p:dataTable id="tabela" value="#{EmailMB.listEmail}"
+							selection="#{EmailMB.listSelecionados}" rowKey="#{list.id}"
+							style="margin-bottom:0" resizableColumns="true" reflow="true"
+							var="list" rows="10" paginator="true" paginatorPosition="bottom"
+							emptyMessage="Nenhum aluno concluiu o curso"
+							rowsPerPageTemplate="5,10,15,30,50,100">
+
+
+							<p:column selectionMode="multiple"
+								style="width:35px;text-align:center" />
+
+							<p:column headerText="Id" style="width: 60px;">
+								<h:outputText value="#{list.id}" />
+							</p:column>
+
+							<p:column headerText="Nome">
+								<h:outputText value="#{list.alunoTurma.aluno.nome}" />
+							</p:column>
+
+							<p:column headerText="Turma">
+								<h:outputText value="#{list.alunoTurma.turma.descricao}" />
+							</p:column>
+
+							<p:column headerText="Data de Envio">
+								<h:outputText value="#{list.dataEnvio}" />
+							</p:column>
+
+							<p:column headerText="Enviado" style="width: 80px;">
+								<!-- 								<h:outputText  value="#{list.enviado}" /> -->
+								<p:commandButton icon="ui-icon-check" rendered="#{list.enviado}"
+									disabled="true" style="background-color: #00FF00;" />
+								<p:commandButton icon="ui-icon-close" disabled="true"
+									update=":dlgInformacao :frmTabela" rendered="#{!list.enviado}"
+									style="background-color: #FF0000;" />
+
+							</p:column>
+
+
+
+
+
+						</p:dataTable>
+
+
+					</div>
+					<!--FIM DA TABELA-->
+				</h:form>
+
+			</div>
+
+			<script type="text/javascript">
+function start() {
+    PF('startButton1').disable();
+ 
+    window['progress'] = setInterval(function() {
+        var pbClient = PF('pbClient'),
+        oldValue = pbClient.getValue(),
+        newValue = oldValue + 10;
+ 
+        pbClient.setValue(pbClient.getValue() + 10);
+ 
+        if(newValue === 100) {
+            clearInterval(window['progress']);
+        }
+ 
+ 
+    }, 1000);
+
+    
+}
+
+function cancel() {
+    clearInterval(window['progress']);
+    PF('pbClient').setValue(0);
+    PF('startButton1').enable();
+}
+
+</script>
+
+
+
+
+		</ui:define>
+		<ui:define name="modal-confirmacao">
+			<ui:include src="../../componentes/dialog-confirmacao.xhtml" />
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+
+</html>

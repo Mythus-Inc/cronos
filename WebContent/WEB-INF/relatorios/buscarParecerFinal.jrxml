@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="grupo" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fe166493-b712-4ad9-88ef-0150cb98ee09">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="relat\NEW_DATAADAPTER.xml"/>
+	<parameter name="IDPESSOA" class="java.lang.Long">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA[$P{IDPESSOA}]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select p.parecerFinal as parecerFinal, p.dataResultado as dataResultado, p.situacao as situacao, pes.nome as responsavelFinaliza
+from   tab_protocolo p inner join tab_pessoa pes
+on p.responsavelFinaliza_id_pessoa = pes.id_pessoa
+
+
+
+where p.id = $P{IDPESSOA}]]>
+	</queryString>
+	<field name="parecerFinal" class="java.lang.String"/>
+	<field name="dataResultado" class="java.sql.Date"/>
+	<field name="situacao" class="java.lang.String"/>
+	<field name="responsavelFinaliza" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="112" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<staticText>
+				<reportElement x="-20" y="-5" width="90" height="15" uuid="f180cd75-66d3-4ada-bf73-299ff30ee37e">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[ FINALIZADO POR:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-20" y="39" width="100" height="15" uuid="f248f3f4-33c2-4ad7-a809-483741c21ca4"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[ PARECER FINAL:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-20" y="9" width="120" height="15" uuid="1df4b6d9-0809-4282-80be-4f6ea9278d1a"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[ DATA FINALIZAÇÃO:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="90" y="9" width="440" height="15" uuid="58e41940-d231-4925-800a-18a3748bc4ee"/>
+				<box>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataResultado}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="80" y="40" width="450" height="14" uuid="48868ba7-b0a0-4f93-964b-f83bfa8914b2"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{parecerFinal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-20" y="24" width="120" height="15" uuid="53bc15b4-17ce-4ed6-b56e-e17ecc199bcf"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[ SITUAÇÃO:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="80" y="24" width="450" height="16" uuid="b2b61bc0-33cf-46ad-8007-d74a62efcbe6"/>
+				<box>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{situacao}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-20" y="60" width="100" height="13" uuid="9e9340f9-10a5-42bb-b195-a0a8949da550"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[Encaminhamentos:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="70" y="-5" width="460" height="15" uuid="e47015ba-ec32-4031-8965-fe4370e1e987"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{responsavelFinaliza}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

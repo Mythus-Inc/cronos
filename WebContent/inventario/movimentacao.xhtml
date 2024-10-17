@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:body>
+	<ui:composition
+		template="../resources/template/inventario/template-inventario.xhtml">
+		<ui:define name="mensagem">
+			<ui:include src="../componentes/mensagem.xhtml" />
+		</ui:define>
+		<ui:define name="conteudo">
+
+
+			<!-- barra de progresso -->
+			<p:ajaxStatus onstart="PF('statusDialog').show()"
+				onsuccess="PF('statusDialog').hide()" />
+
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+				closable="false" resizable="false" showHeader="false">
+				<h4>Aguarde...</h4>
+
+
+				<f:facet name="start">
+					<p:graphicImage name="../../../resources/img/aguarde.gif" />
+				</f:facet>
+			</p:dialog>
+
+			<!-- TITULO -->
+			<div class="row">
+				<div class="col-md-12">
+					<h1 class="page-header">Movimentação</h1>
+				</div>
+			</div>
+			<!-- FIM TITULO -->
+
+			<h:form id="formTombamento">
+				<div class="ui-fluid">
+					<div class="col-md-12">
+						<div class="col-md-8">
+							<label>Selecione a Origem *</label>
+							<p:autoComplete id="lOrigem" dropdown="true" scrollHeight="170"
+								value="#{movimentacaoEquipamentoMB.localOrigem}"
+								completeMethod="#{movimentacaoEquipamentoMB.completarLocais}"
+								forceSelection="true" converter="#{converteLocal}" var="serv"
+								itemLabel="#{serv.descricao}" itemValue="#{serv}">
+
+								<p:ajax event="itemSelect"
+									listener="#{movimentacaoEquipamentoMB.buscarTombamentosOrigem()}"
+									update="frmTabela" />
+
+							</p:autoComplete>
+
+
+						</div>
+
+
+						<div class="col-md-4">
+							<label></label>
+
+						</div>
+
+					</div>
+
+
+					<div class="col-md-12">
+						<div class="col-md-8">
+							<label>Selecione o Destino *</label>
+							<p:autoComplete id="lDestino" dropdown="true" scrollHeight="170"
+								value="#{movimentacaoEquipamentoMB.localDestino}"
+								completeMethod="#{movimentacaoEquipamentoMB.completarLocais}"
+								forceSelection="true" converter="#{converteLocal}" var="serv"
+								itemLabel="#{serv.descricao}" itemValue="#{serv}">
+
+								<p:ajax event="itemSelect"
+									listener="#{movimentacaoEquipamentoMB.submeteDados()}" />
+
+
+							</p:autoComplete>
+
+						</div>
+
+						<div class="col-md-4">
+							<label></label>
+
+						</div>
+
+					</div>
+
+				</div>
+			</h:form>
+
+			<h:form id="formTombamentoCodigo">
+				<div class="ui-fluid">
+
+					<div class="col-md-12">
+						<div class="col-md-8">
+							<label>Pesquisar pelo tombamento</label>
+							<p:inputText title="tombamento" alt="tombamento"
+								styleClass="col-md-12"
+								value="#{movimentacaoEquipamentoMB.codigo}" />
+
+						</div>
+
+						<div class="col-md-2">
+							<label> </label>
+							<p:commandButton value="Pesquisar" alt="Sim"
+								styleClass="ui-priority-primary"
+								actionListener="#{movimentacaoEquipamentoMB.buscarTombamentosPorCodigo()}"
+								update=":frmTabela :dlgInformacao :formTombamentoCodigo" />
+
+						</div>
+
+						<div class="col-md-2">
+							<label> </label>
+
+
+						</div>
+
+					</div>
+
+					<div class="col-md-12">
+						<label></label>
+					</div>
+
+
+				</div>
+
+			</h:form>
+
+			<!-- TABELA-->
+			<div class="col-md-12">
+				<h:form id="frmTabela">
+					<p:dataTable id="tabela" resizableColumns="true" var="obj"
+						selection="#{movimentacaoEquipamentoMB.listTombamentoMovimenta}"
+						rowKey="#{obj.id}" style="margin-bottom:0"
+						value="#{movimentacaoEquipamentoMB.listTombamentos}" reflow="true"
+						rows="10" paginator="true" paginatorPosition="bottom"
+						emptyMessage="Nenhum equipamento encontrado"
+						rowsPerPageTemplate="5,10,15,30,50,100">
+
+						<p:column selectionMode="multiple"
+							style="width:36px;text-align:center" />
+
+						<p:column headerText="Equipamento">
+							<h:outputText value="#{obj.equipamento.descricao}" />
+						</p:column>
+
+						<p:column headerText="Tombamento">
+							<h:outputText value="#{obj.codigo}" />
+						</p:column>
+
+						<p:column headerText="Estado Conservação">
+							<h:outputText value="#{obj.estado}" />
+						</p:column>
+
+						<f:facet name="footer">
+							<p:commandButton process="tabela" icon="ui-icon-arrow-1-ne"
+								value="Movimentar" oncomplete="PF('dlgMovimentar').show();"
+								update="frmMovimentar"
+								actionListener="#{movimentacaoEquipamentoMB.criarObjeto()}" />
+						</f:facet>
+
+					</p:dataTable>
+				</h:form>
+			</div>
+			<!--FIM DA TABELA-->
+
+
+
+
+			<!-- DIALOG SALVAR -->
+			<p:dialog header="Movimentação" widgetVar="dlgMovimentar"
+				modal="true" responsive=" true" width="60%" id="dlgMovimentar"
+				closable="true" closeOnEscape="true" resizable="false"
+				draggable="false">
+
+				<h:form id="frmMovimentar">
+					<div class="ui-fluid">
+						<div class="col-md-12">
+							<label>Descrição </label>
+							<p:inputText title="Descrição" alt="descrição"
+								styleClass="col-md-12"
+								value="#{movimentacaoEquipamentoMB.descricao}" />
+						</div>
+
+						<p:dataTable id="tabelaItensMovimenta" resizableColumns="false"
+							var="obj"
+							value="#{movimentacaoEquipamentoMB.listTombamentoMovimenta}"
+							reflow="true" rows="10" paginator="true"
+							paginatorPosition="bottom"
+							emptyMessage="Nenhum item para movimentar"
+							rowsPerPageTemplate="5,10,15,30,50,100">
+
+							<f:facet name="header">Itens Para Movimentar </f:facet>
+
+							<p:column headerText="Equipamento">
+								<h:outputText value="#{obj.equipamento.descricao}" />
+							</p:column>
+
+							<p:column headerText="Tombamento">
+								<h:outputText value="#{obj.codigo}" />
+							</p:column>
+
+							<p:column headerText="Estado Conservação">
+								<h:outputText value="#{obj.estado}" />
+							</p:column>
+
+
+
+						</p:dataTable>
+
+
+					</div>
+					<div class="modal-footer">
+						<p:commandButton value="Confirmar" id="btnSalvar" alt="Sim"
+							styleClass="ui-priority-primary"
+							disabled="#{movimentacaoEquipamentoMB.listTombamentoMovimenta.size() == 0}"
+							actionListener="#{movimentacaoEquipamentoMB.movimentar()}"
+							update=":formTombamento :dlgInformacao :formTombamentoCodigo :frmTabela" />
+
+					</div>
+				</h:form>
+
+			</p:dialog>
+			<!-- FIM DO DIALOG SALVAR -->
+
+
+
+		</ui:define>
+		<ui:define name="modal-confirmacao">
+			<ui:include src="../componentes/dialog-confirmacao.xhtml" />
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>
+

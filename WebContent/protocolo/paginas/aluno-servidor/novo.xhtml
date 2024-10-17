@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Protocolo</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+	<!-- Botao Cadastrar -->
+
+	<div class="row container-fluid">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+				<h:form>
+					<p:commandButton value="Cadastrar"
+						actionListener="#{protocoloAlunoServidorMB.criarNovoObjeto()}"
+						update="formNovoProtocolo" onclick="PF('dlgProtocolo').show();" />
+				</h:form>
+			</ol>
+		</div>
+	</div>
+	<!-- Fim do botao cadastrar -->
+
+
+	<!-- barra de progresso -->
+	<p:ajaxStatus onstart="PF('statusDialog').show()"
+		onsuccess="PF('statusDialog').hide()" />
+
+	<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+		closable="false" resizable="false" showHeader="false">
+		<h4>Aguarde...</h4>
+
+		<f:facet name="start">
+			<p:graphicImage name="../../../resources/img/aguarde.gif" />
+		</f:facet>
+	</p:dialog>
+
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+			<p:dataTable id="tabela"
+				value="#{protocoloAlunoServidorMB.listProtocolo}" var="list"
+				resizableColumns="true" reflow="true" rows="10" paginator="true"
+				paginatorPosition="bottom"
+				emptyMessage="Nenhum protocolo cadastrado"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+
+				<p:column headerText="Ver" style="width:50px">
+
+				</p:column>
+				<p:column headerText="Número" filterBy="#{list.id}">
+					<h:outputText value="#{list.id}" />
+				</p:column>
+				<p:column headerText="Nome Requerente">
+					<h:outputText value="#{list.pessoa.nome}" />
+				</p:column>
+
+				<p:column headerText="Tipo Requerimento"
+					filterBy="#{list.requerimento.nome}">
+					<h:outputText value="#{list.requerimento.nome}" />
+				</p:column>
+
+				<p:column headerText="Status" filterBy="#{list.situacao}">
+					<h:outputText value="#{list.situacao}" />
+				</p:column>
+
+				<p:column headerText="Data Solicitação" filterBy="#{list.data}">
+					<h:outputText value="#{list.data}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Data Resultado"
+					filterBy="#{list.dataResultado}">
+					<h:outputText value="#{list.dataResultado}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+
+			</p:dataTable>
+		</h:form>
+
+	</div>
+	<!--FIM DA TABELA-->
+
+	<!-- DIALOG SALVAR -->
+	<p:dialog header="Protocolo" widgetVar="dlgProtocolo" modal="true"
+		responsive="true" width="60%" id="dlgProtocolo" closable="true"
+		closeOnEscape="true" resizable="false" draggable="false"
+		showEffect="scale">
+
+		<h:form id="formNovoProtocolo">
+
+
+
+			<div class="ui-fluid">
+
+				<div class="col-md-12">
+					<label>Requerente *</label>
+					<p:inputText value="#{protocoloAlunoServidorMB.alunoServidor.nome}"
+						readonly="true" />
+
+				</div>
+
+
+				<div class="col-md-12">
+					<label>Tipo Requerimento *</label>
+					<p:autoComplete dropdown="true" required="true"
+						requiredMessage="Campo Requerimento não deve ser nulo"
+						value="#{protocoloAlunoServidorMB.protocolo.requerimento}"
+						scrollHeight="170"
+						completeMethod="#{protocoloAlunoServidorMB.completeRequerimento}"
+						forceSelection="true" var="set"
+						converter="#{converterRequerimento}" itemLabel="#{set.nome}"
+						itemValue="#{set}">
+
+						<p:ajax event="itemSelect" update="codNecessario"
+							listener="#{protocoloAlunoServidorMB.preencherDadosRequerimento()}" />
+
+					</p:autoComplete>
+				</div>
+
+				<div class="col-md-12">
+					<label>Documentos Necessários *</label>
+					<p:inputText id="codNecessario"
+						value="#{protocoloAlunoServidorMB.protocolo.requerimento.documetosNecessarios}"
+						readonly="true" />
+				</div>
+
+				<div class="col-md-12">
+					<label>Descrição Requerente *</label>
+					<p:inputText
+						value="#{protocoloAlunoServidorMB.protocolo.descricaoRequerente}"
+						required="true"
+						requiredMessage="O campo descrição requerente não pode ser nulo" />
+				</div>
+
+
+
+				<!-- anexar arquivo  -->
+				<div class="col-md-12">
+					<label> </label>
+				</div>
+				<div class="col-md-12">
+					<p:commandButton value="Anexar Arquivo"
+						oncomplete="PF('dlgAnexo').show();"
+						actionListener="#{protocoloAlunoServidorMB.criarNovoAnexo()}"
+						update=":formAnexo :formTabelaUp" />
+
+				</div>
+				<div class="col-md-12">
+					<label> </label>
+				</div>
+				<div class="col-md-12">
+					<label>Total de Anexos:</label>
+					<h:outputText id="qtdAnexoAlunoServidor"
+						value="#{protocoloAlunoServidorMB.quantidadeArquivos}" />
+				</div>
+
+				<!-- fim do anexar -->
+
+
+
+
+
+				<small>Campos obrigatórios *</small>
+			</div>
+
+			<div class="modal-footer">
+				<p:commandButton value="Protocolar" styleClass="ui-priority-primary"
+					actionListener="#{protocoloAlunoServidorMB.salvarAlunoServidor()}"
+					update=":dlgInformacao :frmTabela" />
+				<p:commandButton value="Cancelar"
+					onclick="PF('dlgProtocolo').hide();" />
+			</div>
+
+
+		</h:form>
+
+	</p:dialog>
+
+
+
+	<!-- DIALOG SALVAR -->
+	<p:dialog header="Anexos" widgetVar="dlgAnexo" modal="true"
+		responsive="true" width="60%" id="dlgAnexo" closable="true"
+		closeOnEscape="true" resizable="false" draggable="false"
+		showEffect="scale">
+
+		<h:form id="formAnexo">
+
+
+
+			<div class="ui-fluid">
+
+				<div class="col-md-12">
+					<p:outputLabel for="upload" value="Anexar Arquivo PDF" id="pdfID" />
+
+
+					<p:fileUpload mode="advanced" id="upload" fileLimit="10000"
+						fileLimitMessage="É possível selecionar apenas 100000 arquivo"
+						invalidFileMessage="Tipo de arquivo inválido" auto="true"
+						fileUploadListener="#{protocoloAlunoServidorMB.upload}"
+						allowTypes="/(\.|\/)(pdf)$/" sizeLimit="2000000" multiple="true"
+						invalidSizeMessage="Tamanho do arquivo inválido"
+						showButtons="true"
+						update=":formAnexo:pdfID :formTabelaUp :formAnexo :formNovoProtocolo:qtdAnexoAlunoServidor" />
+
+
+				</div>
+			</div>
+
+
+		</h:form>
+
+		<h:form id="formTabelaUp">
+
+			<!-- TABELA-->
+			<div class="col-md-12">
+
+				<p:dataTable id="tabelaUpload"
+					value="#{protocoloAlunoServidorMB.listDocumentosAnexo}" var="lis"
+					resizableColumns="true" reflow="true" rows="10" paginator="true"
+					paginatorPosition="bottom"
+					emptyMessage="Nenhum protocolo cadastrado"
+					rowsPerPageTemplate="5,10,15,30,50,100">
+
+
+					<p:column headerText="Caminho">
+						<h:outputText value="#{lis.caminho}" />
+					</p:column>
+
+
+
+					<p:column headerText="Remover" style="width:72px">
+						<p:commandButton alt="Movimentação" title="Movimentação"
+							styleClass="btn btn-block"
+							update=":formAnexo :formNovoProtocolo:qtdAnexoAlunoServidor :dlgInformacao :formTabelaUp"
+							actionListener="#{protocoloAlunoServidorMB.removerDocumento(lis)}"
+							icon="ui-icon-trash">
+
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+				
+				<samp>São aceitos arquivos apenas no formato PDF</samp>
+
+
+			</div>
+
+			<div class="modal-footer">
+
+
+				<p:commandButton value="Salvar e Sair"
+					styleClass="ui-priority-primary" onclick="PF('dlgAnexo').hide();" />
+
+
+
+			</div>
+
+		</h:form>
+
+	</p:dialog>
+
+</h:body>
+</html>

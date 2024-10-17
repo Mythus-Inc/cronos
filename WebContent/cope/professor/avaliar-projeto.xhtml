@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+	<ui:composition
+		template="../../resources/template/cope/template-professor.xhtml">
+		<ui:define name="tituloPagina">
+		 - COPE
+		</ui:define>
+
+		<ui:define name="titulo">
+			Projetos Pendentes para Avaliacão
+		</ui:define>
+
+		<ui:define name="conteudo">
+			<p:outputPanel id="pnLista">
+				<h:form id="formLista" rendered="#{!projetoAvaliacaoMB.avalicao}">
+					<ui:include src="includes/avaliar-projeto-lista.xhtml" />
+				</h:form>
+			</p:outputPanel>
+
+			<p:outputPanel id="pnAvaliacao">
+				<h:form id="formAvaliacao" rendered="#{projetoAvaliacaoMB.avalicao}">
+					<ui:include src="includes/avaliar-projeto-gerencia.xhtml" />
+				</h:form>
+			</p:outputPanel>
+
+			<p:outputPanel id="pnDialog">
+				<h:form id="formDialog">
+					<ui:include src="includes/avaliar-projeto-dialog.xhtml" />
+				</h:form>
+			</p:outputPanel>
+
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>
+

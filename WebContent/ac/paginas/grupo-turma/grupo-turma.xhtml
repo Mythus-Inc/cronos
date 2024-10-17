@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body> 
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Grupo da Matriz</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+	<!-- BOTÃO CADASTRAR -->
+	<div class="row container-fluid">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+				<h:form id="frmCadastrar">
+					<p:commandButton
+						actionListener="#{grupoTurmaMB.criarNovoObjetoGrupoTurma}"
+						value="Cadastrar" update=":frmModalSalvar" id="btnCadastrar"
+						onclick="PF('dlgGrupoTurma').show(); PF('dlgGrupoTurma').content.scrollTop('0')"
+						title="Cadastrar" />
+				</h:form>
+			</ol>
+		</div>
+	</div>
+	<!-- FIM DO BOTÃO CADASTRAR -->
+
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+			<p:dataTable id="tabela" value="#{grupoTurmaMB.grupoTurmas}"
+				resizableColumns="true" var="obj" reflow="true" rows="10"
+				paginator="true" paginatorPosition="bottom"
+				emptyMessage="Nenhum grupo para turma cadastrada"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+
+				<p:column headerText="Ver" style="width:50px">
+					<p:commandButton update=":frmDetalhesGrupoTurma"
+						styleClass="btn btn-block" title="Ver"
+						alt="detlhes grupo da turma" icon="ui-icon-search"
+						oncomplete="PF('dlgDetalhes').show()">
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{grupoTurmaMB.grupoTurma}" />
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="Grupo" filterBy="#{obj.grupo.descricao}"
+					sortBy="#{obj.grupo.descricao}" filterMatchMode="contains">
+					<h:outputText value="#{obj.grupo.descricao}" />
+				</p:column>
+
+				<p:column headerText="Matriz" filterBy="#{obj.matriz.descricao}"
+					sortBy="#{obj.matriz.descricao}" filterMatchMode="contains">
+					<h:outputText value=" #{obj.matriz.descricao}" />
+				</p:column>
+				  
+				<p:column headerText="Alterar" style="width:68px">
+					<p:commandButton update=":frmModalSalvar" alt="Alterar"
+						title="Alterar" styleClass="btn btn-block"
+						onclick="PF('dlgGrupoTurma').show();" icon="ui-icon-pencil">
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{grupoTurmaMB.grupoTurma}" />
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="Excluir" style="width:68px">
+					<p:commandButton actionListener="#{grupoTurmaMB.inativar(obj)}"
+						icon="ui-icon-trash" title="Excluir" styleClass="btn btn-block"
+						update="frmTabela :dlgInformacao" alt="Excluir">
+						<p:confirm header="Confirmação" message="Deseja excluir?" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+
+		</h:form>
+
+	</div>
+	<!--FIM DA TABELA-->
+
+	<!-- DIALOG SALVAR -->
+	<p:dialog header="Grupo da turma" widgetVar="dlgGrupoTurma"
+		modal="true" responsive="true" width="60%" id="dlgGrupoTurma"
+		closable="true" closeOnEscape="true" resizable="false"
+		draggable="false">
+		<h:form id="frmModalSalvar">
+			<div class="ui-fluid">
+				<div class="col-md-12 col-xs-10">
+					<label>Grupo *</label>
+					<p:autoComplete id="grupo" dropdown="true" scrollHeight="170"
+						value="#{grupoTurmaMB.grupoTurma.grupo}"
+						completeMethod="#{grupoTurmaMB.completarGrupos}"
+						forceSelection="true" converter="#{converterGrupo}" var="gru"
+						itemLabel="#{gru.descricao}" itemValue="#{gru}" required="true"
+						requiredMessage="O campo grupo não deve ser nulo" />
+				</div>
+				<div class="col-md-12 col-xs-10">
+					<label>Matriz *</label>
+					<p:autoComplete id="turma" dropdown="true" scrollHeight="170"
+						value="#{grupoTurmaMB.grupoTurma.matriz}"
+						completeMethod="#{grupoTurmaMB.completarMatriz}"
+						forceSelection="true" converter="#{converterMatriz}" var="gtur"
+						itemLabel="#{gtur.descricao}" itemValue="#{gtur}" required="true"
+						requiredMessage="O campo matriz não deve ser nulo" />
+
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-6">
+					<label>Mínimo de horas</label>
+					<p:inputText title="Minímo de horas" id="minimoHoras" type="number"
+						alt="minímo de horas"
+						value="#{grupoTurmaMB.grupoTurma.minimoHoras}" required="true"
+						requiredMessage="O campo minímo de horas não deve ser nulo" />
+				</div>
+				<div class="col-md-6">
+					<label>Máximo de horas</label>
+					<p:inputText title="Maxímo de horas" id="maximoHoras" type="number"
+						alt="maxímo de horas"
+						value="#{grupoTurmaMB.grupoTurma.maximoHoras}" required="true"
+						requiredMessage="O campo maxímo de horas não deve ser nulo" />
+				</div>
+			</div>
+			
+				<div class="modal-footer">
+					<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+						actionListener="#{grupoTurmaMB.salvar()}"
+						update=":dlgInformacao :frmTabela :frmDetalhesGrupoTurma"
+						alt="Sim" />
+
+					 
+				</div>
+			
+		</h:form>
+
+	</p:dialog>
+	<!-- FIM DO DIALOG SALVAR -->
+
+	<!-- DIALOG DETALHES -->
+	<p:dialog header="Grupo da turma" widgetVar="dlgDetalhes"
+		responsive="true" modal="true" closeOnEscape="true" resizable="false"
+		closable="true" draggable="false">
+		<h:form id="frmDetalhesGrupoTurma">
+			<h:panelGrid columns="2">
+				<label>Grupo: </label>
+				<h:outputText value="#{grupoTurmaMB.grupoTurma.grupo.descricao}" />
+
+				<label>Matriz </label>
+				<h:outputText
+					value="#{grupoTurmaMB.grupoTurma.matriz.descricao}" />
+
+				<label>Minímo de horas: </label>
+				<h:outputText value="#{grupoTurmaMB.grupoTurma.minimoHoras}" />
+
+				<label>Maxímo de horas: </label>
+				<h:outputText value="#{grupoTurmaMB.grupoTurma.maximoHoras}" />
+
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+	<!-- FIM DO DIALOG DETALHES -->
+</h:body>
+</html>
+

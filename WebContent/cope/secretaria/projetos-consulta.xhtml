@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:body>
+	<ui:composition
+		template="../../resources/template/cope/template-secretaria.xhtml">
+
+		<ui:define name="tituloPagina">
+		 - COPE
+		</ui:define>
+
+		<ui:define name="titulo">
+			Projetos
+		</ui:define>
+
+		<ui:define name="conteudo">
+			<label>Todos os Projetos</label>
+
+			<!-- TABELA-->
+			<div class="col-md-12">
+				<h:form id="frmTabela">
+					<p:dataTable id="tabela" resizableColumns="true" var="obj"
+						reflow="true" rows="10" paginator="true"
+						value="#{consultaProjetoMB.listProjeto}"
+						paginatorPosition="bottom"
+						emptyMessage="Nenhum projeto cadastrado"
+						rowsPerPageTemplate="5,10,15,30,50,100">
+
+						<p:column headerText="Nº Processo"
+							filterBy="#{obj.numeroProcesso}">
+							<h:outputText value="#{obj.numeroProcesso}" />
+						</p:column>
+
+						<p:column headerText="Título" filterBy="#{obj.nome}">
+							<h:outputText value="#{obj.nome}" />
+						</p:column>
+
+						<p:column headerText="Área" filterBy="#{obj.tipoProjeto}">
+							<h:outputText value="#{obj.tipoProjeto}" />
+						</p:column>
+
+						<p:column headerText="Situação"
+							filterBy="#{obj.situacao.descricao}">
+							<h:outputText value="#{obj.situacao.descricao}" />
+						</p:column>
+
+						<p:column headerText="Ações" width="90">
+							<p:commandButton
+								actionListener="#{projetoSecretariaMB.visualizarProjeto(obj)}"
+								onclick="PF('dlgVisualizar').show();" update=":frmVisualizar"
+								icon="fa fa-eye" styleClass="btn btn-default" title="Visualizar" />
+						</p:column>
+
+					</p:dataTable>
+				</h:form>
+			</div>
+			<!--FIM DA TABELA-->
+
+
+
+
+
+
+			<!-- DLG VISUALIZAR PROJETO SECRETATIRA -->
+			<p:dialog id="dlgVisualizar" header="Visualizar"
+				widgetVar="dlgVisualizar" modal="true" responsive="true"
+				closable="true" width="80%" closeOnEscape="true" resizable="false"
+				draggable="false">
+				<h:form id="frmVisualizar" prependId="false">
+					<div class="ui-fluid">
+						<div class="col-md-2">
+							<p:outputLabel value="Nº do Processo" />
+							<p:inputText
+								value="#{projetoSecretariaMB.projetoSelecionado.numeroProcesso}"
+								required="true" requiredMessage="Informe o número do processo"
+								disabled="true" />
+						</div>
+						<div class="col-md-10">
+							<p:outputLabel value="Título" />
+							<p:inputText
+								value="#{projetoSecretariaMB.projetoSelecionado.nome}"
+								disabled="true" />
+						</div>
+						<div class="col-md-2">
+							<p:outputLabel value="Programa " />
+							<p:selectOneMenu
+								value="#{projetoSecretariaMB.projetoSelecionado.programa}"
+								disabled="true">
+								<f:selectItem itemLabel="Sim" itemValue="true" />
+								<f:selectItem itemLabel="Não" itemValue="false" />
+							</p:selectOneMenu>
+						</div>
+						<div class="col-md-4">
+							<p:outputLabel value="Tipo da Ação " />
+							<p:selectOneMenu
+								value="#{projetoSecretariaMB.projetoSelecionado.tipoProjeto}"
+								disabled="true">
+								<f:selectItem itemLabel="Selecione" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="Pesquisa" itemValue="pesquisa" />
+								<f:selectItem itemLabel="Extensão" itemValue="extensão" />
+							</p:selectOneMenu>
+						</div>
+						<div class="col-md-3">
+							<p:outputLabel value="Data de Início " />
+							<p:calendar mask="true"
+								value="#{projetoSecretariaMB.projetoSelecionado.dataInicio}"
+								disabled="true" />
+						</div>
+						<div class="col-md-3">
+							<p:outputLabel value="Data de Término" />
+							<p:calendar mask="true"
+								value="#{projetoSecretariaMB.projetoSelecionado.dataTermino}"
+								disabled="true" />
+						</div>
+
+					</div>
+
+					<div class="col-md-12">
+						<p:outputLabel value="Histórico de envios" />
+						<p:dataList styleClass="cope-lista"
+							value="#{projetoSecretariaMB.listaarquivoProjetoSelecionado}"
+							var="obj" type="definition"
+							emptyMessage="Nenhum arquivo foi enviado"
+							itemStyleClass="cope-lista-item"
+							style="height:150px;overflow:auto">
+							<p:commandButton value="v #{obj.versao}.0" ajax="false"
+								icon="ui-icon-arrowthick-1-s" style="width:auto;padding:0px"
+								styleClass="btn">
+								<p:fileDownload
+									value="#{projetoSecretariaMB.downloadArquivoProjeto(obj)}" />
+							</p:commandButton>
+							<p:outputLabel value="#{obj.tipo} | #{obj.situacao.descricao}"
+								styleClass="text-center" />
+
+							<p:outputLabel value="#{obj.dataEnvio}" styleClass="pull-right">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</p:outputLabel>
+
+							<p:commandButton styleClass="pull-right" update=":formVisto"
+								style="padding:0px;" oncomplete="PF('dlgVisto').show();"
+								icon="fa fa-eye" title="Visualizar" disabled="false"
+								actionListener="#{projetoSecretariaMB.buscarAvaliacoes(obj)}" />
+
+							<p:commandButton styleClass="pull-right"
+								update=":frmControleProjeto" style="padding:0px;"
+								icon="fa fa-pencil-square-o" title="Encaminhar"
+								actionListener="#{projetoSecretariaMB.selecionaProjetoEncaminhar(obj)}"
+								onclick="PF('dlgProjeto').show();" disabled="true">
+								<p:confirm header="Confirmação" message="Deseja Encaminhar?" />
+							</p:commandButton>
+
+
+
+
+
+						</p:dataList>
+					</div>
+					<div class="clearfix"></div>
+				</h:form>
+			</p:dialog>
+
+
+
+
+
+
+
+			<!-- 	DLG ENCAMINHAR PROJETO -->
+			<p:dialog header="Encaminhar Projeto" widgetVar="dlgProjeto"
+				modal="true" responsive="true" width="40%" closable="true"
+				closeOnEscape="true" resizable="false" draggable="false">
+				<h:form id="frmControleProjeto" prependId="false">
+					<p:outputPanel styleClass="ui-fluid">
+						<div class="col-md-12">
+							<p:outputLabel value="Título" />
+							<p:inputText
+								value="#{projetoSecretariaMB.projetoSelecionado.nome}"
+								disabled="true" />
+						</div>
+						<div class="col-md-6">
+							<p:outputLabel for="numeroProcesso" value="Nº do Processo" />
+							<p:inputText id="numeroProcesso"
+								value="#{projetoSecretariaMB.projetoSelecionado.numeroProcesso}"
+								requiredMessage="Informe o número do processo" required="true"
+								disabled="#{projetoSecretariaMB.projetoSelecionado.numeroProcesso != null}" />
+						</div>
+						<div class="col-md-6">
+							<p:outputLabel for="dataAvaliacao" value="Data para Avaliação" />
+							<p:calendar id="dataAvaliacao" required="true" mask="true"
+								pattern="dd/MM/yyyy"
+								requiredMessage="Informe a data de avaliação"
+								value="#{projetoSecretariaMB.arquivoProjetoSelecionado.avaliacao.dataPrazoAvaliacao}" />
+						</div>
+						<div class="col-md-6">
+							<p:outputLabel for="avaliador1" value="Avaliador 1:" />
+							<p:autoComplete id="avaliador1" dropdown="true"
+								scrollHeight="170"
+								value="#{projetoSecretariaMB.arquivoProjetoSelecionado.avaliacao.avaliador1}"
+								completeMethod="#{projetoSecretariaMB.completaServidor}"
+								disabled="#{projetoSecretariaMB.arquivoProjetoSelecionado.avaliacao.avaliador1 != null and projetoSecretariaMB.arquivoProjetoSelecionado.avaliacao.parecer1.toString() != 'PENDENTE'}"
+								forceSelection="true" converter="#{converterServidor}" var="obj"
+								itemLabel="#{obj.nome}" itemValue="#{obj}" required="true"
+								requiredMessage="E obrigatório encaminhar para pelo menos um Avaliador" />
+						</div>
+						<div class="col-md-6">
+							<p:outputLabel for="avaliador2" value="Avaliador 2:" />
+							<p:autoComplete id="avaliador2" dropdown="true"
+								scrollHeight="170"
+								value="#{projetoSecretariaMB.arquivoProjetoSelecionado.avaliacao.avaliador2}"
+								completeMethod="#{projetoSecretariaMB.completaServidor}"
+								disabled="#{projetoSecretariaMB.arquivoProjetoSelecionado.avaliacao.avaliador2 != null and projetoSecretariaMB.arquivoProjetoSelecionado.avaliacao.parecer2.toString() != 'PENDENTE'}"
+								forceSelection="true" converter="#{converterServidor}" var="obj"
+								itemLabel="#{obj.nome}" itemValue="#{obj}" />
+						</div>
+						<div class="clearfix"></div>
+					</p:outputPanel>
+
+				</h:form>
+			</p:dialog>
+
+
+
+
+
+
+
+			<!-- DLG VISUALIZAR PROJETO SECRETATIRA -->
+			<p:dialog id="dlgVisto" header="Visualizar" widgetVar="dlgVisto"
+				modal="true" responsive="true" closable="true" width="80%"
+				closeOnEscape="true" resizable="false" draggable="false">
+				<h:form id="formVisto" prependId="false">
+
+					<div class="ui-fluid">
+						<div class="col-md-5">
+							<p:outputLabel value="Visto Pres. COPE" />
+							<p:inputText
+								value="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.autenticacaoPresidente ? 'ACEITO' : 'PENDENTE'}"
+								disabled="true" />
+						</div>
+
+						<div class="col-md-5">
+							<p:outputLabel value="Data Aprovação" />
+							<p:calendar mask="true" pattern="dd/MM/yyyy" required="true"
+								requiredMessage="O campo data aprovação e obrigatório"
+								value="#{projetoSecretariaMB.projetoSelecionado.dataAprovacao}"
+								disabled="true" />
+
+						</div>
+
+
+
+						<div class="col-md-2">
+							<p:outputLabel value="Ações"
+								rendered="#{usuarioLogadoMB.validaPermissao('cope_presidente')}" />
+							<p:commandButton value="visto"
+								actionListener="#{projetoSecretariaMB.vistoPresidente()}"
+								update=":frmControleProjeto" disabled="true"
+								rendered="#{usuarioLogadoMB.validaPermissao('cope_presidente')}">
+
+								<p:confirm header="Confirmação"
+									message="Deseja Vistar Esse Projeto" />
+							</p:commandButton>
+						</div>
+
+						<div class="col-md-12">
+							<h4>Avaliador 1</h4>
+						</div>
+						<div class="col-md-5">
+							<p:outputLabel value="Nome" />
+							<p:inputText
+								value="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.avaliador1.nome}"
+								disabled="true" />
+						</div>
+						<div class="col-md-2">
+							<p:outputLabel value="Parecer" />
+							<p:inputText
+								value="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.parecer1}"
+								disabled="true" />
+						</div>
+						<div class="col-md-3">
+							<p:outputLabel value="Data Parecer" />
+							<p:calendar
+								value="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.dataParecer1}"
+								disabled="true" />
+						</div>
+						<div class="col-md-1">
+							<p:outputLabel value="Ações" />
+							<p:commandButton
+								actionListener="#{projetoSecretariaMB.cobrarAvaliacao(projetoSecretariaMB.avaliacaoProjetoSelecionado.avaliador1)}"
+								value="cobrar"
+								disabled="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.parecer1.toString() != 'PENDENTE'}">
+								<p:confirm header="Confirmacao"
+									message="Deseja Cobrar Esse Servidor?" />
+							</p:commandButton>
+						</div>
+						<div class="col-md-1">
+							<p:outputLabel />
+							<p:commandButton icon="fa fa-eye"
+								actionListener="#{projetoSecretariaMB.buscarParecer(projetoSecretariaMB.avaliacaoProjetoSelecionado.observacoes1)}"
+								oncomplete="PF('dlgParecer').show();" update=":frmParecer" />
+
+						</div>
+
+						<div class="col-md-12">
+							<h4>Avaliador 2</h4>
+						</div>
+						<div class="col-md-5">
+							<p:outputLabel value="Nome" />
+							<p:inputText
+								value="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.avaliador2.nome}"
+								disabled="true" />
+						</div>
+						<div class="col-md-2">
+							<p:outputLabel value="Parecer" />
+							<p:inputText
+								value="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.parecer2}"
+								disabled="true" />
+						</div>
+						<div class="col-md-3">
+							<p:outputLabel value="Data Parecer" />
+							<p:calendar
+								value="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.dataParecer2}"
+								disabled="true" />
+						</div>
+						<div class="col-md-1">
+							<p:outputLabel value="Ações" />
+							<p:commandButton
+								actionListener="#{projetoSecretariaMB.cobrarAvaliacao(projetoSecretariaMB.avaliacaoProjetoSelecionado.observacoes1)}"
+								value="cobrar"
+								disabled="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.parecer2.toString() != 'PENDENTE'}">
+								<p:confirm header="Confirmacao"
+									message="Deseja Cobrar Esse Servidor?" />
+							</p:commandButton>
+						</div>
+
+						<div class="col-md-1">
+							<p:outputLabel />
+							<p:commandButton icon="fa fa-eye"
+								actionListener="#{projetoSecretariaMB.buscarParecer(projetoSecretariaMB.avaliacaoProjetoSelecionado.observacoes2)}"
+								oncomplete="PF('dlgParecer').show();" update=":frmParecer" />
+
+						</div>
+						<div class="clearfix"></div>
+					</div>
+
+				</h:form>
+			</p:dialog>
+
+
+
+
+
+
+			<!-- DLG VISUALIZAR PARECER -->
+			<p:dialog header="Parecer" widgetVar="dlgParecer" modal="true"
+				responsive="true" width="60%" closable="true" closeOnEscape="true"
+				resizable="false" draggable="false">
+				<h:form id="frmParecer" prependId="false">
+					<div class="ui-fluid">
+						<div class="col-md-12">
+							<p:inputText value="#{projetoSecretariaMB.descricao}"
+								readonly="true" />
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
+
+
+
+
+
+
+
+		</ui:define>
+
+
+		<ui:define name="modal-confirmacao">
+			<ui:include src="../../componentes/dialog-confirmacao.xhtml" />
+		</ui:define>
+
+
+
+	</ui:composition>
+</h:body>
+</html>
+

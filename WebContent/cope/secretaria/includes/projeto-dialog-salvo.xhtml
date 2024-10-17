@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+
+
+
+
+<!-- barra de progresso -->
+<p:ajaxStatus onstart="PF('statusDialog').show()"
+	onsuccess="PF('statusDialog').hide()" />
+
+<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+	closable="false" resizable="false" showHeader="false">
+	<h4>Aguarde...</h4>
+
+
+	<f:facet name="start">
+		<p:graphicImage name="../../../resources/img/aguarde.gif" />
+	</f:facet>
+</p:dialog>
+
+<!-- 	DLG ENCAMINHAR PROJETO -->
+<p:dialog header="Encaminhar Projeto" widgetVar="dlgProjeto"
+	modal="true" responsive="true" width="40%" closable="true"
+	closeOnEscape="true" resizable="false" draggable="false">
+	<h:form id="frmControleProjeto" prependId="false">
+		<p:outputPanel styleClass="ui-fluid">
+			<div class="col-md-12">
+				<p:outputLabel value="Título" />
+				<p:inputText value="#{projetoSecretariaMB.projetoSelecionado.nome}"
+					disabled="true" />
+			</div>
+			<div class="col-md-6">
+				<p:outputLabel for="numeroProcesso" value="Nº do Processo" />
+				<p:inputText id="numeroProcesso"
+					value="#{projetoSecretariaMB.projetoSelecionado.numeroProcesso}"
+					requiredMessage="Informe o numero do processo" required="true"
+					disabled="#{projetoSecretariaMB.projetoSelecionado.numeroProcesso != null}" />
+			</div>
+			<div class="col-md-6">
+				<p:outputLabel for="dataAvaliacao" value="Data para Avaliação" />
+				<p:calendar id="dataAvaliacao" required="true" mask="true"
+					pattern="dd/MM/yyyy" requiredMessage="Informe a data de avaliacao"
+					value="#{projetoSecretariaMB.arquivoProjetoSelecionado.avaliacao.dataPrazoAvaliacao}" />
+			</div>
+			<div class="col-md-6">
+				<p:outputLabel for="avaliador1" value="Avaliador 1:" />
+				<p:autoComplete id="avaliador1" dropdown="true" scrollHeight="170"
+					value="#{projetoSecretariaMB.arquivoProjetoSelecionado.avaliacao.avaliador1}"
+					completeMethod="#{projetoSecretariaMB.completaServidor}"
+					disabled="#{projetoSecretariaMB.arquivoProjetoSelecionado.avaliacao.avaliador1 != null and projetoSecretariaMB.arquivoProjetoSelecionado.avaliacao.parecer1.toString() != 'PENDENTE'}"
+					forceSelection="true" converter="#{converterServidor}" var="obj"
+					itemLabel="#{obj.nome}" itemValue="#{obj}" required="true"
+					requiredMessage="E Obrigatorio encaminhar para pelo menos um Avaliador" />
+			</div>
+			<div class="col-md-6">
+				<p:outputLabel for="avaliador2" value="Avaliador 2:" />
+				<p:autoComplete id="avaliador2" dropdown="true" scrollHeight="170"
+					value="#{projetoSecretariaMB.arquivoProjetoSelecionado.avaliacao.avaliador2}"
+					completeMethod="#{projetoSecretariaMB.completaServidor}"
+					disabled="#{projetoSecretariaMB.arquivoProjetoSelecionado.avaliacao.avaliador2 != null and projetoSecretariaMB.arquivoProjetoSelecionado.avaliacao.parecer2.toString() != 'PENDENTE'}"
+					forceSelection="true" converter="#{converterServidor}" var="obj"
+					itemLabel="#{obj.nome}" itemValue="#{obj}" />
+			</div>
+			<div class="clearfix"></div>
+		</p:outputPanel>
+		<div class="modal-footer">
+			<p:commandButton value="Salvar"
+				actionListener="#{projetoSecretariaMB.encaminharProjeto()}"
+				styleClass="ui-priority-primary" />
+
+			<!--  update=":pnLista :pnDialog"-->
+		</div>
+	</h:form>
+</p:dialog>
+
+<!-- DLG VISUALIZAR PROJETO SECRETATIRA -->
+<p:dialog id="dlgVisualizar" header="Visualizar"
+	widgetVar="dlgVisualizar" modal="true" responsive="true"
+	closable="true" width="80%" closeOnEscape="true" resizable="false"
+	draggable="false">
+	<h:form id="frmVisualizar" prependId="false">
+		<div class="ui-fluid">
+			<div class="col-md-2">
+				<p:outputLabel value="Nº do Processo" />
+				<p:inputText
+					value="#{projetoSecretariaMB.projetoSelecionado.numeroProcesso}"
+					disabled="#{projetoSecretariaMB.projetoSelecionado.numeroProcesso != null }" />
+			</div>
+			<div class="col-md-10">
+				<p:outputLabel value="Título" />
+				<p:inputText value="#{projetoSecretariaMB.projetoSelecionado.nome}"
+					disabled="true" />
+			</div>
+			<div class="col-md-2">
+				<p:outputLabel value="Programa " />
+				<p:selectOneMenu
+					value="#{projetoSecretariaMB.projetoSelecionado.programa}"
+					disabled="true">
+					<f:selectItem itemLabel="Sim" itemValue="true" />
+					<f:selectItem itemLabel="Não" itemValue="false" />
+				</p:selectOneMenu>
+			</div>
+			<div class="col-md-4">
+				<p:outputLabel value="Tipo da Ação " />
+				<p:selectOneMenu
+					value="#{projetoSecretariaMB.projetoSelecionado.tipoProjeto}"
+					disabled="true">
+					<f:selectItem itemLabel="Selecione" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItem itemLabel="Pesquisa" itemValue="pesquisa" />
+					<f:selectItem itemLabel="Extensão" itemValue="extensão" />
+				</p:selectOneMenu>
+			</div>
+			<div class="col-md-3">
+				<p:outputLabel value="Data de Início " />
+				<p:calendar mask="true"
+					value="#{projetoSecretariaMB.projetoSelecionado.dataInicio}"
+					disabled="true" />
+			</div>
+			<div class="col-md-3">
+				<p:outputLabel value="Data de Término" />
+				<p:calendar mask="true"
+					value="#{projetoSecretariaMB.projetoSelecionado.dataTermino}"
+					disabled="true" />
+			</div>
+
+		</div>
+
+		<div class="col-md-12">
+			<p:outputLabel value="Historico de envios" />
+			<p:dataList styleClass="cope-lista"
+				value="#{projetoSecretariaMB.listaarquivoProjetoSelecionado}"
+				var="obj" type="definition"
+				emptyMessage="Nenhum arquivo foi enviado"
+				itemStyleClass="cope-lista-item" style="height:150px;overflow:auto">
+				<p:commandButton value="v #{obj.versao}.0" ajax="false"
+					icon="ui-icon-arrowthick-1-s" style="width:auto;padding:0px"
+					styleClass="btn">
+					<p:fileDownload
+						value="#{projetoSecretariaMB.downloadArquivoProjeto(obj)}" />
+				</p:commandButton>
+				<p:outputLabel
+					value="#{obj.tipo} | #{obj.situacao.descricao} | #{obj.descricao}"
+					styleClass="text-center" />
+
+				<p:outputLabel value="#{obj.dataEnvio}" styleClass="pull-right">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</p:outputLabel>
+
+				<p:commandButton styleClass="pull-right" update=":formVisto"
+					style="padding:0px;" oncomplete="PF('dlgVisto').show();"
+					icon="fa fa-eye" title="Visualizar"
+					disabled="#{obj.projeto.numeroProcesso == null}"
+					actionListener="#{projetoSecretariaMB.buscarAvaliacoes(obj)}" />
+
+				<p:commandButton styleClass="pull-right"
+					update=":frmControleProjeto" style="padding:0px;"
+					icon="fa fa-pencil-square-o" title="Encaminhar"
+					actionListener="#{projetoSecretariaMB.selecionaProjetoEncaminhar(obj)}"
+					oncomplete="PF('dlgProjeto').show();"
+					disabled="#{obj.situacao.toString() == 'APROVADO' or obj.situacao.toString() == 'AGUARDANDO_VISTO' or obj.situacao.toString() == 'APROVADORESSALVAS'}">
+					<p:confirm header="Confirmacao" message="Deseja Encaminhar?" />
+				</p:commandButton>
+
+
+
+
+
+			</p:dataList>
+		</div>
+		<div class="clearfix"></div>
+
+
+
+
+		<div class="modal-footer">
+			<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+				actionListener="#{projetoSecretariaMB.notificar()}"
+				disabled="#{projetoSecretariaMB.projetoSelecionado.numeroProcesso != null }"
+				update="pnLista" />
+		</div>
+	</h:form>
+</p:dialog>
+
+
+<!-- DLG VISUALIZAR PROJETO SECRETATIRA -->
+<p:dialog id="dlgVisto" header="Visualizar" widgetVar="dlgVisto"
+	modal="true" responsive="true" closable="true" width="80%"
+	closeOnEscape="true" resizable="false" draggable="false">
+	<h:form id="formVisto" prependId="false">
+
+		<div class="ui-fluid">
+			<div class="col-md-5">
+				<p:outputLabel value="Visto Pres. COPE" />
+				<p:inputText
+					value="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.autenticacaoPresidente ? 'ACEITO' : 'PENDENTE'}"
+					disabled="true" />
+			</div>
+
+			<div class="col-md-5">
+				<p:outputLabel value="Data Aprovacao"
+					rendered="#{usuarioLogadoMB.validaPermissao('cope_presidente')}" />
+
+				<p:calendar mask="true" pattern="dd/MM/yyyy" required="true"
+					requiredMessage="O campo data aprovacao e obrigatorio"
+					value="#{projetoSecretariaMB.projetoSelecionado.dataAprovacao}"
+					rendered="#{usuarioLogadoMB.validaPermissao('cope_presidente')}"
+					disabled="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.autenticacaoPresidente or projetoSecretariaMB.avaliacaoProjetoSelecionado.avaliador1 == null and projetoSecretariaMB.avaliacaoProjetoSelecionado.avaliador2 == null or projetoSecretariaMB.avaliacaoProjetoSelecionado.avaliador1 != 'null' and projetoSecretariaMB.avaliacaoProjetoSelecionado.parecer1.toString() == 'PENDENTE' or projetoSecretariaMB.avaliacaoProjetoSelecionado.avaliador2 != 'null' and projetoSecretariaMB.avaliacaoProjetoSelecionado.parecer2.toString() == 'PENDENTE' }" />
+			</div>
+
+
+
+			<div class="col-md-2">
+				<p:outputLabel value="Ações"
+					rendered="#{usuarioLogadoMB.validaPermissao('cope_presidente')}" />
+				<p:commandButton value="visto"
+					actionListener="#{projetoSecretariaMB.verificaRelatorioFinal()}"
+					update=":frmControleProjeto pnLista"
+					disabled="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.autenticacaoPresidente or projetoSecretariaMB.avaliacaoProjetoSelecionado.avaliador1 == null and projetoSecretariaMB.avaliacaoProjetoSelecionado.avaliador2 == null or projetoSecretariaMB.avaliacaoProjetoSelecionado.avaliador1 != 'null' and projetoSecretariaMB.avaliacaoProjetoSelecionado.parecer1.toString() == 'PENDENTE' or projetoSecretariaMB.avaliacaoProjetoSelecionado.avaliador2 != 'null' and projetoSecretariaMB.avaliacaoProjetoSelecionado.parecer2.toString() == 'PENDENTE' }"
+					rendered="#{usuarioLogadoMB.validaPermissao('cope_presidente')}">
+
+					<p:confirm header="Confirmacao"
+						message="Deseja Vistar Esse Projeto" />
+				</p:commandButton>
+			</div>
+
+			<div class="col-md-12">
+				<h4>Avaliador 1</h4>
+			</div>
+			<div class="col-md-5">
+				<p:outputLabel value="Nome" />
+				<p:inputText
+					value="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.avaliador1.nome}"
+					disabled="true" />
+			</div>
+			<div class="col-md-2">
+				<p:outputLabel value="Parecer" />
+				<p:inputText
+					value="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.parecer1}"
+					disabled="true" />
+			</div>
+			<div class="col-md-3">
+				<p:outputLabel value="Data Parecer" />
+				<p:calendar
+					value="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.dataParecer1}"
+					disabled="true" />
+			</div>
+			<div class="col-md-1">
+				<p:outputLabel value="Ações" />
+				<p:commandButton
+					actionListener="#{projetoSecretariaMB.cobrarAvaliacao(projetoSecretariaMB.avaliacaoProjetoSelecionado.avaliador1)}"
+					value="cobrar"
+					disabled="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.parecer1.toString() != 'PENDENTE'}">
+					<p:confirm header="Confirmacao"
+						message="Deseja Cobrar Esse Servidor?" />
+				</p:commandButton>
+			</div>
+			<div class="col-md-1">
+				<p:outputLabel />
+				<p:commandButton icon="fa fa-eye"
+					actionListener="#{projetoSecretariaMB.buscarParecer(projetoSecretariaMB.avaliacaoProjetoSelecionado.observacoes1)}"
+					oncomplete="PF('dlgParecer').show();" update=":frmParecer" />
+
+			</div>
+
+			<div class="col-md-12">
+				<h4>Avaliador 2</h4>
+			</div>
+			<div class="col-md-5">
+				<p:outputLabel value="Nome" />
+				<p:inputText
+					value="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.avaliador2.nome}"
+					disabled="true" />
+			</div>
+			<div class="col-md-2">
+				<p:outputLabel value="Parecer" />
+				<p:inputText
+					value="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.parecer2}"
+					disabled="true" />
+			</div>
+			<div class="col-md-3">
+				<p:outputLabel value="Data Parecer" />
+				<p:calendar
+					value="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.dataParecer2}"
+					disabled="true" />
+			</div>
+			<div class="col-md-1">
+				<p:outputLabel value="Ações" />
+				<p:commandButton
+					actionListener="#{projetoSecretariaMB.cobrarAvaliacao(projetoSecretariaMB.avaliacaoProjetoSelecionado.observacoes1)}"
+					value="cobrar"
+					disabled="#{projetoSecretariaMB.avaliacaoProjetoSelecionado.parecer2.toString() != 'PENDENTE'}">
+					<p:confirm header="Confirmacao"
+						message="Deseja Cobrar Esse Servidor?" />
+				</p:commandButton>
+			</div>
+
+			<div class="col-md-1">
+				<p:outputLabel />
+				<p:commandButton icon="fa fa-eye"
+					actionListener="#{projetoSecretariaMB.buscarParecer(projetoSecretariaMB.avaliacaoProjetoSelecionado.observacoes2)}"
+					oncomplete="PF('dlgParecer').show();" update=":frmParecer" />
+
+			</div>
+			<div class="clearfix"></div>
+		</div>
+
+	</h:form>
+</p:dialog>
+
+
+
+<!-- DLG VISUALIZAR PARECER -->
+<p:dialog header="Parecer" widgetVar="dlgParecer" modal="true"
+	responsive="true" width="60%" closable="true" closeOnEscape="true"
+	resizable="false" draggable="false">
+	<h:form id="frmParecer" prependIdF="false">
+		<div class="ui-fluid">
+			<div class="col-md-12">
+				<p:inputText value="#{projetoSecretariaMB.descricao}"
+					readonly="true" />
+			</div>
+		</div>
+	</h:form>
+</p:dialog>
+
+
+<!-- DIALOG CONFIRMA RELAT FINAL -->
+<p:dialog header="Confirmacao" widgetVar="dlgCorfirmarRelatFinal"
+	modal="true" responsive="true" width="30%" closable="true"
+	closeOnEscape="true" resizable="false" draggable="false">
+	<h:form id="frmConfirmarRelatFianl" prependId="false">
+		<div class="ui-fluid">
+			<div class="col-md-12">
+				<h:outputText
+					value="Esse relatorio esta marcado como relatorio final, deseja finalizar ?" />
+
+			</div>
+		</div>
+		<div class="modal-footer">
+			<p:commandButton value="Sim" alt="Sim"
+				styleClass="ui-priority-primary"
+				actionListener="#{projetoSecretariaMB.finalizaRelatorio()}"
+				update=":pnLista :dlgInforma" />
+
+			<p:commandButton value="Nao" alt="Sim"
+				onclick="PF('dlgCorfirmarRelatFinal').hide();" update=":dlgInforma" />
+		</div>
+	</h:form>
+</p:dialog>
+
+
+
+
+</html>

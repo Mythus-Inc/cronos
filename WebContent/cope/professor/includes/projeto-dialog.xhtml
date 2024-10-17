@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<!-- DIALOG ADD PARTICIPANTE -->
+<p:dialog header="Adicionar Participante" widgetVar="dlgAddParticipante"
+	modal="true" responsive="true" width="60%" closable="true"
+	closeOnEscape="true" resizable="false" draggable="false">
+	<h:form id="frmCadastroParticipante" prependId="false">
+		<div class="ui-fluid">
+			<div class="col-md-12">
+				<p:outputLabel for="nomeParticipante" value="Nome" />
+				<p:autoComplete id="nomeParticipante" dropdown="true"
+					scrollHeight="170" value="#{projetoMB.participante.pessoa}"
+					completeMethod="#{projetoMB.completaPessoa}" forceSelection="true"
+					converter="#{converterPessoa}" var="obj" itemLabel="#{obj.nome}"
+					itemValue="#{obj}" required="true"
+					requiredMessage="Informe o participante" />
+			</div>
+			<div class="col-md-5">
+				<p:outputLabel for="funcao" value="Função no Projeto" />
+				<p:selectOneMenu id="funcao"
+					value="#{projetoMB.participante.funcao}" required="true">
+					<f:selectItem itemLabel="Selecione" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItem itemLabel="Coordenador" itemValue="coordenador" />
+					<f:selectItem itemLabel="Colaborador" itemValue="colaborador" /> 
+					<f:selectItem itemLabel="Vice-Coordenador" itemValue="vice-coordenador" />
+				</p:selectOneMenu>
+			</div>
+			<div class="col-md-4">
+				<p:outputLabel for="identificacao" value="Identificação" />
+				<p:selectOneMenu id="identificacao"
+					value="#{projetoMB.participante.identificacao}" required="true"
+					requiredMessage="Selecione a função">
+					<f:selectItem itemLabel="Selecione" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItem itemLabel="Docente" itemValue="docente" />
+					<f:selectItem itemLabel="Técnico administrativo"
+						itemValue="técnico administrativo" />
+					<f:selectItem itemLabel="Aluno voluntário"
+						itemValue="aluno voluntário" />
+					<f:selectItem itemLabel="Aluno bolsista" itemValue="aluno bolsista" />
+					<f:selectItem itemLabel="Membro externo" itemValue="membro externo" />
+
+					<p:ajax event="change"
+						update=":frmCadastroParticipante:program :frmCadastroParticipante:dataFimBolsa :frmCadastroParticipante:dataInicioBolsa"
+						listener="#{projetoMB.controlePrograma()}" />
+
+				</p:selectOneMenu>
+			</div>
+			<div class="col-md-3">
+				<p:outputLabel for="cargaHoraria" value="Carga Horária Semanal" />
+				<p:inputText id="cargaHoraria" type="number" disabled="#{projetoMB.desabilitaCargaHoraria}"
+					value="#{projetoMB.participante.cargaHoraria}" required="true" />
+			</div>
+			<div class="col-md-5">
+
+				<p:outputLabel for="program" value="Selecione o Programa" />
+				<p:autoComplete id="program" dropdown="true"
+					disabled="#{projetoMB.botaoPrograma}" scrollHeight="170"
+					value="#{projetoMB.participante.programa}"
+					completeMethod="#{projetoMB.completaPrograma}"
+					forceSelection="true" converter="#{convertePrograma}" var="obj"
+					itemLabel="#{obj.descricao}" itemValue="#{obj}" required="true"
+					requiredMessage="Selecione o Programa" />
+
+			</div>
+
+			<div class="col-md-4">
+				<p:outputLabel for="dataInicioBolsa" value="Início da Bolsa" />
+				<p:calendar id="dataInicioBolsa" required="true" mask="true"
+					pattern="dd/MM/yyyy"
+					value="#{projetoMB.participante.dataInicioBolsa}"
+					disabled="#{projetoMB.botaoBolsista}" />
+
+			</div>
+
+			<div class="col-md-3">
+				<p:outputLabel for="dataFimBolsa" value="Fim da Bolsa" />
+				<p:calendar id="dataFimBolsa" required="true" mask="true"
+					pattern="dd/MM/yyyy" value="#{projetoMB.participante.dataFimBolsa}"
+					disabled="#{projetoMB.botaoBolsista}" />
+
+			</div>
+
+			<div class="col-md-5">
+				<p:outputLabel for="campus" value="Campus" />
+				<p:selectOneMenu id="campus"
+					value="#{projetoMB.participante.campus}" required="true">
+					<f:selectItem itemLabel="Selecione" itemValue=""
+						noSelectionOption="true" />
+					<f:selectItem itemLabel="Paranavaí" itemValue="paranavaí" />
+					<f:selectItem itemLabel="Outro" itemValue="outro" />
+					<p:ajax update=":descricaoCampus" event="valueChange" listener="#{projetoMB.desabilitarCampus()}" /> 
+				</p:selectOneMenu>
+			</div>
+			
+			
+			<div class="col-md-4">
+				<p:outputLabel value="Descrição *" />
+				<p:inputText id="descricaoCampus" value="#{projetoMB.participante.nomeCampus}" disabled="#{projetoMB.desabilitaCampus}"
+					requiredMessage="Informe o campus do participante" required="true"/>
+			</div>
+			
+			
+			
+			<div class="col-md-3">
+				<p:outputLabel for="eventual" value="Eventual" />
+				<p:selectOneMenu id="eventual"
+					value="#{projetoMB.participante.eventual}" required="true">
+					<f:selectItem itemLabel="Sim" itemValue="true" />
+					<f:selectItem itemLabel="Não" itemValue="false" />
+					
+					<p:ajax event="change"
+						update=":cargaHoraria"
+						listener="#{projetoMB.verificaEventual()}" />
+					
+				</p:selectOneMenu>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="modal-footer">
+			<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+				actionListener="#{projetoMB.adicionarParticipante}"
+				update=":dlgInforma :dtParticipante" />
+
+			<!-- update=":dlgInforma :dtParticipante :frmCadastroParticipante" -->
+		</div>
+	</h:form>
+</p:dialog>
+
+<!-- DLG PARA MOSTRAR OS DADOS DO PROJETO -->
+<p:dialog header="Projeto" widgetVar="dlgProjeto" modal="true"
+	responsive="true" width="80%" closable="true" closeOnEscape="true"
+	resizable="false" draggable="false">
+	<h:form id="frmVisualizarProjeto" prependId="false">
+		<div class="ui-fluid">
+			<div class="col-md-2">
+				<p:outputLabel value="Nº do Processo" />
+				<p:inputText value="#{projetoMB.projeto.numeroProcesso}"
+					disabled="true" />
+			</div>
+			<div class="col-md-10">
+				<p:outputLabel value="Título" />
+				<p:inputText value="#{projetoMB.projeto.nome}" disabled="true" />
+			</div>
+			<div class="col-md-2">
+				<p:outputLabel value="Programa " />
+				<p:inputText value="#{projetoMB.projeto.programa? 'Sim':'Não'}"
+					disabled="true" />
+			</div>
+			<div class="col-md-4">
+				<p:outputLabel value="Tipo da ação " />
+				<p:inputText value="#{projetoMB.projeto.tipoProjeto}"
+					disabled="true" />
+			</div>
+			<div class="col-md-3">
+				<p:outputLabel value="Data de início " />
+				<p:calendar required="true" mask="true"
+					value="#{projetoMB.projeto.dataInicio}" disabled="true" />
+			</div>
+			<div class="col-md-3">
+				<p:outputLabel value="Data de término" />
+				<p:calendar required="true" mask="true"
+					value="#{projetoMB.projeto.dataTermino}" disabled="true" />
+			</div>
+			<div class="col-md-6">
+				<p:outputLabel value="Participantes do Projeto" />
+				<p:dataTable value="#{projetoMB.listaParticipanteProjeto}"
+					resizableColumns="true" var="obj" reflow="true" paginator="false"
+					emptyMessage="Nenhum participante cadastrado">
+					<p:column headerText="Participante">
+						<p:outputLabel value="#{obj.pessoa.nome}" />
+					</p:column>
+					<p:column headerText="Função no projeto">
+						<p:outputLabel value="#{obj.funcao}" />
+					</p:column>
+					<p:column headerText="Carga Horária">
+						<p:outputLabel value="#{obj.cargaHoraria}" />
+					</p:column>
+
+				</p:dataTable>
+			</div>
+			<div class="col-md-6">
+				<p:outputLabel value="Histórico de envios" />
+				<p:dataList styleClass="cope-lista"
+					value="#{projetoMB.listaArquivo}" var="obj" type="definition"
+					emptyMessage="Nenhum arquivo foi enviado"
+					itemStyleClass="cope-lista-item" style="height:150px;overflow:auto">
+					<p:commandButton value="v #{obj.versao}.0" ajax="false"
+						icon="ui-icon-arrowthick-1-s" style="width:auto;padding:0px"
+						styleClass="btn">
+						<p:fileDownload value="#{projetoMB.downloadArquivoProjeto(obj)}" />
+					</p:commandButton>
+					<p:outputLabel value="#{obj.dataEnvio}" styleClass="pull-right">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</p:outputLabel>
+				</p:dataList>
+			</div>
+		</div>
+	</h:form>
+</p:dialog>
+
+
+<!-- DIALOG ADD PARTICIPANTE -->
+<p:dialog header="Confirmação" widgetVar="dlgCorfirmar" modal="true"
+	responsive="true" width="30%" closable="true" closeOnEscape="true"
+	resizable="false" draggable="false">
+	<h:form id="frmConfirmar" prependId="false">
+		<div class="ui-fluid">
+			<div class="col-md-12">
+				<p:selectBooleanCheckbox value="#{projetoMB.termosSubmissao}" />
+				<h:outputText value="Concordo com os termos de submissao." />
+
+			</div>
+		</div>
+		<div class="modal-footer">
+			<p:commandButton value="Sim" alt="Sim"
+				styleClass="ui-priority-primary"
+				actionListener="#{projetoMB.submeterProjeto()}"
+				update=":pnLista :dlgInforma" />
+
+			<p:commandButton value="Não" alt="Sim"
+				onclick="PF('frmConfirmar').hide();" update=":pnLista :dlgInforma" />
+		</div>
+	</h:form>
+</p:dialog>
+
+
+
+
+
+
+
+
+
+
+<!-- DLG AGUARDE -->
+<p:dialog widgetVar="dlgStatus" modal="true" closable="false"
+	resizable="false" draggable="false" showHeader="false">
+	<h4>Aguarde...</h4>
+</p:dialog>
+
+
+</html>

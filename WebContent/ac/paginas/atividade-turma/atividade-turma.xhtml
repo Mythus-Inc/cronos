@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Atividades da Matriz</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+	<!-- BOTÃO CADASTRAR -->
+	<div class="row container-fluid">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+				<h:form id="frmCadastrar">
+					<p:commandButton
+						actionListener="#{atividadeTurmaMB.criarNovoObjetoAtividadeTurma()}"
+						value="Cadastrar" update=":frmModalSalvar" id="btnCadastrar"
+						onclick="PF('dlgAtividadeTurma').show(); PF('dlgAtividadeTurma').content.scrollTop('0')"
+						title="Cadastrar com atividade" alt="Cadastrar com atividade" />
+				</h:form>
+			</ol>
+		</div>
+	</div>
+	<!-- FIM DO BOTÃO CADASTRAR -->
+
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+			<p:dataTable id="tabela" value="#{atividadeTurmaMB.atividadesTurmas}"
+				resizableColumns="true" var="obj" reflow="true" rows="10"
+				paginator="true" paginatorPosition="bottom"
+				emptyMessage="Nenhuma atividade para turma cadastrada"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+
+				<p:column headerText="Ver" style="width:50px">
+					<p:commandButton update=":frmDetalhesAtividadeTurma"
+						styleClass="btn btn-block" title="Ver"
+						alt="detlhes atividade da turma" icon="ui-icon-search"
+						oncomplete="PF('dlgDetalhes').show()">
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{atividadeTurmaMB.atividadeTurma}" />
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="Matriz" filterBy="#{obj.matriz.descricao}"
+					sortBy="#{obj.matriz.descricao}" filterMatchMode="contains">
+					<h:outputText value="#{obj.matriz.descricao}" />
+				</p:column>
+
+
+				<p:column headerText="Atividade"
+					filterBy="#{obj.atividade.descricao}"
+					sortBy="#{obj.atividade.descricao}" filterMatchMode="contains">
+					<h:outputText value="#{obj.atividade.descricao}" />
+				</p:column>
+
+				<p:column headerText="Alterar" style="width:68px">
+					<p:commandButton update=":frmModalSalvar" alt="Alterar"
+						styleClass="btn btn-block" title="Alterar"
+						onclick="PF('dlgAtividadeTurma').show();" icon="ui-icon-pencil">
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{atividadeTurmaMB.atividadeTurma}" />
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="Excluir" style="width:68px">
+					<p:commandButton actionListener="#{atividadeTurmaMB.inativar(obj)}"
+						icon="ui-icon-trash" title="Excluir" styleClass="btn btn-block"
+						update="frmTabela :dlgInformacao" alt="Excluir">
+						<p:confirm header="Confirmação" message="Deseja excluir?" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+
+		</h:form>
+
+	</div>
+	<!--FIM DA TABELA-->
+
+	<!-- DIALOG SALVAR -->
+	<p:dialog header="Atividade da turma" widgetVar="dlgAtividadeTurma"
+		modal="true" responsive="true" width="60%" id="dlgAtividadeTurma"
+		closable="true" closeOnEscape="true" resizable="false"
+		draggable="false">
+		<h:form id="frmModalSalvar">
+			<div class="ui-fluid">
+				<div class="row">
+					<div class="col-md-12">
+						<p:panelGrid columnClasses="ui-grid-col-1, ui-grid-col-12"
+							styleClass="ui-panelgrid-blank" columns="1">
+							<label>Hora unica </label>
+							<p:selectBooleanCheckbox
+								value="#{atividadeTurmaMB.atividadeTurma.horaUnica}">
+								<p:ajax event="change" update="frmModalSalvar" />
+							</p:selectBooleanCheckbox>
+						</p:panelGrid>
+					</div>
+				</div>
+
+				<div class="col-md-12  col-xs-10">
+					<label>Grupo Matriz *</label>
+					<p:autoComplete id="grupoTurma" dropdown="true" scrollHeight="170"
+						value="#{atividadeTurmaMB.atividadeTurma.grupoTurma}"
+						completeMethod="#{atividadeTurmaMB.completarGrupoTurma}"
+						forceSelection="true" converter="#{converterGrupoTurma}" var="ati"
+						itemLabel="#{ati.grupo.descricao} - #{ati.matriz.descricao}"
+						itemValue="#{ati}" required="true"
+						requiredMessage="O campo grupo turma não deve ser nulo">
+
+						<p:ajax event="itemSelect" update="atividade"
+							listener="#{atividadeTurmaMB.preencherListaAtividade()}" />
+
+					</p:autoComplete>
+
+
+				</div>
+
+				<div class="col-md-12  col-xs-10">
+					<label>Atividade *</label>
+					<p:autoComplete id="atividade" dropdown="true" scrollHeight="170"
+						value="#{atividadeTurmaMB.atividadeTurma.atividade}"
+						completeMethod="#{atividadeTurmaMB.completarAtividade}"
+						forceSelection="true" converter="#{converterAtividade}" var="ati"
+						itemLabel="#{ati.descricao}" itemValue="#{ati}" required="true"
+						requiredMessage="O campo atividade não deve ser nulo" />
+				</div>
+
+			</div>
+
+			<div class="ui-fluid">
+				<div class="col-md-4">
+					<label>Minímo de horas *</label>
+					<p:inputText title="Minímo de horas" id="minimoHoras" type="number"
+						alt="minímo de horas"
+						value="#{atividadeTurmaMB.atividadeTurma.minimoHoras}"
+						required="true"
+						requiredMessage="O campo minímo de horas não deve ser nulo" />
+				</div>
+				<div class="col-md-4">
+					<label>Maxímo de horas * </label>
+					<p:inputText title="Maxímo de horas" id="maximoHoras" type="number"
+						alt="maxímo de horas"
+						value="#{atividadeTurmaMB.atividadeTurma.maximoHoras}"
+						required="true"
+						requiredMessage="O campo maxímo de horas não deve ser nulo" />
+				</div>
+				<div class="col-md-4">
+					<p:outputLabel value="Quantidade hora unica"
+						rendered="#{atividadeTurmaMB.atividadeTurma.horaUnica}" />
+					<p:inputText title="Hora unica" id="horaUnica" type="number"
+						alt="Hora unica"
+						rendered="#{atividadeTurmaMB.atividadeTurma.horaUnica}"
+						value="#{atividadeTurmaMB.atividadeTurma.quantidadeHoraUnica}" />
+				</div>
+
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<p:outputLabel value="Equivalência"
+						rendered="#{!atividadeTurmaMB.atividadeTurma.horaUnica}" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-6">
+					<p:inputText title="Equivalência" id="equivalenciaHora"
+						type="number" alt="equivalência"
+						rendered="#{!atividadeTurmaMB.atividadeTurma.horaUnica}"
+						value="#{atividadeTurmaMB.atividadeTurma.equivalenciaHora}"
+						required="true" requiredMessage="digite a equivalência" />
+				</div>
+				<div class="col-md-6">
+					<p:inputText title="Equivalência" id="equivalencia" type="number"
+						alt="equivalência" required="true"
+						requiredMessage="digite a equivalência"
+						rendered="#{!atividadeTurmaMB.atividadeTurma.horaUnica}"
+						value="#{atividadeTurmaMB.atividadeTurma.equivalencia}" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<small>Campos obrigatórios *</small>
+				</div>
+			</div>
+
+
+			<div class="row">
+				<div class="modal-footer">
+					<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+						actionListener="#{atividadeTurmaMB.salvar()}"
+						update=":dlgInformacao :frmTabela :frmDetalhesAtividadeTurma"
+						alt="Sim" />
+
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgAtividadeTurma').hide();" alt="Cancelar" />
+				</div>
+			</div>
+		</h:form>
+
+	</p:dialog>
+	<!-- FIM DO DIALOG SALVAR -->
+
+	<!-- DIALOG DETALHES -->
+	<p:dialog header="Atividade da turma" widgetVar="dlgDetalhes"
+		responsive="true" modal="true" closeOnEscape="true" resizable="false"
+		closable="true" draggable="false">
+		<p:outputPanel id="atividadeDetalhe">
+			<h:form id="frmDetalhesAtividadeTurma">
+				<h:panelGrid columns="2">
+					<label>Matriz: </label>
+					<h:outputText
+						value="#{atividadeTurmaMB.atividadeTurma.matriz.descricao}" />
+
+					<label>Grupo: </label>
+					<h:outputText
+						value="#{atividadeTurmaMB.atividadeTurma.grupoTurma.grupo.descricao}" />
+
+					<label>Atividade: </label>
+					<h:outputText
+						value="#{atividadeTurmaMB.atividadeTurma.atividade.descricao}" />
+
+					<label>Equivalência: </label>
+					<h:outputText
+						value="#{atividadeTurmaMB.atividadeTurma.equivalenciaHora} :
+						#{atividadeTurmaMB.atividadeTurma.equivalencia}" />
+
+					<label>Minímo de horas: </label>
+					<h:outputText
+						value="#{atividadeTurmaMB.atividadeTurma.minimoHoras}" />
+
+					<label>Maxímo de horas: </label>
+					<h:outputText
+						value="#{atividadeTurmaMB.atividadeTurma.maximoHoras}" />
+				</h:panelGrid>
+			</h:form>
+		</p:outputPanel>
+	</p:dialog>
+	<!-- FIM DO DIALOG DETALHES -->
+</h:body>
+</html>
+

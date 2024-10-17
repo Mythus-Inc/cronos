@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+	<f:metadata>
+		<f:event type="preRenderView"
+			listener="#{alunoTurmaMB.preencherAlunoTurmasAluno}" />
+	</f:metadata>
+
+	<f:metadata>
+		<f:event type="preRenderView"
+			listener="#{movimentacaoMB.preencherMovimentacaoAluno}" />
+	</f:metadata>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Movimentações</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+	<div class="row container-fluid">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+			</ol>
+		</div>
+	</div>
+
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+			<p:tabView>
+				<p:tab title="Turmas">
+					<h:panelGrid columns="2" cellpadding="10">
+
+						<p:dataTable id="tabela" value="#{alunoTurmaMB.alunoTurmaAluno}"
+							var="obj" resizableColumns="true" rows="10" paginator="true"
+							paginatorPosition="bottom" reflow="true"
+							emptyMessage="Nenhum aluno turma cadastrado"
+							rowsPerPageTemplate="5,10,15,30,50,100">
+
+							<p:column headerText="Curso" sortBy="#{obj.turma.curso.nome}"
+								filterBy="#{obj.turma.curso.nome}" filterMatchMode="contains">
+								<h:outputText value="#{obj.turma.curso.nome}" />
+							</p:column>
+							<p:column headerText="Turma" sortBy="#{obj.turma.descricao}"
+								filterBy="#{obj.turma.descricao}" filterMatchMode="contains">
+								<h:outputText value="#{obj.turma.descricao}" />
+							</p:column>
+
+							<p:column headerText="Justificativa"
+								sortBy="#{obj.justificativa}" filterBy="#{obj.justificativa}"
+								filterMatchMode="contains">
+								<h:outputText value="#{obj.justificativa}" />
+							</p:column>
+
+							<p:column headerText="Data Mudança">
+								<h:outputText value="#{obj.dataMudanca}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+						</p:dataTable>
+					</h:panelGrid>
+				</p:tab>
+				<p:tab title="Movimentações">
+					<h:panelGrid columns="2" cellpadding="10">
+						<p:dataTable id="tabelaMov"
+							value="#{movimentacaoMB.movimentacaosAluno}" var="obj"
+							resizableColumns="true" rows="10" paginator="true"
+							paginatorPosition="bottom" reflow="true"
+							emptyMessage="Nenhuma movimentação cadastrada"
+							rowsPerPageTemplate="5,10,15,30,50,100">
+							<p:column headerText="RA" sortBy="#{obj.alunoTurma.ra}"
+								filterBy="#{obj.alunoTurma.ra}" filterMatchMode="contains">
+								<h:outputText value="#{obj.alunoTurma.ra}" />
+							</p:column>
+
+							<p:column headerText="Situação">
+								<h:outputText value="Ativo" rendered="#{obj.situacao==1}" />
+								<h:outputText value="Trancamento" rendered="#{obj.situacao==2}" />
+								<h:outputText value="Cancelamento" rendered="#{obj.situacao==3}" />
+								<h:outputText value="Abandono" rendered="#{obj.situacao==4}" />
+								<h:outputText value="Concluiu" rendered="#{obj.situacao==5}" />
+							</p:column>
+
+							<p:column headerText="Data">
+								<h:outputText value="#{obj.dataMovimentacao}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+						</p:dataTable>
+					</h:panelGrid>
+				</p:tab>
+
+			</p:tabView>
+
+		</h:form>
+
+	</div>
+	<!--FIM DA TABELA-->
+
+</h:body>
+</html>
