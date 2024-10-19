@@ -113,7 +113,7 @@ http://www.springframework.org/schema/security/spring-security-3.2.xsd">
  			value="jdbc:mysql://localhost:3306/cronos" /> 
 		<beans:property name="driverClassName" value="com.mysql.jdbc.Driver" /> 
 		<beans:property name="username" value="root" /> 
-		<beans:property name="password" value="yuka" /> 
+		<beans:property name="password" value="123456" /> 
 		
 
 
