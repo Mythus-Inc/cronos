@@ -142,16 +142,24 @@ public class ServicoHello {
 	@Path("/solicitacao-carteirinha/validada")
 	@Produces("application/json; charset=UTF-8")
 	public Response buscarSolicitacaoCarteirinhaAprovada() {
-
+		AlunoTurmaDTO turma = new AlunoTurmaDTO();
+		turma.setRa("123888");
+		turma.setTurma("Noturna");
+		turma.setCurso("Engenharia de Software");
+		turma.setDataMatricula(new Date());
+		
+		List<AlunoTurmaDTO> turmas = new ArrayList<>();
+		turmas.add(turma);
+		
 		AlunoDTO aluno = new AlunoDTO();
 	    aluno.setNome("João da Silva");
         aluno.setEmail("joao.silva@email.com");
         aluno.setSenha("senha123");
         aluno.setRa("20231234");
-        aluno.setAlunoTurma(null);
+        aluno.setAlunoTurma(turmas);
         
         
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
         String dadosAlunoJson = gson.toJson(aluno);
         System.out.println(dadosAlunoJson);
 	    return Response.status(Response.Status.OK)
