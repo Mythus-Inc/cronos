@@ -23,20 +23,22 @@
                 <!-- Sub-card da solicitação do aluno -->
                 <div class="sub-card" style="border: 1px solid #ddd; padding: 10px; margin-bottom: 10px;" onclick="expandirCard(this)">
                     <p><strong>Nome do Aluno:</strong> João da Silva Oliveira</p>
-                    <p><strong>Curso:</strong> Engenharia de Software</p>
-                    <p><strong>Status:</strong> Em Análise</p>
+
 
                     <!-- Informações expandidas, inicialmente ocultas -->
                     <div class="expanded-card" style="display: none; margin-top: 10px;">
+                    	<p><strong>Curso:</strong> Engenharia de Software</p>
+                    	<p><strong>Status:</strong> Em Análise</p>
                         <p><strong>Email:</strong> joãosilva@gmail.com</p>
-                        <p><strong>Telefone:</strong> [Telefone do Aluno]</p>
+                        <p><strong>Telefone:</strong> (44)99999-5555</p>
 
-                        <!-- Botões "Aceitar" e "Recusar" -->
-                        <div style="margin-top: 10px;">
-                            <button type="button" onclick="moverParaAprovado(this)">Aceitar</button>
-                            <button type="button" onclick="moverParaRecusado(this)">Recusar</button>
-                            <button type="button" onclick="minimizarCard(this)">Minimizar</button>
-                        </div>
+					<!-- Botões "Aceitar", "Recusar" e "Minimizar" -->
+					<div style="margin-top: 10px;">
+    					<button type="button" onclick="moverParaAprovado(this, event)">Aceitar</button>
+    					<button type="button" onclick="moverParaRecusado(this, event)">Recusar</button>
+    					<button type="button" onclick="minimizarCard(this, event)">Minimizar</button>
+					</div>
+
                     </div>
                 </div>
                 <!-- Adicione mais sub-cards aqui conforme necessário -->
@@ -68,29 +70,35 @@
 
     <!-- JavaScript para manipular a expansão dos cards e mover entre abas -->
     <script>
-        // Expande o card para mostrar mais informações
-        function expandirCard(card) {
-            card.querySelector('.expanded-card').style.display = 'block';
-        }
+ // Expande o card para mostrar mais informações
+    function expandirCard(card) {
+        card.querySelector('.expanded-card').style.display = 'block';
+    }
 
-        // Minimiza o card para esconder as informações detalhadas
-        function minimizarCard(button) {
-            button.closest('.expanded-card').style.display = 'none';
-        }
+    // Minimiza o card para esconder as informações detalhadas
+    function minimizarCard(button, event) {
+        // Impede que o clique no botão "Minimizar" acione a expansão do card
+        event.stopPropagation();
+        
+        const expandedCard = button.closest('.sub-card').querySelector('.expanded-card');
+        expandedCard.style.display = 'none';
+    }
 
-        // Move a solicitação para a aba "Aprovado"
-        function moverParaAprovado(button) {
-            const subCard = button.closest('.sub-card');
-            document.getElementById('aprovadoContainer').appendChild(subCard);
-            minimizarCard(button);
-        }
+    // Move a solicitação para a aba "Aprovado"
+    function moverParaAprovado(button, event) {
+        event.stopPropagation(); // Impede a propagação do clique
+        const subCard = button.closest('.sub-card');
+        document.getElementById('aprovadoContainer').appendChild(subCard);
+        minimizarCard(button, event);
+    }
 
-        // Move a solicitação para a aba "Recusado"
-        function moverParaRecusado(button) {
-            const subCard = button.closest('.sub-card');
-            document.getElementById('recusadoContainer').appendChild(subCard);
-            minimizarCard(button);
-        }
+    // Move a solicitação para a aba "Recusado"
+    function moverParaRecusado(button, event) {
+        event.stopPropagation(); // Impede a propagação do clique
+        const subCard = button.closest('.sub-card');
+        document.getElementById('recusadoContainer').appendChild(subCard);
+        minimizarCard(button, event);
+    }
     </script>
 
 </h:body>
