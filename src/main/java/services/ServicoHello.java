@@ -120,8 +120,8 @@ public class ServicoHello {
     @Path("/solicitacao-carteirinha")
     @Produces("application/json; charset=UTF-8")
     @Consumes("application/json; charset=UTF-8")
-    public Response recebimentoDeSolicitacao(Map<String, Object> dadosAluno) {
-        ra = (String) dadosAluno.get("ra");
+    public Response recebimentoDeSolicitacao( AlunoDTO dadosAluno) {
+        ra = dadosAluno.getRa();
         // Na próxima sprint, aqui deverá persistir os dados em um banco de dados 
         System.out.println("Solicitaçao do aluno, cujo o ra é: " + ra);
         return Response.status(Response.Status.OK)
@@ -136,6 +136,27 @@ public class ServicoHello {
 	public Response buscarSolicitacaoCarteirinha() {
 		System.out.println("Solicitaçao do aluno, cujo o ra é: " + ra);
 		return Response.status(Response.Status.OK).entity(ra).build();
+	}
+	
+	@GET
+	@Path("/solicitacao-carteirinha/validada")
+	@Produces("application/json; charset=UTF-8")
+	public Response buscarSolicitacaoCarteirinhaAprovada() {
+
+		AlunoDTO aluno = new AlunoDTO();
+	    aluno.setNome("João da Silva");
+        aluno.setEmail("joao.silva@email.com");
+        aluno.setSenha("senha123");
+        aluno.setRa("20231234");
+        aluno.setAlunoTurma(null);
+        
+        
+        Gson gson = new Gson();
+        String dadosAlunoJson = gson.toJson(aluno);
+        System.out.println(dadosAlunoJson);
+	    return Response.status(Response.Status.OK)
+	                   .entity(dadosAlunoJson)
+	                   .build();
 	}
 	
 	@POST
