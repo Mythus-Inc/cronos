@@ -123,7 +123,7 @@ public class ServicoHello {
     public Response recebimentoDeSolicitacao( AlunoDTO dadosAluno) {
         ra = dadosAluno.getRa();
         // Na próxima sprint, aqui deverá persistir os dados em um banco de dados 
-        System.out.println("Solicitaçao do aluno, cujo o ra é: " + ra);
+        System.out.println("Envio de dados" + ra);
         return Response.status(Response.Status.OK)
                        .entity(dadosAluno)
                        .build();
