@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Atividade</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+	<!-- BOTÃO CADASTRAR -->
+	<div class="row container-fluid">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+				<h:form id="frmCadastrar">
+					<p:commandButton
+						actionListener="#{atividadeMB.criarNovoObjetoAtividade}"
+						value="Cadastrar" update=":frmModalSalvar" id="btnCadastrar"
+						onclick="PF('dlgAtividade').show(); PF('dlgAtividade').content.scrollTop('0')"
+						title="Cadastrar" />
+				</h:form>
+			</ol>
+		</div>
+	</div>
+	<!-- FIM DO BOTÃO CADASTRAR -->
+
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+			<p:dataTable id="tabela" value="#{atividadeMB.atividades}" var="obj"
+				resizableColumns="true" rows="10" paginator="true"
+				paginatorPosition="bottom" reflow="true"
+				emptyMessage="Nenhuma atividade cadastrado"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+				<p:column headerText="Grupo" sortBy="#{obj.grupo.descricao}"
+					filterBy="#{obj.grupo.descricao}" filterMatchMode="contains">
+					<h:outputText value="#{obj.grupo.descricao}" />
+				</p:column>
+				<p:column headerText="Atividade" sortBy="#{obj.descricao}"
+					filterBy="#{obj.descricao}" filterMatchMode="contains">
+					<h:outputText value="#{obj.descricao}" />
+				</p:column>
+
+				<p:column headerText="Alterar" style="width:68px">
+					<p:commandButton update=":frmModalSalvar" alt="Alterar"
+						title="Alterar" styleClass="btn btn-block"
+						onclick="PF('dlgAtividade').show();" icon="ui-icon-pencil">
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{atividadeMB.atividade}" />
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="Excluir" style="width:68px">
+					<p:commandButton actionListener="#{atividadeMB.inativar(obj)}"
+						styleClass="btn btn-block" icon="ui-icon-trash" title="Excluir"
+						update="frmTabela :dlgInformacao" alt="Excluir">
+						<p:confirm header="Confirmação" message="Deseja excluir" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+	</div>
+	<!--FIM DA TABELA-->
+
+	<!-- MODAL SALVAR -->
+	<p:dialog header="Atividade" widgetVar="dlgAtividade" modal="true"
+		responsive="true" width="60%" id="dlgAtividade" closable="true"
+		closeOnEscape="true" resizable="false" draggable="false">
+		<h:form id="frmModalSalvar">
+
+			<div class="ui-fluid">
+				<p:panelGrid columnClasses="ui-grid-col-1, ui-grid-col-12"
+					styleClass="ui-panelgrid-blank" columns="1">
+					<label>Atividade *</label>
+					<p:inputText title="Atividade" style="width:100%" id="atividade"
+						alt="Atividade" value="#{atividadeMB.atividade.descricao}"
+						required="true"
+						requiredMessage="O campo atividade não deve ser nulo" />
+				</p:panelGrid>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12  col-xs-10">
+					<label>Grupo *</label>
+					<p:autoComplete id="grupo" dropdown="true" scrollHeight="170"
+						value="#{atividadeMB.atividade.grupo}"
+						completeMethod="#{atividadeMB.completarGrupo}"
+						forceSelection="true" converter="#{converterGrupo}" var="gru"
+						itemLabel="#{gru.descricao}" itemValue="#{gru}" required="true"
+						requiredMessage="O campo Grupo não deve ser nulo" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12">
+
+					<small>Campos obrigatórios *</small>
+
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+					actionListener="#{atividadeMB.salvar()}"
+					update=":dlgInformacao :frmTabela" alt="Sim" />
+
+				<p:commandButton value="Cancelar"
+					onclick="PF('dlgAtividade').hide();" alt="Cancelar" />
+			</div>
+		</h:form>
+
+	</p:dialog>
+	<!-- FIM DO MODAL SALVAR -->
+</h:body>
+</html>
+

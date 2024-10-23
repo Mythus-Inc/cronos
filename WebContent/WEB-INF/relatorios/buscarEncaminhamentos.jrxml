@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="grupo" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fe166493-b712-4ad9-88ef-0150cb98ee09">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="relat\NEW_DATAADAPTER.xml"/>
+	<parameter name="IDPESSOA" class="java.lang.Long">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA[$P{IDPESSOA}]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select pes.nome as remetente, e.dataEncaminhamento as dataEncaminhamento, e.dataParecer as dataParecer, e.descricao as descricao, p.nome as pessoaEncaminhado
+from tad_encaminhamento e
+ inner join tab_pessoa p on 
+ e.pessoa_id_pessoa = p.id_pessoa 
+ inner join tab_pessoa pes on 
+ e.pessoaRemetente_id_pessoa = pes.id_pessoa
+where e.protocolo_id = $P{IDPESSOA}]]>
+	</queryString>
+	<field name="remetente" class="java.lang.String"/>
+	<field name="dataEncaminhamento" class="java.sql.Date"/>
+	<field name="dataParecer" class="java.sql.Date"/>
+	<field name="descricao" class="java.lang.String"/>
+	<field name="pessoaEncaminhado" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="75" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<textField>
+				<reportElement x="100" y="8" width="430" height="15" uuid="779c5b31-ad8a-4d6c-a1fe-98d24d188810">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{pessoaEncaminhado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-20" y="-5" width="130" height="15" uuid="f180cd75-66d3-4ada-bf73-299ff30ee37e">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[ ENCAMINHADO POR:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="120" y="21" width="410" height="15" uuid="96858f88-3305-415f-9678-b7d094f56fe4">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<box>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataEncaminhamento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-20" y="22" width="151" height="15" uuid="1dc4162c-abc2-403d-ba1c-ea838117a962"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[ DATA ENCAMINHAMENTO:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="40" y="51" width="490" height="15" uuid="a5890841-3d32-4ba1-918e-bc44d591a463"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-20" y="51" width="100" height="15" uuid="f248f3f4-33c2-4ad7-a809-483741c21ca4"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[ PARECER:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="70" y="36" width="460" height="15" uuid="1bcca0ea-ecda-4b75-8243-011fc66a166c"/>
+				<box>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataParecer}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="-20" y="37" width="100" height="15" uuid="1df4b6d9-0809-4282-80be-4f6ea9278d1a"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[ DATA PARECER:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-20" y="7" width="151" height="15" uuid="cab77839-4216-468a-bc23-086d9eb28a27"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<text><![CDATA[ ENCAMINHADO PARA:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="96" y="-5" width="434" height="15" uuid="e7d05cfd-ce9b-4b08-ae61-707521e862b6"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{remetente}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">
+				<i class="fa fa-book" aria-hidden="true"></i> Manual do professor
+			</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">
+				<b>Olá usuário(a) do módulo professor, </b> no sistema você possui
+				permissões de gerenciar alunos, turmas, grupos, atividades, grupo
+				turma e atividade turma você também pode visualizar todas as
+				movimentações que os alunos tiverem, mas somente aqueles que estão
+				nos cursos que você é responsável, tanto trocas de turmas quanto
+				trancamentos, além de poder validar ou não os certificados e também
+				emitir alguns reltórios, abaixo será explicado o funcionamento do
+				software para você.
+			</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Primeiramente a página de cadastro de aluno, na
+				mesma você poderá cadastrar, alterar e excluir os mesmos.</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<img
+				src="#{request.contextPath}/resources/img/cadastro-aluno-tela.png"
+				class="img-responsive" />
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Como pode ser observado, existe um botão
+				cadastrar, acima da tabela que contém todos os alunos cadastrados, o
+				mesmo botão abre um dialog onde será possível inserir os dados
+				necessários. Na tabela é apresentados os botões de alterar, excluir
+				e ver o primeiro irá abrir o mesmo dialog mencionado com as
+				informações do registro selecionado, o botão excluir irá fazer com
+				que o registro daquela linha seja removido, sumindo assim da tabela
+				e o botão ver permite visualizar mais detalhes do registro.</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Vale ressaltar que no cadastro de aluno, os mesmos
+				estão divididos entre ativos e inativos, para que possa ir para
+				tabela de alunos trancados basta clicar sobre o botão de próximo, um
+				ponto importante no cadastro de aluno, caso o mesmo seja alterado e
+				mudado a sua turma as horas dos cadastros dos certificados do mesmo
+				poderão ser alteradas, devido das horas computadas serem conforme a
+				equivalência da turma.</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Para todos os outros cadastros seguirá regras
+				similares das aplicadas acima, vale ressaltar nesse momento, se caso
+				não seja inserida senha para os usuários o padrão para os mesmos
+				será 123.</p>
+		</div>
+	</div>
+
+	<br />
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Você possui a permissão e função de validar ou
+				não validar os certificados dentro do software, essa ação pode ser
+				feita por meio do botão validar e inválidar, para poder ver mais
+				detalhes dos dados dos certificados cadastrados pelos alunos, basta
+				clicar no botão com a lupa presente no lado direito da tabela, como
+				pode ser visto na imagem abaixo.</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<img
+				src="#{request.contextPath}/resources/img/validar-certificado.png"
+				class="img-responsive" />
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Você também pode alterar informações dos
+				certificados. Podendo adicionar a quantidade de horas computadas do
+				certificado, ou pemitindo que o sistema calcule automaticamente
+				clicando no checkbox abaixo de "Calcular equivalência?", essa tela
+				pode ser vista abaixo.</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<img
+				src="#{request.contextPath}/resources/img/alterar-certificado-professor.png"
+				class="img-responsive" />
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Os certificados autenticados vão para página de
+				certificados validados que pode ser acessada utilizando o menu
+				lateral, como também os certificados não autenticados vão para tela
+				de certificados inválidos, onde nessas duas páginas é possível
+				colocar o certificado em estado pendente novamente.</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Você também pode visualizar as movimentaçãos dos
+				alunos, podendo verificar as mudanças de turmas e trancamentos dos
+				mesmos, essas funções estão presentes na tela de Movimentações
+				presente no menu lateral, a mesma tela é exibida nas duas próximas
+				figuras.</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<img src="#{request.contextPath}/resources/img/mov-professor.png"
+				class="img-responsive" />
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<img src="#{request.contextPath}/resources/img/tur-professor.png"
+				class="img-responsive" />
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Na tela de grupo turma, é onde você irá informar
+				qual grupo pertence a qual turma e o minímo e maxímo de horas
+				necessárias para esse grupo nessa turma, o cadastro do mesmo é visto
+				na imagem abaixo.</p>
+		</div>
+	</div>
+	<br />
+	<div class="row">
+		<div class="col-md-12">
+			<img src="#{request.contextPath}/resources/img/grupo-turma.png"
+				class="img-responsive" />
+		</div>
+	</div>
+	<br />
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Na tela de atividade turma, é onde você irá
+				informar qual atividade pertence a qual turma e o minímo e maxímo de
+				horas necessárias,como também a equivalência para essa atividade
+				nessa turma, podendo ser escolhido colocar hora unica para atividade
+				marcando o checkbox presente abaixo de "Hora unica", o cadastro do
+				mesmo é visto na imagem abaixo.</p>
+		</div>
+	</div>
+	<br />
+	<div class="row">
+		<div class="col-md-12">
+			<img src="#{request.contextPath}/resources/img/atividade-turma.png"
+				class="img-responsive" />
+		</div>
+	</div>
+	<br />
+
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Você pode retirar três tipos de relatórios
+				presentes na tela de relatório. Como pode ser visto na imagem
+				abaixo, existem três abas, uma "Relatório de aluno por grupo", onde
+				pode ser visualizado a situação do aluno em cada grupo, o "Relatório
+				turma por grupo", no mesmo pode ser visto a situação da turma pelo
+				grupo e "Relatório aluno por grupo", possibilita visualizar os
+				certificados do aluno em determinado grupo</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<img
+				src="#{request.contextPath}/resources/img/relatorio-professor.png"
+				class="img-responsive" />
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Na tela abaixo é possível você alterar os dados
+				do seu usuário no software.</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<img
+				src="#{request.contextPath}/resources/img/alterar-dados-professor.png"
+				class="img-responsive" />
+		</div>
+	</div>
+
+</h:body>
+</html>

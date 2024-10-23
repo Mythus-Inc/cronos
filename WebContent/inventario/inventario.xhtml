@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:body>
+	<ui:composition
+		template="../resources/template/inventario/template-inventario.xhtml">
+		<ui:define name="mensagem">
+			<ui:include src="../componentes/mensagem.xhtml" />
+		</ui:define>
+		<ui:define name="conteudo">
+
+			<!-- TITULO -->
+			<div class="row">
+				<div class="col-md-12">
+					<h1 class="page-header">Inventário</h1>
+				</div>
+			</div>
+			<!-- FIM TITULO -->
+
+			<!-- BOTÃO CADASTRAR -->
+			<div class="row container-fluid">
+				<div class="col-md-12">
+					<ol class="breadcrumb">
+						<h:form id="frmCadastrar">
+							<p:commandButton value="Cadastrar Inventário" id="btnCadastrar"
+								title="Cadastrar" onclick="PF('dlgInventario').show();"
+								actionListener="#{inventarioMB.criarNovoObjeto()}"
+								update=":frmModalSalvar :frmTabelaLocais" />
+						</h:form>
+					</ol>
+				</div>
+			</div>
+			<!-- FIM DO BOTÃO CADASTRAR -->
+
+			<!-- TABELA-->
+			<div class="col-md-12">
+				<h:form id="frmTabela">
+					<p:dataTable id="tabela" resizableColumns="true" var="obj"
+						reflow="true" rows="10" paginator="true"
+						value="#{inventarioMB.listInventario}" paginatorPosition="bottom"
+						emptyMessage="Nenhum Inventário Cadastrado"
+						rowsPerPageTemplate="5,10,15,30,50,100">
+
+						<p:column headerText="Ver" style="width:50px">
+
+						</p:column>
+
+						<p:column headerText="Descrição">
+							<h:outputText value="#{obj.descricao}" />
+						</p:column>
+
+						<p:column headerText="Data Início">
+							<h:outputText value="#{obj.dataInicio}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Data Término">
+							<h:outputText value="#{obj.dataTermino}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Alterar" style="width:68px">
+							<p:commandButton alt="Alterar" styleClass="btn btn-block"
+								update=":frmTabelaLocais :frmModalSalvar"
+								onclick="PF('dlgInventario').show();" icon="ui-icon-pencil"
+								actionListener="#{inventarioMB.preencherInventario(obj)}" />
+						</p:column>
+
+						<p:column headerText="Excluir" style="width:68px">
+							<p:commandButton alt="excluir" styleClass="btn btn-block"
+								update=":frmModalSalvar :frmTabela" icon="ui-icon-trash"
+								actionListener="#{inventarioMB.inativar(obj)}">
+								<p:confirm header="Confirmação" message="Deseja excluir?" />
+							</p:commandButton>
+						</p:column>
+
+					</p:dataTable>
+				</h:form>
+			</div>
+			<!--FIM DA TABELA-->
+
+
+
+
+			<!-- DIALOG SALVAR -->
+			<p:dialog header="Inventário" widgetVar="dlgInventario" modal="true"
+				responsive=" true" width="80%" id="dlgInventario" closable="true"
+				closeOnEscape="true" resizable="true" draggable="true">
+
+				<h:form id="frmModalSalvar">
+					<div class="ui-fluid">
+						<div class="col-md-12">
+							<label>Descrição *</label>
+							<p:inputText title="Descrição" alt="descrição"
+								styleClass="col-md-12"
+								value="#{inventarioMB.inventario.descricao}" required="true"
+								requiredMessage="Informe a Descrição do inventário" />
+						</div>
+						<div class="col-md-6">
+							<label>Data Início*</label>
+							<p:calendar title="Data" alt="data" styleClass="col-md-12"
+								value="#{inventarioMB.inventario.dataInicio}" required="true"
+								requiredMessage="Informe a data de início do inventário" />
+						</div>
+						<div class="col-md-6">
+							<label>Data Término*</label>
+							<p:calendar title="Data" alt="data" styleClass="col-md-12"
+								value="#{inventarioMB.inventario.dataTermino}" required="true"
+								requiredMessage="Informe a data de término do inventário" />
+						</div>
+						<div class="col-md-12">
+							<small>Campos obrigatórios *</small>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<p:commandButton value="Adicionar Locais Inventário"
+							actionListener="#{inventarioMB.abrirLocalInventario()}"
+							id="btnInventario" alt="Sim" styleClass="ui-priority-primary"
+							update=":dlgInformacao :frmModalSalvarLocais :frmModalSalvarLocais:tabelaItens" />
+
+						<p:commandButton value="Atualizar" id="btnInventarioAtualiza"
+							alt="Sim" styleClass="ui-priority-primary"
+							disabled="#{inventarioMB.inventario.id == null}"
+							update=":dlgInformacao :frmTabelaLocais :frmTabela"
+							actionListener="#{inventarioMB.atualizar()}" />
+
+					</div>
+				</h:form>
+
+
+				<!-- INICIO LOCAIS INVENTÁRIO -->
+				<div class="col-md-12">
+					<h:form id="frmTabelaLocais">
+						<p:dataTable id="tabelaLocais" resizableColumns="true" var="obj"
+							reflow="true" rows="10" paginator="true"
+							value="#{inventarioMB.listLocalInventario}"
+							paginatorPosition="bottom"
+							emptyMessage="Nenhum Local Inventário Cadastrado"
+							rowsPerPageTemplate="5,10,15,30,50,100">
+
+
+
+							<p:column headerText="Descrição" filterBy="#{obj.local.descricao}" sortBy="#{obj.local.descricao}" >
+								<h:outputText value="#{obj.local.descricao}" />
+							</p:column>
+
+							<p:column headerText="Responsável Conferência" filterBy="#{obj.servidorConferencia.nome}" sortBy="#{obj.servidorConferencia.nome}">
+								<h:outputText value="#{obj.servidorConferencia.nome}" />
+							</p:column>
+
+
+							<p:column headerText="Alterar Responsável" style="width:180px">
+								<p:commandButton alt="Alterar Responsável Para Conferência"
+									oncomplete="PF('dlgResponsavel').show();"
+									styleClass="btn btn-block" icon="ui-icon-pencil"
+									update=":frmModalResponsavel">
+									<f:setPropertyActionListener value="#{obj}"
+										target="#{inventarioMB.localInventarioAlteraResponsavel}" />
+								</p:commandButton>
+							</p:column>
+							<p:column headerText="Equipam. Confer." style="width:180px">
+								<p:commandButton alt="Visualizar Equipamentos Conferidos"
+									styleClass="btn btn-block" icon="ui-icon-search"
+									oncomplete="PF('dlgConferidos').show();"
+									actionListener="#{inventarioMB.visualizaEquipamento(obj)}"
+									update=":frmConferidos" />
+							</p:column>
+							<p:column headerText="Equipam. Não Confer." style="width:180px">
+								<p:commandButton alt="Visualizar Equipamentos Conferidos"
+									styleClass="btn btn-block" icon="ui-icon-search"
+									oncomplete="PF('dlgNaoConferidos').show();"
+									actionListener="#{inventarioMB.visualizaNaoEquipamento(obj)}"
+									update=":frmNaoConferidos" />
+							</p:column>
+
+							<p:column headerText="Excluir" style="width:68px">
+								<p:commandButton alt="excluir" styleClass="btn btn-block"
+									update=":frmTabelaLocais" icon="ui-icon-trash"
+									actionListener="#{inventarioMB.inativarLocalInventario(obj)}">
+									<p:confirm header="Confirmação" message="Deseja excluir?" />
+								</p:commandButton>
+							</p:column>
+							
+							<p:column headerText="Limpar Equi." style="width:68px">
+								<p:commandButton alt="excluir" styleClass="btn btn-block"
+									update=":frmTabelaLocais" icon="ui-icon-trash"
+									actionListener="#{inventarioMB.limparLocalInventario(obj)}">
+									<p:confirm header="Confirmação" message="Deseja limpar todos os equipamentos desse local?" />
+								</p:commandButton>
+							</p:column>
+*
+						</p:dataTable>
+					</h:form>
+				</div>
+				<!--FIM DA TABELA LOCAIS INVANTARIO-->
+
+			</p:dialog>
+
+
+
+			<!-- DIALOG SALVAR -->
+			<p:dialog header="Locais Inventário" widgetVar="dlgLocaisInventario"
+				modal="true" responsive=" true" width="70%" id="dlgLocaisInventario"
+				closable="true" closeOnEscape="true" resizable="false"
+				draggable="true">
+
+				<h:form id="frmModalSalvarLocais">
+					<div class="ui-fluid">
+						<div class="col-md-12">
+
+							<label>Servidor Responvável Pela Conferência </label>
+							<p:autoComplete id="responsavel" dropdown="true"
+								scrollHeight="170" value="#{inventarioMB.servidorConferir}"
+								completeMethod="#{inventarioMB.completarServidor}"
+								forceSelection="true" converter="#{converterServidor}"
+								var="serv" itemLabel="#{serv.nome}" itemValue="#{serv}" />
+
+							<label></label>
+
+							<p:dataTable id="tabelaItens" resizableColumns="true" var="obj"
+								selection="#{inventarioMB.listaLocaisSelecionados}"
+								rowKey="#{obj.id}" style="margin-bottom:0"
+								value="#{inventarioMB.listaLocais}" reflow="true" rows="10"
+								paginator="true" paginatorPosition="bottom"
+								emptyMessage="Nenhum equipamento encontrado"
+								rowsPerPageTemplate="5,10,15,30,50,100">
+
+								<p:column selectionMode="multiple"
+									style="width:36px;text-align:center" />
+
+								<p:column headerText="Localidade" filterBy="#{obj.descricao}"
+									sortBy="#{obj.descricao}">
+									<h:outputText value="#{obj.descricao}" />
+								</p:column>
+
+								<p:column width="150px" headerText="Código Unidade"
+									filterBy="#{obj.codigoLocalidade}"
+									sortBy="#{obj.codigoLocalidade}">
+									<h:outputText value="#{obj.codigoLocalidade}" />
+								</p:column>
+
+							</p:dataTable>
+
+
+						</div>
+
+					</div>
+					<div class="modal-footer">
+						<p:commandButton value="Salvar Locais Selecionados"
+							id="btnInventario" alt="Sim" styleClass="ui-priority-primary"
+							update=":dlgInformacao :frmTabelaLocais :frmTabela"
+							actionListener="#{inventarioMB.salvarLocalEInventario()}" />
+
+					</div>
+
+				</h:form>
+
+
+			</p:dialog>
+
+
+
+
+			<!-- DIALOG SALVAR RESPONSÀVEL-->
+			<p:dialog header="Responável Conferência" widgetVar="dlgResponsavel"
+				modal="true" responsive=" true" width="60%" id="dlgResponsavel"
+				closable="true" closeOnEscape="true" resizable="false"
+				draggable="false">
+
+				<h:form id="frmModalResponsavel">
+					<div class="ui-fluid">
+
+						<div class="col-md-12">
+							<label>Local: </label>
+							<p:inputText
+								value="#{inventarioMB.localInventarioAlteraResponsavel.local.descricao}"
+								readonly="true" />
+						</div>
+						<div class="col-md-12">
+
+							<label>Responvável Conferência *</label>
+							<p:autoComplete id="responsavel" dropdown="true"
+								scrollHeight="170"
+								value="#{inventarioMB.localInventarioAlteraResponsavel.servidorConferencia}"
+								completeMethod="#{inventarioMB.completarServidor}"
+								forceSelection="true" converter="#{converterServidor}"
+								var="serv" itemLabel="#{serv.nome}" itemValue="#{serv}"
+								required="true"
+								requiredMessage="O campo servidor não deve ser nulo" />
+
+						</div>
+
+					</div>
+					<div class="modal-footer">
+						<p:commandButton value="Salvar" id="btnInventario" alt="Sim"
+							styleClass="ui-priority-primary"
+							update=":dlgInformacao :frmTabelaLocais"
+							actionListener="#{inventarioMB.localInventarioAlterarResponsavel()}" />
+
+					</div>
+
+				</h:form>
+
+
+			</p:dialog>
+
+
+
+
+
+			<!-- DIALOG VISUALIZAR CONFERIDOS -->
+			<p:dialog header="Equipamentos Conferidos" widgetVar="dlgConferidos"
+				modal="true" responsive="true" width="60%" id="dlgConferidos"
+				closable="true" closeOnEscape="true" resizable="false"
+				draggable="false">
+				<h:form id="frmConferidos">
+					<div class="ui-fluid">
+						<div class="col-md-12">
+							<p:dataTable id="tabelaEquipamentosConferidos"
+								resizableColumns="true" var="obj" reflow="true" rows="10"
+								paginator="true"
+								value="#{inventarioMB.listEquipamentoInventario}"
+								paginatorPosition="bottom"
+								emptyMessage="Nenhum Equipamento Conferido Até o Momento"
+								rowsPerPageTemplate="5,10,15,30,50,100">
+
+								<p:column headerText="Equipamento">
+									<h:outputText value="#{obj.tombamento.equipamento.descricao}" />
+								</p:column>
+
+								<p:column headerText="Tombamento">
+									<h:outputText value="#{obj.tombamento.codigo}" />
+								</p:column>
+								
+								<p:column headerText="Especificação">
+									<h:outputText value="#{obj.tombamento.especificacao}" />
+								</p:column>
+
+								<p:column headerText="Data Conferência">
+									<h:outputText value="#{obj.dataConferencia}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+
+
+
+								<p:column headerText="Estado Conservação">
+									<h:outputText value="#{obj.estado}" />
+								</p:column>
+
+							</p:dataTable>
+
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
+			<!-- FIM DO VISUALIZAR EQUIPAMENTOS CONFERIDOS -->
+
+
+
+			<!-- DIALOG VISUALIZAR NÂO CONFERIDOS -->
+			<p:dialog header="Equipamentos Não Conferidos"
+				widgetVar="dlgNaoConferidos" modal="true" responsive="true"
+				width="60%" id="dlgNaoConferidos" closable="true"
+				closeOnEscape="true" resizable="false" draggable="false">
+				<h:form id="frmNaoConferidos">
+					<div class="ui-fluid">
+						<div class="col-md-12">
+							<p:dataTable id="tabelaNaoEquipamentosConferidos"
+								resizableColumns="true" var="obj" reflow="true" rows="10"
+								paginator="true"
+								value="#{inventarioMB.listTombamentosNaoConferidos}"
+								paginatorPosition="bottom"
+								emptyMessage="Nenhum Equipamento Conferido Até o Momento"
+								rowsPerPageTemplate="5,10,15,30,50,100">
+
+								<p:column headerText="Equipamento">
+									<h:outputText value="#{obj.equipamento.descricao}" />
+								</p:column>
+
+								<p:column headerText="Tombamento">
+									<h:outputText value="#{obj.codigo}" />
+								</p:column>
+
+
+								<p:column headerText="Estado Conservação">
+									<h:outputText value="#{obj.estado}" />
+								</p:column>
+
+							</p:dataTable>
+
+						</div>
+					</div>
+				</h:form>
+			</p:dialog>
+			<!-- FIM DO VISUALIZAR EQUIPAMENTOS NÂOCONFERIDOS -->
+
+		</ui:define>
+		<ui:define name="modal-confirmacao">
+			<ui:include src="../componentes/dialog-confirmacao.xhtml" />
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>
+

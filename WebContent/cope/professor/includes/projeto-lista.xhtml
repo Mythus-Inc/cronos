@@ -1,0 +1,56 @@
+<div xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+	<h:form>
+		<p:dataTable id="tabela" value="#{projetoMB.listaProjeto}" var="obj"
+			resizableColumns="true" rows="10" paginator="true"
+			paginatorPosition="bottom" reflow="true"
+			emptyMessage="Nenhum projeto cadastrado"
+			rowsPerPageTemplate="5,10,15,30,50,100">
+			<p:column headerText="Nº do Processo"
+				filterBy="#{obj.numeroProcesso}" width="150">
+				<h:outputText
+					value="#{obj.numeroProcesso == null ? 'SEM NUMERO':obj.numeroProcesso}" />
+			</p:column>
+			<p:column headerText="Título">
+				<h:outputText value="#{obj.nome}" />
+			</p:column>
+			<p:column headerText="Data Próximo Relatório" width="200">
+				<h:outputText value="#{obj.proximoRelatorio}">
+					<f:convertDateTime pattern="dd/MM/YYYY" />
+				</h:outputText>
+			</p:column>
+			<p:column headerText="Projeto" width="150">
+				<h:outputText value="#{obj.situacaoProjeto.descricao}" />
+			</p:column>
+			<p:column headerText="Relatório" width="220">
+				<h:outputText value="#{obj.situacao.descricao}" />
+			</p:column>
+			<p:column headerText="Ações" width="170">
+				<p:commandButton title="Gerenciar" styleClass="btn"
+					icon="fa fa-pencil-square-o" update=":pnCadastro :pnBotoes :ccc"
+					actionListener="#{projetoMB.alterar(obj)}"
+					disabled="#{obj.situacao.codigo == 2 || projetoMB.verificaPermissao(obj,'alterar')}">
+					<p:confirm header="Confirmação"
+						message="Deseja gerenciar esse projeto?" />
+				</p:commandButton>
+				<p:commandButton title="Visualizar" styleClass="btn"
+					icon="fa fa-eye" update=":frmVisualizarProjeto"
+					onclick="PF('dlgProjeto').show();"
+					actionListener="#{projetoMB.visualizar(obj)}" />
+				<p:commandButton title="Submeter" styleClass="btn"
+					icon="fa fa-paper-plane-o"
+					disabled="#{obj.situacao.codigo != 3 || projetoMB.verificaPermissao(obj,'submeter')}"
+					oncomplete="PF('dlgCorfirmar').show();"
+					actionListener="#{projetoMB.carregaProjetoSubmeter(obj)}" />
+				<p:commandButton title="Confirmar Participação" styleClass="btn"
+					icon="fa fa-check-square-o" update=":pnLista :dlgInforma"
+					actionListener="#{projetoMB.aceitarProjeto(obj)}"
+					disabled="#{projetoMB.verificaStatusParticipacao(obj)}">
+					<p:confirm header="Confirmação"
+						message="Deseja confirmar participação nesse projeto?" />
+				</p:commandButton>
+			</p:column>
+		</p:dataTable>
+	</h:form>
+</div>

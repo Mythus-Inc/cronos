@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Backup Certificado</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+
+	
+	<div class="row container-fluid">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+				<h:form id="baixa">
+					<p:commandButton   value="Backup"  id="btnBaixar"  title="Backup" ajax="false"  actionListener="#{certificadoMB.baixarArquivo()}">
+						<p:fileDownload value="#{certificadoMB.download}" />
+						
+						</p:commandButton>
+				</h:form>
+			</ol>
+		</div>
+
+	</div>
+	
+	
+		<div class="row container-fluid">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+			        <label>Upload Certificado</label>
+				<h:form id="subirCer">
+					 <p:fileUpload mode="advanced" id="certificadoPDF" fileLimit="10000"
+						fileLimitMessage="É possível selecionar apenas 100000 arquivo"
+						invalidFileMessage="Tipo de arquivo inválido"
+						fileUploadListener="#{certificadoMB.uploadBackup}" 
+						allowTypes="/(\.|\/)(pdf)$/" sizeLimit="2000000" multiple="true"
+						invalidSizeMessage="Tamanho do arquivo inválido" showButtons="true"
+						update=":dlgInformacao" dragDropSupport="false" />
+				</h:form>
+			</ol>
+		</div>
+
+	</div>
+	
+	<!-- FIM DO BOTÃO Backup -->
+
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+			<p:dataTable id="tabela" value="#{certificadoMB.certificadoTodos}"
+				resizableColumns="true" var="obj" reflow="true" rows="10"
+				paginator="true" paginatorPosition="bottom"
+				emptyMessage="Nenhum certificado cadastrado"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+
+
+				<p:column headerText="Turma"
+					filterBy="#{obj.alunoTurma.turma.descricao}"
+					sortBy="#{obj.alunoTurma.turma.descricao}"
+					filterMatchMode="contains">
+					<h:outputText value="#{obj.alunoTurma.turma.descricao}" />
+				</p:column>
+				
+				<p:column headerText="Aluno"
+					filterBy="#{obj.alunoTurma.aluno.nome}"
+					sortBy="#{obj.alunoTurma.aluno.nome}"
+					filterMatchMode="contains">
+					<h:outputText value="#{obj.alunoTurma.aluno.nome}" />
+				</p:column>
+
+				<p:column headerText="Atividade"
+					filterBy="#{obj.atividadeTurma.atividade.descricao}"
+					sortBy="#{obj.atividadeTurma.atividade.descricao}"
+					filterMatchMode="contains">
+					<h:outputText value="#{obj.atividadeTurma.atividade.descricao}" />
+				</p:column>
+
+				<p:column headerText="Descrição" filterBy="#{obj.descricao}"
+					sortBy="#{obj.descricao}" filterMatchMode="contains">
+					<h:outputText value="#{obj.descricao}" />
+				</p:column>
+
+				<p:column headerText="Instituição" filterBy="#{obj.instituicao}"
+					sortBy="#{obj.instituicao}" filterMatchMode="contains">
+					<h:outputText value="#{obj.instituicao}" />
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+
+	</div>
+	<!--FIM DA TABELA-->
+
+
+
+
+</h:body>
+</html>

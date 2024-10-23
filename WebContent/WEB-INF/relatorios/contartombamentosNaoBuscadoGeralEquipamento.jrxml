@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="grupo" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fe166493-b712-4ad9-88ef-0150cb98ee09">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="dbm"/>
+	<parameter name="IDLOCALINVENTARIOCHAMA" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[select  ei.quantidade as qtd,  e.descricao as denominacao, l.descricao as localEncontrado, ei.estado as estadoConservacao,
+l.codigoLocalidade, t.cor as cor, t.material as materia, t.dimensoes as dimensoes, t.marca as marca, t.numeroSerie as numeroSerie
+,l.codigoLocalidade as codigoUnidade, l.descricao as local 
+
+from tab_equipamentoinventario ei inner join tab_tombamento t on 
+ei.tombamento_id = t.id inner join tab_equipamento e on 
+t.equipamento_id = e.id inner join tab_localinventario loc on
+loc.id =ei.localInventario_id inner join   tab_localidades l on 
+loc.local_id =l.id inner join tab_inventario invs on 
+loc.Inventario_id = invs.id 
+
+where ei.status = true and invs.id =  $P{IDLOCALINVENTARIOCHAMA}   and ei.naoTombado = true]]>
+	</queryString>
+	<field name="qtd" class="java.lang.Integer"/>
+	<field name="denominacao" class="java.lang.String"/>
+	<field name="localEncontrado" class="java.lang.String"/>
+	<field name="estadoConservacao" class="java.lang.String"/>
+	<field name="codigoLocalidade" class="java.lang.String"/>
+	<field name="cor" class="java.lang.String"/>
+	<field name="materia" class="java.lang.String"/>
+	<field name="dimensoes" class="java.lang.String"/>
+	<field name="marca" class="java.lang.String"/>
+	<field name="numeroSerie" class="java.lang.String"/>
+	<field name="codigoUnidade" class="java.lang.String"/>
+	<field name="local" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="27">
+			<staticText>
+				<reportElement x="-20" y="-14" width="10" height="24" uuid="bfe06be1-8154-4f55-8524-7688adbd9c0c"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="-20" y="-4" width="555" height="15" uuid="68ebc3dd-a52b-4aa9-9468-f75fe34e11e8"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif" size="7"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

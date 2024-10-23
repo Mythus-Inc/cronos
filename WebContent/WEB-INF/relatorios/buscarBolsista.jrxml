@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="grupo" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fe166493-b712-4ad9-88ef-0150cb98ee09">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="relat\NEW_DATAADAPTER.xml"/>
+	<parameter name="IDPROJETO" class="java.lang.Long"/>
+	<parameter name="DATAINICIO" class="java.sql.Date"/>
+	<parameter name="DATAFIM" class="java.sql.Date"/>
+	<queryString>
+		<![CDATA[select  part.campus as campus, part.dataFimBolsa as dataFimBolsa, part.funcao as funcao,
+part.identificacao as identificacao, part.cargaHoraria as cargaHoraria, progr.descricao as nomePrograma, p.nome as nomePessoa,
+part.dataInicioBolsa as dataInicioBolsa, prog.descricao as nomePrograma
+
+from   tab_participante part 
+inner join tab_programas progr on
+	part.programa_id_programa = progr.id_programa inner join tab_projeto proj on part.projeto_id_projeto = proj.id_projeto inner join
+tab_pessoa p on part.pessoa_id_pessoa = p.id_pessoa inner join tab_programas prog on part.programa_id_programa = prog.id_programa
+
+ where part.status = true and proj.situacao != 'FINALIZADO'  and part.projeto_id_projeto = $P{IDPROJETO} and proj.situacaoProjeto = 'APROVADO'  and part.dataInicioBolsa >  $P{DATAINICIO} and
+ part.dataFimBolsa <   $P{DATAFIM}]]>
+	</queryString>
+	<field name="campus" class="java.lang.String"/>
+	<field name="dataFimBolsa" class="java.sql.Timestamp"/>
+	<field name="funcao" class="java.lang.String"/>
+	<field name="identificacao" class="java.lang.String"/>
+	<field name="cargaHoraria" class="java.lang.Integer"/>
+	<field name="nomePrograma" class="java.lang.String"/>
+	<field name="nomePessoa" class="java.lang.String"/>
+	<field name="dataInicioBolsa" class="java.sql.Timestamp"/>
+	<field name="COLUMN_9" class="java.lang.String"/>
+	<background>
+		<band height="8" splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="36" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<textField>
+				<reportElement x="199" y="0" width="90" height="20" uuid="b6ae28c0-9b7b-48a8-8d34-d8e57aaeb9e6"/>
+				<textFieldExpression><![CDATA[$F{cargaHoraria}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="398" y="0" width="80" height="20" uuid="9929eefa-b8d2-458e-bdf6-89fa7505d0f2"/>
+				<textFieldExpression><![CDATA[$F{campus}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="4" y="1" width="172" height="35" uuid="e4ed31ad-535d-4397-afd0-f89c081cb182"/>
+				<textFieldExpression><![CDATA[$F{nomePessoa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="256" y="1" width="100" height="19" uuid="70b8e24e-80e7-4bb0-948e-b68f792e007b"/>
+				<textFieldExpression><![CDATA[$F{dataInicioBolsa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="329" y="0" width="100" height="20" uuid="193b1d40-f886-4ec9-be0a-1368ccde2380"/>
+				<textFieldExpression><![CDATA[$F{dataFimBolsa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="477" y="0" width="100" height="30" uuid="b846e8fc-2dc1-4934-b7cd-638d10133288"/>
+				<textFieldExpression><![CDATA[$F{nomePrograma}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

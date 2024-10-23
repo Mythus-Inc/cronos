@@ -1,0 +1,125 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/security
+http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+
+	<http auto-config="true" use-expressions="true">
+		<intercept-url pattern="/ac/secretaria/**" access="hasRole('secretaria')" />
+		<intercept-url pattern="/ac/professor/**" access="hasRole('professor')" />
+		<intercept-url pattern="/ac/aluno/**" access="hasRole('aluno')" />
+		<intercept-url pattern="/protocolo/aluno-servidor/**"
+			access="hasRole('aluno') or hasRole('secretaria') or hasRole('professor')" />
+
+		<intercept-url pattern="/protocolo/outros/inicio.jsf/**"
+			access="permitAll" />
+
+		<intercept-url pattern="/protocolo/gerenciamento/**"
+			access="hasRole('secretaria') or hasRole('cadastro_servidor') or hasRole('cadastro_aluno')" />
+
+		<intercept-url pattern="/questionario/adm/**" access="hasRole('questionario')" />
+		<intercept-url pattern="/questionario/formulario.jsf/**"
+			access="hasRole('aluno')" />
+		<intercept-url pattern="/questionario/inicio.jsf/**"
+			access="permitAll" />
+		<intercept-url pattern="/base/servidor/tipo.jsf/**"
+			access="hasRole('cadastro_tipo')" />
+		<intercept-url pattern="/base/servidor/servidor.jsf/**"
+			access="hasRole('cadastro_servidor')" />
+		<intercept-url pattern="/base/servidor/aluno.jsf/**"
+			access="hasRole('cadastro_aluno')" />
+		<intercept-url pattern="/base/servidor/curso.jsf/**"
+			access="hasRole('cadastro_curso')" />
+		<intercept-url pattern="/base/servidor/turma.jsf/**"
+			access="hasRole('cadastro_turma')" />
+		<intercept-url pattern="/base/servidor/inicio.jsf/**"
+			access="hasRole('cadastro_tipo') or hasRole('cadastro_servidor') or hasRole('cadastro_aluno') or hasRole('cadastro_curso') or hasRole('cadastro_turma')" />
+		<intercept-url pattern="/base/servidor/relatorios.jsf/**"
+			access="hasRole('cadastro_turma') or hasRole('secretaria') or hasRole('professor')" />
+		
+		<!-- COPE -->
+
+		<intercept-url pattern="/cope/aluno/**" access="hasRole('aluno')" />
+		<intercept-url pattern="/cope/professor/**"
+			access="hasRole('professor') or hasRole('aluno')" />
+		<intercept-url pattern="/cope/secretaria/**"
+			access="hasRole('cope_responsavel') or hasRole('cope_presidente')" />
+		<!-- COPE -->
+
+		<!-- INVENTÁRIO -->
+		<intercept-url pattern="/inventario/localidade.jsf/**"
+			access="hasRole('inventario')" />
+		<intercept-url pattern="/inventario/setor.jsf/**"
+			access="hasRole('inventario')" />
+		<intercept-url pattern="/inventario/locais-onde-confere.jsf/**"
+			access="hasRole('inventario')" />
+		<intercept-url pattern="/inventario/equipamento.jsf/**"
+			access="hasRole('inventario')" />
+		<intercept-url pattern="/inventario/inventario.jsf/**"
+			access="hasRole('inventario')" />
+		<intercept-url pattern="/inventario/conferencia.jsf/**"
+			access="isAuthenticated() and ! hasRole('aluno')" />
+		<intercept-url pattern="/inventario/inicio.jsf/**"
+			access="isAuthenticated()" />
+		<intercept-url pattern="/inventario/movimentacao.jsf/**"
+			access="hasRole('inventario')" />
+		<intercept-url pattern="/inventario/relatorio.jsf/**"
+			access="hasRole('inventario')" />
+
+
+		<access-denied-handler error-page="/negado.jsf" />
+		<form-login login-page="/login.jsf"
+			authentication-failure-url="/login.jsf?error=true" />
+	</http>
+
+	<authentication-manager>
+
+
+		<authentication-provider>
+
+			<password-encoder hash="bcrypt" />
+			<jdbc-user-service data-source-ref="dataSource"
+				users-by-username-query="SELECT usuario as username, 
+                                 senha as password, status as enable FROM tab_pessoa WHERE usuario=?"
+
+				authorities-by-username-query="SELECT  d.usuario as username, b.descricao as authority FROM tab_permissao a , tab_tipo b, tab_servidor c, tab_pessoa d where d.id_pessoa = c.id_pessoa and a.id_servidor = c.id_pessoa and a.id_tipo = b.id_tipo and a.status = true and d.status = true and d.usuario =?" />
+
+		</authentication-provider>
+
+
+		<authentication-provider>
+
+
+			<password-encoder hash="bcrypt" />
+			<jdbc-user-service data-source-ref="dataSource"
+				users-by-username-query="SELECT usuario as username, 
+			 senha as password, status as enable FROM tab_pessoa WHERE status is true and usuario=?"
+
+				authorities-by-username-query="select usuario as username, perfilAluno as authority from 
+				 tab_pessoa as p where status is true and p.usuario=?" />
+
+		</authentication-provider>
+
+
+	</authentication-manager>
+	<beans:bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		
+ 		<beans:property name="url" 
+ 			value="jdbc:mysql://localhost:3306/cronos" /> 
+		<beans:property name="driverClassName" value="com.mysql.jdbc.Driver" /> 
+		<beans:property name="username" value="root" /> 
+		<beans:property name="password" value="123456" /> 
+		
+
+
+	</beans:bean>
+
+
+
+
+</beans:beans>

@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:body>
+	<ui:composition
+		template="../resources/template/inventario/template-inventario.xhtml">
+		<ui:define name="mensagem">
+			<ui:include src="../componentes/mensagem.xhtml" />
+		</ui:define>
+		<ui:define name="conteudo">
+
+			<!-- TITULO -->
+			<div class="row">
+				<div class="col-md-12">
+					<h1 class="page-header">Conferência</h1>
+				</div>
+			</div>
+			<!-- FIM TITULO -->
+
+			<h:form id="formTombamento">
+				<div class="ui-fluid">
+
+					<div class="row">
+						<div class="col-md-8">
+							<label>Selecione O inventário *</label>
+							<p:autoComplete id="inventario" dropdown="true"
+								scrollHeight="170" value="#{conferenciaMB.inventario}"
+								completeMethod="#{conferenciaMB.completarInventario}"
+								forceSelection="true" converter="#{converteInventario}"
+								var="serv" itemLabel="#{serv.descricao}" itemValue="#{serv}"
+								required="true"
+								requiredMessage="O campo inventario não deve ser nulo">
+
+								<p:ajax event="itemSelect"
+									listener="#{conferenciaMB.completaLocalInventario()}"
+									update="local" />
+
+							</p:autoComplete>
+
+						</div>
+
+						<div class="col-md-4"></div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-8">
+							<label>Selecione a Localidade *</label>
+							<p:autoComplete id="local" dropdown="true" scrollHeight="170"
+								value="#{conferenciaMB.localInventarioSelecionado}"
+								completeMethod="#{conferenciaMB.completarLocal}"
+								forceSelection="true" converter="#{converteLocalInventario}"
+								var="serv" itemLabel="#{serv.local.descricao}"
+								itemValue="#{serv}" required="true"
+								requiredMessage="O campo Local não deve ser nulo">
+
+								<p:ajax event="itemSelect"
+									listener="#{conferenciaMB.carregarListaEquipamentos()}"
+									update=":frmTabela" />
+
+							</p:autoComplete>
+
+						</div>
+
+						<div class="col-md-4"></div>
+					</div>
+
+					<div class="row" style="margin-top: 10px; margin-bottom: 10px">
+						<div class="col-md-12">
+							<p:tabView>
+								<p:ajax event="tabChange"
+									listener="#{conferenciaMB.onTabChange}" update="@form" />
+								<p:tab title="Tombado" id="tab_tombado">
+
+									<div class="row">
+										<div class="col-md-8">
+											<label>Pesquisar pelo tombamento / descrição</label>
+											<p:inputText title="tombamento" alt="tombamento"
+												styleClass="col-md-12"
+												value="#{conferenciaMB.tombamento.codigo}" />
+										</div>
+
+										<div class="col-md-2">
+											<label>&nbsp;</label>
+											<p:commandButton value="Pesquisar" alt="Sim"
+												styleClass="ui-priority-primary"
+												actionListener="#{conferenciaMB.buscarTombamento()}"
+												update=":frmTabela :dlgInformacao :formTombamento" />
+										</div>
+
+										<div class="col-md-2"></div>
+									</div>
+
+									<div class="row">
+										<div class="col-md-8">
+											<label>Equipamento</label>
+											<p:inputText title="Equipamento" alt="Equipamento"
+												styleClass="col-md-12" readonly="true"
+												value="#{conferenciaMB.tombamento.equipamento.descricao}" />
+
+										</div>
+										<div class="col-md-4"></div>
+									</div>
+
+								</p:tab>
+
+								<p:tab title="Não tombado" id="tab_nao_tombado">
+									<div class="row">
+										<div class="col-md-8">
+											<label>Descrição: </label>
+											<p:inputText title="descricao" alt="descricao"
+												styleClass="col-md-12"
+												value="#{conferenciaMB.tombamento.equipamento.descricao}" />
+										</div>
+										<div class="col-md-4"></div>
+									</div>
+
+									<div class="row">
+										<div class="col-md-8">
+											<label>Especificação: </label>
+											<p:inputText title="especificacao" alt="especificacao"
+												value="#{conferenciaMB.tombamento.especificacao}"
+												styleClass="col-md-12" />
+										</div>
+										<div class="col-md-4"></div>
+									</div>
+
+									<div class="row">
+										<div class="col-md-8">
+											<label>Quantidade: </label>
+											<p:spinner title="quantidade" alt="quantidade"
+												value="#{conferenciaMB.equipamentoInventario.quantidade}" />
+										</div>
+										<div class="col-md-4"></div>
+									</div>
+
+									<div class="row">
+										<div class="col-md-8">
+											<label>Cor: </label>
+											<p:inputText title="cor" alt="cor"
+												value="#{conferenciaMB.tombamento.cor}"
+												styleClass="col-md-12" />
+										</div>
+										<div class="col-md-4"></div>
+									</div>
+
+									<div class="row">
+										<div class="col-md-8">
+											<label>Material: </label>
+											<p:inputText title="material" alt="material"
+												value="#{conferenciaMB.tombamento.material}"
+												styleClass="col-md-12" />
+										</div>
+										<div class="col-md-4"></div>
+									</div>
+
+									<div class="row">
+										<div class="col-md-8">
+											<label>Marca: </label>
+											<p:inputText title="marca" alt="marca"
+												value="#{conferenciaMB.tombamento.marca}"
+												styleClass="col-md-12" />
+										</div>
+										<div class="col-md-4"></div>
+									</div>
+
+									<div class="row">
+										<div class="col-md-8">
+											<label>Número de série: </label>
+											<p:inputText title="numero de serie" alt="numero de serie"
+												value="#{conferenciaMB.tombamento.numeroSerie}"
+												styleClass="col-md-12" />
+										</div>
+										<div class="col-md-4"></div>
+									</div>
+
+									<div class="row">
+										<div class="col-md-8">
+											<label>Dimenções: </label>
+											<p:inputText title="dimencoes" alt="dimencoes"
+												value="#{conferenciaMB.tombamento.dimensoes}"
+												styleClass="col-md-12" />
+										</div>
+										<div class="col-md-4"></div>
+									</div>
+
+								</p:tab>
+
+							</p:tabView>
+						</div>
+					</div>
+
+					<div class="row">
+
+						<div class="col-md-4">
+							<label>Estado Conservação </label>
+							<p:selectOneMenu
+								value="#{conferenciaMB.equipamentoInventario.estado}">
+								<f:selectItems value="#{conferenciaMB.estadoConservacao}" />
+							</p:selectOneMenu>
+
+						</div>
+
+						<div class="col-md-4">
+							<label>Trocar Etiqueta: </label>
+
+							<p:selectOneRadio id="CertInterno"
+								value="#{conferenciaMB.equipamentoInventario.trocarEtiqueta}">
+								<f:selectItem itemLabel="Sim" itemValue="sim" />
+								<f:selectItem itemLabel="Não" itemValue="nao" />
+							</p:selectOneRadio>
+
+						</div>
+						<div class="col-md-4"></div>
+
+					</div>
+
+					<div class="row">
+						<div class="col-md-8">
+							<label>Observações</label>
+							<p:inputText title="Equipamento" alt="Equipamento"
+								styleClass="col-md-12"
+								value="#{conferenciaMB.equipamentoInventario.observacoes}" />
+						</div>
+						<div class="col-md-2">
+							<label>&nbsp;</label>
+							<p:commandButton value="Salvar" alt="Sim"
+								styleClass="ui-priority-primary"
+								actionListener="#{conferenciaMB.salvarEquipamento()}"
+								update=":frmTabela :dlgInformacao :formTombamento" />
+						</div>
+						<div class="col-md-2"></div>
+					</div>
+
+					<div class="row" style="margin-bottom: 10px">
+						<div class="col-md-12">
+							<small>Campos obrigatórios *</small>
+						</div>
+					</div>
+				</div>
+
+			</h:form>
+
+			<!-- TABELA-->
+			<div class="col-md-12">
+				<h:form id="frmTabela">
+					<p:dataTable id="tabela" resizableColumns="true" var="obj"
+						reflow="true" rows="10" paginator="true"
+						value="#{conferenciaMB.listEquipamentoInventario}"
+						paginatorPosition="bottom"
+						emptyMessage="Nenhum Equipamento Conferido Para Esse Local"
+						rowsPerPageTemplate="5,10,15,30,50,100">
+
+						<p:column headerText="Inventário">
+							<h:outputText value="#{obj.localInventario.inventario.descricao}" />
+						</p:column>
+
+						<p:column headerText="Localidade">
+							<h:outputText value="#{obj.localInventario.local.descricao}" />
+						</p:column>
+
+						<p:column headerText="Equipamento"
+							filterBy="#{obj.tombamento.equipamento.descricao}"
+							sortBy="#{obj.tombamento.equipamento.descricao}">
+							<h:outputText value="#{obj.tombamento.equipamento.descricao}" />
+						</p:column>
+
+						<p:column headerText="Tombamento"
+							filterBy="#{obj.tombamento.codigo}"
+							sortBy="#{obj.tombamento.codigo}">
+							<h:outputText value="#{obj.tombamento.codigo}" />
+						</p:column>
+
+						<p:column headerText="Estado Conservação">
+							<h:outputText value="#{obj.estado}" />
+						</p:column>
+
+						<p:column headerText="Data Conferência">
+							<h:outputText value="#{obj.dataConferencia}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Observações">
+							<h:outputText value="#{obj.observacoes}" />
+						</p:column>
+
+						<p:column headerText="Alterar" style="width:68px">
+
+							<p:commandButton alt="Alterar" update=":frmModalAlterar"
+								styleClass="btn btn-block"
+								rendered="#{obj.tombamento.codigo != null and obj.tombamento.codigo != ''}"
+								onclick="PF('dlgAltConferencia').show();" icon="ui-icon-pencil">
+								<f:setPropertyActionListener value="#{obj}"
+									target="#{conferenciaMB.equipamentoInventarioAlterar}" />
+							</p:commandButton>
+
+							<p:commandButton alt="Alterar" update=":frmModalAlterarNaoTombado"
+								styleClass="btn btn-block"
+								rendered="#{obj.tombamento.codigo == ''}"
+								onclick="PF('dlgAltConferenciaNaoTombado').show();"
+								icon="ui-icon-pencil">
+								<f:setPropertyActionListener value="#{obj}"
+									target="#{conferenciaMB.equipamentoInventarioAlterar}" />
+							</p:commandButton>
+
+						</p:column>
+
+						<p:column headerText="Remover" style="width:90px">
+							<p:commandButton alt="excluir" styleClass="btn btn-block"
+								update=":dlgInformacao :frmTabela" icon="ui-icon-trash"
+								actionListener="#{conferenciaMB.inativar(obj)}">
+								<p:confirm header="Confirmação" message="Deseja excluir?" />
+							</p:commandButton>
+						</p:column>
+
+					</p:dataTable>
+				</h:form>
+			</div>
+			<!--FIM DA TABELA-->
+
+			<!-- DIALOG ALTERAR CONFERENCIA S-->
+			<p:dialog header="Alterar conferência" widgetVar="dlgAltConferencia"
+				modal="true" responsive="true" width="400px" id="dlgAltConferencia"
+				closable="true" closeOnEscape="true" resizable="false"
+				draggable="false">
+
+				<h:form id="frmModalAlterar">
+					<div class="ui-fluid">
+
+						<div class="row">
+							<div class="col-md-12">
+								<label>Tombamento:&nbsp;</label>
+								<h:outputText
+									value="#{conferenciaMB.equipamentoInventarioAlterar.tombamento.codigo}" />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+								<label>Equipamento:&nbsp;</label>
+								<h:outputText
+									value="#{conferenciaMB.equipamentoInventarioAlterar.tombamento.equipamento.descricao}" />
+							</div>
+						</div>
+
+						<br />
+
+						<div class="row">
+
+							<div class="col-md-6">
+								<label>Estado Conservação </label>
+								<p:selectOneMenu
+									value="#{conferenciaMB.equipamentoInventarioAlterar.estado}">
+									<f:selectItems value="#{conferenciaMB.estadoConservacao}" />
+								</p:selectOneMenu>
+							</div>
+
+							<div class="col-md-6">
+								<label>Trocar Etiqueta: </label>
+								<p:selectOneRadio id="CertInterno"
+									value="#{conferenciaMB.equipamentoInventarioAlterar.trocarEtiqueta}">
+									<f:selectItem itemLabel="Sim" itemValue="sim" />
+									<f:selectItem itemLabel="Não" itemValue="nao" />
+								</p:selectOneRadio>
+							</div>
+
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+								<label>Observações</label>
+								<p:inputText title="Equipamento" alt="Equipamento"
+									styleClass="col-md-12"
+									value="#{conferenciaMB.equipamentoInventarioAlterar.observacoes}" />
+							</div>
+						</div>
+
+						<div class="row">
+							<small>&nbsp;</small>
+						</div>
+
+					</div>
+
+					<div class="modal-footer">
+						<p:commandButton value="Salvar" id="btnSalvar" alt="Sim"
+							styleClass="ui-priority-primary"
+							actionListener="#{conferenciaMB.alterarEquipamento()}"
+							update=":frmTabela @form" />
+					</div>
+
+				</h:form>
+
+			</p:dialog>
+			<!-- FIM DO DIALOG ALTERAR CONFERENCIA -->
+
+			<!-- DIALOG ALTERAR CONFERENCIA NAO TOMBADO-->
+			<p:dialog header="Alterar conferência"
+				widgetVar="dlgAltConferenciaNaoTombado" modal="true"
+				responsive="true" width="400px" id="dlgAltConferenciaNaoTombado"
+				closable="true" closeOnEscape="true" resizable="false"
+				draggable="false">
+
+				<h:form id="frmModalAlterarNaoTombado">
+					<div class="ui-fluid">
+
+						<div class="row">
+							<div class="col-md-12">
+								<label>Descrição: </label>
+								<p:inputText title="descricao" alt="descricao"
+									styleClass="col-md-12"
+									value="#{conferenciaMB.equipamentoInventarioAlterar.tombamento.equipamento.descricao}" />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+								<label>Especificação: </label>
+								<p:inputText title="especificacao" alt="especificacao"
+									value="#{conferenciaMB.equipamentoInventarioAlterar.tombamento.especificacao}"
+									styleClass="col-md-12" />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+								<label>Quantidade: </label>
+								<p:spinner title="quantidade" alt="quantidade"
+									value="#{conferenciaMB.equipamentoInventarioAlterar.quantidade}" />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+								<label>Cor: </label>
+								<p:inputText title="cor" alt="cor"
+									value="#{conferenciaMB.equipamentoInventarioAlterar.tombamento.cor}" styleClass="col-md-12" />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+								<label>Material: </label>
+								<p:inputText title="material" alt="material"
+									value="#{conferenciaMB.equipamentoInventarioAlterar.tombamento.material}"
+									styleClass="col-md-12" />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+								<label>Marca: </label>
+								<p:inputText title="marca" alt="marca"
+									value="#{conferenciaMB.equipamentoInventarioAlterar.tombamento.marca}"
+									styleClass="col-md-12" />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+								<label>Número de série: </label>
+								<p:inputText title="numero de serie" alt="numero de serie"
+									value="#{conferenciaMB.equipamentoInventarioAlterar.tombamento.numeroSerie}"
+									styleClass="col-md-12" />
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+								<label>Dimenções: </label>
+								<p:inputText title="dimencoes" alt="dimencoes"
+									value="#{conferenciaMB.equipamentoInventarioAlterar.tombamento.dimensoes}"
+									styleClass="col-md-12" />
+							</div>
+						</div>
+
+						<div class="row">
+
+							<div class="col-md-6">
+								<label>Estado Conservação </label>
+								<p:selectOneMenu
+									value="#{conferenciaMB.equipamentoInventarioAlterar.estado}">
+									<f:selectItems value="#{conferenciaMB.estadoConservacao}" />
+								</p:selectOneMenu>
+							</div>
+
+							<div class="col-md-6">
+								<label>Trocar Etiqueta: </label>
+								<p:selectOneRadio id="CertInterno"
+									value="#{conferenciaMB.equipamentoInventarioAlterar.trocarEtiqueta}">
+									<f:selectItem itemLabel="Sim" itemValue="sim" />
+									<f:selectItem itemLabel="Não" itemValue="nao" />
+								</p:selectOneRadio>
+							</div>
+
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+								<label>Observações</label>
+								<p:inputText title="Equipamento" alt="Equipamento"
+									styleClass="col-md-12"
+									value="#{conferenciaMB.equipamentoInventarioAlterar.observacoes}" />
+							</div>
+						</div>
+
+						<div class="row">
+							<small>&nbsp;</small>
+						</div>
+
+					</div>
+
+					<div class="modal-footer">
+						<p:commandButton value="Salvar" id="btnSalvar" alt="Sim"
+							styleClass="ui-priority-primary"
+							actionListener="#{conferenciaMB.alterarEquipamentoNaoTombado()}"
+							update=":frmTabela @form" />
+					</div>
+
+				</h:form>
+
+			</p:dialog>
+			<!-- FIM DO DIALOG ALTERAR CONFERENCIA -->
+
+			<!-- DIALOG SALVAR -->
+			<p:dialog header="Equipamento" widgetVar="dlgEquipamento"
+				modal="true" responsive=" true" width="60%" id="dlgEquipamento"
+				closable="true" closeOnEscape="true" resizable="false"
+				draggable="false">
+
+				<h:form id="frmModalSalvar">
+					<div class="ui-fluid">
+						<div class="col-md-12">
+							<label>Descrição *</label>
+							<p:inputText title="Descrição" alt="descrição"
+								styleClass="col-md-12"
+								value="#{equipamentoMB.equipamento.descricao}" />
+						</div>
+						<div class="col-md-12">
+							<small>Campos obrigatórios *</small>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<p:commandButton value="Salvar" id="btnSalvar" alt="Sim"
+							styleClass="ui-priority-primary"
+							actionListener="#{equipamentoMB.salvar()}"
+							update=":frmTabela :dlgInformacao" />
+
+					</div>
+				</h:form>
+
+			</p:dialog>
+			<!-- FIM DO DIALOG SALVAR -->
+
+		</ui:define>
+		<ui:define name="modal-confirmacao">
+			<ui:include src="../componentes/dialog-confirmacao.xhtml" />
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

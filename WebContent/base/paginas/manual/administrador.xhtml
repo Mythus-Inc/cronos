@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">
+				<i class="fa fa-book" aria-hidden="true"></i> Manual do
+				administrador
+			</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">
+				<b>Olá usuário(a) do módulo administrador, </b> no sistema você
+				possui permissões de gerenciar todos os usuários, cursos, turmas,
+				grupos e atividades, abaixo será explicado o funcionamento do
+				software para você.
+			</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Primeiramente a página de cadastro de
+				administrador, na mesma você poderá cadastrar, alterar e excluir os
+				mesmos.</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<img
+				src="#{request.contextPath}/resources/img/adiministrador-tela.png"
+				class="img-responsive" />
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Como pode ser observado, existe um botão
+				cadastrar, acima da tabela que contém todos os administradores
+				cadastrados, o mesmo botão abre um dialog onde será possível inserir
+				os dados necessários. Na tabela é apresentados os botões de alterar
+				e excluir, o primeiro irá abrir o mesmo dialog mencionado com as
+				informações do registro selecionado, por fim o botão excluir que
+				irá fazer com que o registro daquela linha seja removido, sumindo
+				assim da tabela.</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Para todos os outros cadastros seguirá a mesmas
+				regras aplicadas acima, mas será exibido o cadastro de cadastro de
+				professor e aluno, para que possa ser esclarecidas eventuais
+				dúvidas, vale ressaltar nesse momento, se caso não seja inserida
+				senha para os usuários o padrão para os mesmos será 123.</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Na figura abaixo é exibido o cadastro de
+				professor e é possível verificar que é permitido cadastrar mais de
+				um curso para professor, sendo assim basta seleciona-los.</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<img
+				src="#{request.contextPath}/resources/img/cadastro-professor-tela.png"
+				class="img-responsive" />
+		</div>
+	</div>
+	<br />
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Para remover os cursos selecionados para
+				professor deve seguir os seguintes passos clicar na lupa presente do
+				lado direito da tabela nesse momento será aberto outro dialog
+				apresentado abaixo, que contém um botão remover.</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<img
+				src="#{request.contextPath}/resources/img/remover-curso-professor.png"
+				class="img-responsive" />
+		</div>
+	</div>
+	<br />
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Na tela de cadastro de aluno, estão divididos
+				entre ativos e inativos, para que possa ir para tabela de alunos
+				trancados basta clicar sobre o botão de próximo, um ponto importante
+				no cadastro de aluno, caso o mesmo seja alterado e mudado a sua
+				turma as horas dos cadastros dos certificados do mesmo poderão ser
+				alteradas, devido das horas computadas serem conforme a equivalência
+				da turma.</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<img
+				src="#{request.contextPath}/resources/img/cadastro-aluno-tela.png"
+				class="img-responsive" />
+		</div>
+	</div>
+
+	<br />
+	<div class="row">
+		<div class="col-md-12">
+			<p class="lead">Na tela abaixo é possível você alterar os dados
+				do seu usuário no software.</p>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<img
+				src="#{request.contextPath}/resources/img/alterar-dados-administrador-tela.png"
+				class="img-responsive" />
+		</div>
+	</div>
+</h:body>
+</html>

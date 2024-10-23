@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="cronosPU">
+		<class>ac.modelo.Pessoa</class>
+		<class>base.modelo.Aluno</class>
+		<class>base.modelo.Curso</class>
+		<class>ac.modelo.ProfessorCurso</class>
+		<class>base.modelo.Turma</class>
+		<class>ac.modelo.AlunoTurma</class>
+		<class>ac.modelo.Grupo</class>
+		<class>ac.modelo.GrupoTurma</class>
+		<class>ac.modelo.Atividade</class>
+		<class>ac.modelo.AtividadeTurma</class>
+		<class>ac.modelo.Certificado</class>
+		<class>base.modelo.Tipo</class>
+		<class>base.modelo.Servidor</class>
+		<class>base.modelo.Matriz</class>
+		<class>ac.modelo.Permissao</class>
+
+		<class>questionario.modelo.Formulario</class>
+		<class>questionario.modelo.Email</class>
+
+		<class>protocolo.modelo.DocumentosAnexo</class>
+		<class>protocolo.modelo.Encaminhamento</class>
+		<class>protocolo.modelo.PessoaSetor</class>
+		<class>protocolo.modelo.Protocolo</class>
+		<class>protocolo.modelo.Requerimento</class>
+		<class>protocolo.modelo.Setor</class>
+
+
+		<class>cope.modelo.ArquivoProjeto</class>
+		<class>cope.modelo.Avaliacao</class>
+		<class>cope.modelo.ParametroSistema</class>
+		<class>cope.modelo.Participante</class>
+		<class>cope.modelo.Projeto</class>
+		<class>cope.modelo.Programas</class>
+		<class>cope.modelo.Criterios</class>
+		<class>cope.modelo.TiposProducao</class>
+		<class>cope.modelo.ProducaoRelatorio</class>
+
+		<class>inventario.modelo.Equipamento</class>
+		<class>inventario.modelo.EquipamentoInventario</class>
+		<class>inventario.modelo.HistoricoLocais</class>
+		<class>inventario.modelo.Inventario</class>
+		<class>inventario.modelo.Localidades</class>
+		<class>inventario.modelo.LocalInventario</class>
+		<class>inventario.modelo.Movimentacoes</class>
+		<class>inventario.modelo.MovimentacoesTombamento</class>
+		<class>inventario.modelo.Tombamento</class>
+		<class>inventario.modelo.Locais</class>
+		<class>inventario.modelo.SetorLocal</class>
+
+		<properties>
+
+ 			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/cronos?serverTimezone=UTC&amp;useLegacyDatetimeCode=false"/> 
+ 			<property name="javax.persistence.jdbc.user" value="root"/> 
+ 			<property name="javax.persistence.jdbc.password" value="123456" /> 
+
+			<property name="javax.persistence.jdbc.driver"
+				value="com.mysql.jdbc.Driver" />
+			<property name="hibernate.cache.provider_class"
+				value="org.hibernate.cache.NoCacheProvider" />
+<!-- 			<property name="hibernate.hbm2ddl.auto" value="update" /> -->
+			<!-- <property name="hibernate.hbm2ddl.auto" value="none" /> -->
+
+
+			<property name="hibernate.dialect"
+				value="org.hibernate.dialect.MySQL5Dialect" />
+
+			<property name="hibernate.connection.provider_class"
+				value="org.hibernate.connection.C3P0ConnectionProvider" />
+
+			<property name="hibernate.connection.provider_class"
+				value="org.hibernate.connection.C3P0ConnectionProvider"></property>
+			<property name="hibernate.c3p0.min_size" value="2"></property>
+			<property name="hibernate.c3p0.max_size" value="20"></property>
+			<property name="hibernate.c3p0.timeout" value="108000"></property>
+			<property name="hibernate.c3p0.max_statements" value="50"></property>
+			<property name="hibernate.c3p0.idle_test_period"
+				value="1000"></property>
+			<property name="hibernate.c3p0.validate" value="true"></property>
+			<property name="hibernate.c3p0.acquire_increment" value="5"></property>
+
+		</properties>
+	</persistence-unit>
+</persistence>

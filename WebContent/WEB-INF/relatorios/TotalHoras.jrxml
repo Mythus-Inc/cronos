@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="grupo" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fe166493-b712-4ad9-88ef-0150cb98ee09">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="relat\NEW_DATAADAPTER.xml"/>
+	<parameter name="IDPESSOA" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[select SUM(part.cargaHoraria) as totalHoras
+
+from  tab_projeto proj inner join  tab_participante part on 
+	proj.id_projeto = part.projeto_id_projeto
+inner join tab_pessoa p on
+	part.pessoa_id_pessoa = p.id_pessoa
+
+
+ where part.status = true and proj.situacao != 'FINALIZADO'  and proj.situacaoProjeto = 'APROVADO'  and part.pessoa_id_pessoa = $P{IDPESSOA}]]>
+	</queryString>
+	<field name="totalHoras" class="java.math.BigDecimal"/>
+	<background>
+		<band height="8" splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="36" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<textField>
+				<reportElement x="0" y="-10" width="100" height="20" uuid="46e98631-46aa-4c46-b1e1-587ad2bd3a5c"/>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{totalHoras}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

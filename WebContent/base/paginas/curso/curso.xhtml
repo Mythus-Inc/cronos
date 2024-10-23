@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Curso</h1>
+
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+	<!-- BOTÃO CADASTRAR -->
+	<div class="row container-fluid">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+				<h:form id="frmCadastrar">
+					<p:commandButton actionListener="#{cursoMB.criarNovoCurso()}"
+						value="Cadastrar" update=":frmModalSalvar" id="btnCadastrar"
+						onclick="PF('dlgCurso').show(); PF('dlgCurso').content.scrollTop('0')"
+						title="Cadastrar" />
+				</h:form>
+			</ol>
+		</div>
+	</div>
+	<!-- FIM DO BOTÃO CADASTRAR -->
+
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+			<p:dataTable id="tabela" value="#{cursoMB.cursos}" var="obj"
+				resizableColumns="true" reflow="true" rows="10" paginator="true"
+				paginatorPosition="bottom" emptyMessage="Nenhum curso cadastrado"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+
+				<p:column headerText="Curso" filterBy="#{obj.nome}"
+					sortBy="#{obj.nome}" filterMatchMode="contains">
+					<h:outputText value="#{obj.nome}" />
+				</p:column>
+
+				<p:column headerText="Data de Aberturma"
+					sortBy="#{obj.dataAbertura}">
+					<h:outputText value="#{obj.dataAbertura}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Alterar" style="width:68px">
+
+					<p:commandButton update=":frmModalSalvar" alt="Alterar"
+						styleClass="btn btn-block" title="Alterar"
+						onclick="PF('dlgCurso').show();" icon="ui-icon-pencil">
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{cursoMB.curso}" />
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="Excluir" style="width:68px">
+					<p:commandButton actionListener="#{cursoMB.inativar(obj)}"
+						styleClass="btn btn-block" icon="ui-icon-trash" title="Excluir"
+						update="frmTabela :dlgInformacao" alt="Excluir">
+						<p:confirm header="Confirmação" message="Deseja excluir?" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</div>
+	<!--FIM DA TABELA-->
+
+	<!-- DIALOG SALVAR -->
+	<p:dialog header="Curso" widgetVar="dlgCurso" modal="true"
+		responsive="true" width="60%" id="dlgCurso" closable="true"
+		closeOnEscape="true" resizable="false" draggable="false">
+		<h:form id="frmModalSalvar">
+
+			<div class="ui-fluid">
+			
+					<div class="col-md-12">
+						<label>Nome do curso *</label>
+						<p:inputText title="Nome do curso" id="nome"
+							value="#{cursoMB.curso.nome}" required="true"
+							requiredMessage="O campo nome não deve ser nulo" />
+					</div>
+					
+				<div class="col-md-8">
+						<label>Abreviação *</label>
+						<p:inputText title="abreviacao do curso" id="abreviacao"
+							value="#{cursoMB.curso.abreviacaoCurso}" required="true"
+							requiredMessage="O campo abreviação não deve ser nulo" />
+				</div>
+				
+				<div class="col-md-4">
+					<label>Data de abertura *</label>
+					<p:calendar id="dtAbertura" value="#{cursoMB.curso.dataAbertura}"
+						pattern="dd/MM/yyyy" mask="true" required="true"
+						requiredMessage="O campo data de abertura não deve ser nulo" />
+
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12">
+
+					<small>Campos obrigatórios *</small>
+
+				</div>
+			</div>
+
+
+
+			<div class="modal-footer">
+				<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+					alt="Sim" actionListener="#{cursoMB.salvar()}"
+					update=":dlgInformacao :frmTabela" />
+
+				<p:commandButton value="Cancelar" onclick="PF('dlgCurso').hide();"
+					alt="Cancelar" />
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- FIM DO DIALOG SALVAR -->
+
+
+
+</h:body>
+</html>
+

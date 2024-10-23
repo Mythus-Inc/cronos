@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Acompanhamento de Horas</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+	<p:tabView>
+		<p:tab title="Acompanhamento de Horas">
+			<h:form id="RelTurma">
+				<div class="ui-fluid">
+					<div class="col-md-8">
+						<label>Turma</label>
+						<p:selectOneMenu id="console"
+							value="#{graficoCertificadoAlunoMB.alunoTurmaSelecionada}"
+							converter="#{converterAlunoTurma}" required="true"
+							requiredMessage="Selecione uma turma">
+							<f:selectItem itemLabel="" />
+							<f:selectItems
+								value="#{graficoCertificadoAlunoMB.listAlunoTurmas}" var="t"
+								itemValue="#{t}" itemLabel="#{t.turma.descricao}" />
+
+						</p:selectOneMenu>
+						<br />							
+						
+						<p:commandButton value="Imprimir Relatório Grupo"
+							title="Imprimir Relatório" ajax="false"
+							alt="Imprimir Relatório"
+							actionListener="#{graficoCertificadoAlunoMB.imprimirCertificadoGrupo()}"
+							update=":dlgInformacao">
+						</p:commandButton>
+					</div>
+				</div>
+			</h:form>
+		</p:tab>
+	</p:tabView>
+
+
+
+</h:body>
+</html>

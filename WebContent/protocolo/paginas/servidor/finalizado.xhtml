@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+		
+	
+			<!-- TITULO -->
+			<div class="row">
+				<div class="col-md-12">
+					<h1 class="page-header">Protocolos Finalizado Servidor</h1>
+				</div>
+			</div>
+			<!-- FIM TITULO -->
+
+	
+			<!-- TABELA-->
+			<div class="col-md-12">
+				<h:form id="frmTabela">
+					<p:dataTable id="tabela" value="" resizableColumns="true" var=""
+						reflow="true" rows="10" paginator="true"
+						paginatorPosition="bottom"
+						emptyMessage="Nenhum protocolo cadastrado"
+						rowsPerPageTemplate="5,10,15,30,50,100">
+
+						<p:column headerText="Numero"  filterBy="#{nome}">
+
+						</p:column>
+						<p:column headerText="Nome Requerente" >
+
+
+						</p:column>
+
+						<p:column headerText="Tipo Requerimento" filterBy="#{nome}" >
+
+						</p:column>
+
+						<p:column headerText="Status" filterBy="#{nome}">
+
+						</p:column>
+
+						<p:column headerText="Data"  filterBy="#{nome}">
+
+						</p:column>
+
+
+					</p:dataTable>
+				</h:form>
+
+			</div>
+			<!--FIM DA TABELA-->
+
+			
+	
+
+</h:body>
+</html>

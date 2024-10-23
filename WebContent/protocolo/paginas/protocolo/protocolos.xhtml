@@ -1,0 +1,1099 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Protocolar</h1>
+
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+	<!-- BOTÃO CADASTRAR -->
+	<div class="row container-fluid">
+		<div class="col-md-2">
+			<ol class="breadcrumb">
+				<h:form id="frmCadastrar">
+					<p:commandButton value="Aluno - Servidor"
+						actionListener="#{protocoloSecretariaMB.criarNovoObjeto()}"
+						update="formProtocoloAluno" onclick="PF('dlgAluno').show();" />
+
+				</h:form>
+			</ol>
+		</div>
+
+
+		<div class="col-md-2">
+			<ol class="breadcrumb">
+				<h:form id="frmCdsastrar">
+					<p:commandButton value="Externa" onclick="PF('dlgExterno').show();"
+						update="formProtocoloExterno"
+						actionListener="#{protocoloSecretariaMB.criarNovoObjetoExterno()}" />
+				</h:form>
+			</ol>
+		</div>
+
+
+
+
+
+	</div>
+
+	<!-- barra de progresso -->
+	<p:ajaxStatus onstart="PF('statusDialog').show()"
+		onsuccess="PF('statusDialog').hide()" />
+
+	<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+		closable="false" resizable="false" showHeader="false">
+		<h4>Aguarde...</h4>
+
+		<f:facet name="start">
+			<p:graphicImage name="../../../resources/img/aguarde.gif" />
+		</f:facet>
+	</p:dialog>
+
+
+
+	<!-- FIM DO BOTÃO CADASTRAR -->
+	<!-- TABELA-->
+
+
+	<div class="col-md-12">
+
+		<h:form id="frmBuscaRequerimento">
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<div class="col-md-8">
+						<label>Requerimento </label>
+
+
+						<p:autoComplete dropdown="true" required="true"
+							requiredMessage="Campo Requerimento não deve ser nulo"
+							value="#{protocoloSecretariaMB.requerimentoBuscaObj}"
+							scrollHeight="170"
+							completeMethod="#{protocoloSecretariaMB.completeRequerimento}"
+							forceSelection="true" var="set"
+							converter="#{converterRequerimento}" itemLabel="#{set.nome}"
+							itemValue="#{set}">
+
+						</p:autoComplete>
+
+					</div>
+					<div class="col-md-2">
+						<label> </label>
+						<p:commandButton value="Buscar"
+							update="frmTabela :frmBuscaDestino"
+							styleClass="ui-priority-primary"
+							actionListener="#{protocoloSecretariaMB.buscaPorRequerimento()}" />
+					</div>
+					<div class="col-md-2"></div>
+				</div>
+			</div>
+		</h:form>
+
+		<h:form id="frmBuscaDestino">
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<div class="col-md-8">
+						<label>Setor Destino </label>
+
+						<p:autoComplete dropdown="true" required="true"
+							requiredMessage="Campo Setor não deve ser nulo"
+							value="#{protocoloSecretariaMB.requerimentoBuscaObj.setorDestino}"
+							scrollHeight="170"
+							completeMethod="#{protocoloSecretariaMB.completeSetor}"
+							forceSelection="true" var="set" converter="#{converterSetor}"
+							itemLabel="#{set.descricao}" itemValue="#{set}">
+
+						</p:autoComplete>
+
+					</div>
+					<div class="col-md-2">
+						<label> </label>
+						<p:commandButton value="Buscar"
+							update="frmTabela :frmBuscaRequerimento"
+							styleClass="ui-priority-primary"
+							actionListener="#{protocoloSecretariaMB.buscaPorSetorDestino()}" />
+					</div>
+					<div class="col-md-2"></div>
+
+					<div class="col-md-12">
+						<label> </label>
+					</div>
+				</div>
+			</div>
+		</h:form>
+
+
+	</div>
+
+
+	<div class="col-md-2">
+		<ol class="breadcrumb">
+			<h:form id="frmBuscarTodos">
+				<p:commandButton value="Buscar Todos"
+					update=":frmTabela :frmBuscaDestino :frmBuscaRequerimento"
+					actionListener="#{protocoloSecretariaMB.buscar()}" />
+			</h:form>
+		</ol>
+	</div>
+
+
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+
+			<p:wizard backLabel="Anterior" nextLabel="Próximo">
+				<p:tab id="todos" title="Em Aberto">
+					<p:panel header="Todos">
+						<h:panelGrid columns="2" cellpadding="10">
+							<p:dataTable id="tabela" reflow="true" rows="10" paginator="true"
+								paginatorPosition="bottom" resizableColumns="true"
+								value="#{protocoloSecretariaMB.listProtocolo}"
+								emptyMessage="Nenhum Protocolo Encontrado" var="list"
+								rowsPerPageTemplate="5,10,15,30,50,100">
+
+								<p:column headerText="Ver" style="width:68px">
+									<p:commandButton alt="Protocolo" title="Protocolo"
+										styleClass="btn btn-block" onclick="PF('dlgDetalhe').show();"
+										icon="ui-icon-search" update=":frmDetalhesProtocolo"
+										actionListener="#{protocoloSecretariaMB.carregaDadosProtocolo(list)}">
+
+									</p:commandButton>
+								</p:column>
+								<p:column headerText="Imprimir" style="width:75px">
+									<p:commandButton title="Imprimir" ajax="false" alt="Imprimir"
+										icon="ui-icon-print"
+										action="#{protocoloSecretariaMB.imprimirProtocolo(list)}"
+										update=":dlgInformacao">
+									</p:commandButton>
+								</p:column>
+								<p:column headerText="Número" filterBy="#{list.id}">
+									<h:outputText value="#{list.id}" />
+								</p:column>
+								<p:column headerText="Nome Requerente">
+									<h:outputText value="#{list.pessoa.nome}" />
+									<h:outputText value="#{list.nome}" />
+								</p:column>
+
+								<p:column headerText="Tipo Requerimento"
+									filterBy="#{list.requerimento.nome}">
+									<h:outputText value="#{list.requerimento.nome}" />
+								</p:column>
+
+								<p:column headerText="Status" filterBy="#{list.situacao}">
+									<h:outputText value="#{list.situacao}" />
+								</p:column>
+
+								<p:column headerText="Data Solicitação">
+									<h:outputText value="#{list.data}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+								<p:column headerText="Valida Anexos" style="width:150px">
+									<p:commandButton alt="PDF" title="PDF"
+										styleClass="btn btn-block"
+										onclick="PF('dlgAutenticar').show();"
+										icon="ui-icon-circle-check" update=":frmAnexosAutentica"
+										actionListener="#{protocoloSecretariaMB.buscarAnexos(list)}">
+
+									</p:commandButton>
+								</p:column>
+
+								<p:column headerText="Movimentação" style="width:120px">
+									<p:commandButton alt="Movimentação" title="Movimentação"
+										styleClass="btn btn-block"
+										onclick="PF('dlgMovimentacao').show();"
+										icon="ui-icon-document"
+										update=":frmMovimentacaoProtocolo :frmBotoesDados :frmProtocoloTramites"
+										actionListener="#{protocoloSecretariaMB.buscarEncaminhamentos(list)}">
+
+									</p:commandButton>
+								</p:column>
+
+
+							</p:dataTable>
+
+						</h:panelGrid>
+
+					</p:panel>
+				</p:tab>
+
+				<p:tab id="Atraso" title="Em Atraso">
+					<p:panel header="Em Atraso">
+						<h:panelGrid columns="2" cellpadding="10">
+
+							<p:dataTable id="tabelaPrazo" reflow="true" rows="10"
+								paginator="true" paginatorPosition="bottom"
+								resizableColumns="true"
+								value="#{protocoloSecretariaMB.listProtocoloAtraso}"
+								emptyMessage="Nenhum Protocolo Encontrado" var="listAtraso"
+								rowsPerPageTemplate="5,10,15,30,50,100">
+
+								<p:column headerText="Ver" style="width:68px">
+									<p:commandButton alt="Protocolo" title="Protocolo"
+										styleClass="btn btn-block" onclick="PF('dlgDetalhe').show();"
+										icon="ui-icon-search" update=":frmDetalhesProtocolo"
+										actionListener="#{protocoloSecretariaMB.carregaDadosProtocolo(listAtraso)}">
+
+									</p:commandButton>
+								</p:column>
+
+								<p:column headerText="Imprimir" style="width:75px">
+									<p:commandButton title="Imprimir" ajax="false" alt="Imprimir"
+										icon="ui-icon-print"
+										action="#{protocoloSecretariaMB.imprimirProtocolo(listAtraso)}"
+										update=":dlgInformacao">
+									</p:commandButton>
+								</p:column>
+
+								<p:column headerText="Número" filterBy="#{listAtraso.id}">
+									<h:outputText value="#{listAtraso.id}" />
+								</p:column>
+								<p:column headerText="Nome Requerente">
+									<h:outputText value="#{listAtraso.pessoa.nome}" />
+									<h:outputText value="#{listAtraso.nome}" />
+								</p:column>
+
+								<p:column headerText="Tipo Requerimento"
+									filterBy="#{listAtraso.requerimento.nome}">
+									<h:outputText value="#{listAtraso.requerimento.nome}" />
+								</p:column>
+
+								<p:column headerText="Status" filterBy="#{listAtraso.situacao}">
+									<h:outputText value="#{listAtraso.situacao}" />
+								</p:column>
+
+								<p:column headerText="Data Solicitação">
+									<h:outputText value="#{listAtraso.data}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+								<p:column headerText="Movimentação" style="width:120px">
+									<p:commandButton alt="Movimentação" title="Movimentação"
+										styleClass="btn btn-block"
+										onclick="PF('dlgMovimentacao').show();"
+										icon="ui-icon-document"
+										update=":frmMovimentacaoProtocolo :frmBotoesDados :frmProtocoloTramites"
+										actionListener="#{protocoloSecretariaMB.buscarEncaminhamentos(listAtraso)}">
+
+									</p:commandButton>
+								</p:column>
+
+
+							</p:dataTable>
+
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+
+				<p:tab id="encerrados" title="Encerrados">
+					<p:panel header="Encerrados">
+						<h:panelGrid columns="2" cellpadding="10">
+
+							<p:dataTable id="tabelaEncerrados" reflow="true" rows="10"
+								paginator="true" paginatorPosition="bottom"
+								resizableColumns="true"
+								value="#{protocoloSecretariaMB.listProtocoloEncerrado}"
+								emptyMessage="Nenhum Protocolo Encontrado" var="listaEncerrado"
+								rowsPerPageTemplate="5,10,15,30,50,100">
+
+								<p:column headerText="Ver" style="width:68px">
+									<p:commandButton alt="Protocolo" title="Protocolo"
+										styleClass="btn btn-block" onclick="PF('dlgDetalhe').show();"
+										icon="ui-icon-search" update=":frmDetalhesProtocolo"
+										actionListener="#{protocoloSecretariaMB.carregaDadosProtocolo(listaEncerrado)}">
+
+									</p:commandButton>
+								</p:column>
+
+								<p:column headerText="Imprimir" style="width:75px">
+									<p:commandButton title="Imprimir" ajax="false" alt="Imprimir"
+										icon="ui-icon-print"
+										action="#{protocoloSecretariaMB.imprimirProtocoloEncerrado(listaEncerrado)}"
+										update=":dlgInformacao">
+									</p:commandButton>
+								</p:column>
+
+								<p:column headerText="Número" filterBy="#{listaEncerrado.id}">
+									<h:outputText value="#{listaEncerrado.id}" />
+								</p:column>
+								<p:column headerText="Nome Requerente">
+									<h:outputText value="#{listaEncerrado.pessoa.nome}" />
+									<h:outputText value="#{listaEncerrado.nome}" />
+								</p:column>
+
+								<p:column headerText="Tipo Requerimento"
+									filterBy="#{listaEncerrado.requerimento.nome}">
+									<h:outputText value="#{listaEncerrado.requerimento.nome}" />
+								</p:column>
+
+								<p:column headerText="Status"
+									filterBy="#{listaEncerrado.situacao}">
+									<h:outputText value="#{listaEncerrado.situacao}" />
+								</p:column>
+
+								<p:column headerText="Data Solicitação">
+									<h:outputText value="#{listaEncerrado.data}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+								<p:column headerText="Movimentação" style="width:120px">
+									<p:commandButton alt="Movimentação" title="Movimentação"
+										styleClass="btn btn-block"
+										onclick="PF('dlgMovimentacao').show();"
+										icon="ui-icon-document"
+										update=":frmMovimentacaoProtocolo :frmBotoesDados :frmProtocoloTramites"
+										actionListener="#{protocoloSecretariaMB.buscarEncaminhamentosFinalizados(listaEncerrado)}">
+
+									</p:commandButton>
+								</p:column>
+
+
+							</p:dataTable>
+
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+
+			</p:wizard>
+
+
+		</h:form>
+
+	</div>
+	<!--FIM DA TABELA-->
+
+
+
+
+	<!-- inicio do dialog protocolo aluno servidor -->
+	<p:dialog header="Aluno - Servidor" modal="true" responsive="true"
+		width="70%" id="dlgNovoProtocoloAluno" closable="true"
+		closeOnEscape="true" draggable="false" showEffect="scale"
+		resizable="false" widgetVar="dlgAluno">
+
+		<h:form id="formProtocoloAluno">
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Requerente*</label>
+					<p:autoComplete dropdown="true" required="true"
+						requiredMessage="Campo Aluno não deve ser nulo"
+						value="#{protocoloSecretariaMB.protocolo.pessoa}"
+						scrollHeight="170"
+						completeMethod="#{protocoloSecretariaMB.completeAluno}"
+						forceSelection="true" var="set" converter="#{converterPessoa}"
+						itemLabel="#{set.nome} - #{set.cpf}" itemValue="#{set}">
+
+
+					</p:autoComplete>
+				</div>
+
+
+				<div class="col-md-12">
+					<label>Tipo Requerimento *</label>
+					<p:autoComplete dropdown="true" required="true"
+						requiredMessage="Campo Requerimento não deve ser nulo"
+						value="#{protocoloSecretariaMB.protocolo.requerimento}"
+						scrollHeight="170"
+						completeMethod="#{protocoloSecretariaMB.completeRequerimento}"
+						forceSelection="true" var="set"
+						converter="#{converterRequerimento}" itemLabel="#{set.nome}"
+						itemValue="#{set}">
+
+						<p:ajax event="itemSelect" update="codNecessario "
+							listener="#{protocoloSecretariaMB.preencherDadosRequerimento()}" />
+
+
+
+					</p:autoComplete>
+				</div>
+
+				<div class="col-md-12">
+					<label>Documentos Necessários *</label>
+					<p:inputText id="codNecessario"
+						value="#{protocoloSecretariaMB.protocolo.requerimento.documetosNecessarios}"
+						readonly="true" />
+				</div>
+
+				<div class="col-md-12">
+					<label>Descrição Requerente *</label>
+					<p:inputText
+						value="#{protocoloSecretariaMB.protocolo.descricaoRequerente}"
+						required="true"
+						requiredMessage="O campo descrição requerente não pode ser nulo" />
+				</div>
+
+
+				<!-- anexar arquivo  -->
+				<div class="col-md-12">
+					<label> </label>
+				</div>
+				<div class="col-md-12">
+					<p:commandButton value="Anexar Arquivo"
+						oncomplete="PF('dlgAnexo').show();"
+						actionListener="#{protocoloSecretariaMB.criarNovoAnexo()}"
+						update=":formAnexo :formTabelaUp:tabelaUpload" />
+
+				</div>
+				<div class="col-md-12">
+					<label> </label>
+				</div>
+				<div class="col-md-12">
+					<label>Total de Anexos:</label>
+					<h:outputText id="qtdAnexoAlunoServidor"
+						value="#{protocoloSecretariaMB.quantidadeArquivos}" />
+				</div>
+
+				<!-- fim do anexar -->
+
+
+				<samp>Campos Obrigatório *</samp>
+			</div>
+
+			<div class="modal-footer">
+				<p:commandButton value="Protocolar" styleClass="ui-priority-primary"
+					actionListener="#{protocoloSecretariaMB.salvarAlunoServidor()}"
+					update=":dlgInformacao :frmTabela" />
+
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- fim dialog protocolo aluno servidor -->
+
+	<!-- inicio dialog protocolo externo -->
+	<p:dialog header="Externo" modal="true" responsive="true" width="70%"
+		id="dlgNovoProtocoloExterno" closable="true" closeOnEscape="true"
+		draggable="false" showEffect="scale" resizable="false"
+		widgetVar="dlgExterno">
+
+		<h:form id="formProtocoloExterno">
+
+			<div class="ui-fluid">
+
+
+				<div class="col-md-12">
+					<label>Requerente *</label>
+					<p:inputText value="#{protocoloSecretariaMB.protocoloExterno.nome}"
+						required="true"
+						requiredMessage="O campo Requerente não pode ser nulo" />
+				</div>
+
+				<div class="col-md-12">
+					<label>E-mail *</label>
+					<p:inputText title="E-mail" styleClass="col-md-12" alt="usuário"
+						value="#{protocoloSecretariaMB.protocoloExterno.email}"
+						required="true" requiredMessage="O campo Email não pode ser nulo" />
+				</div>
+
+
+			</div>
+
+			<div class="ui-fluid">
+				<div class="col-md-6">
+					<label>RG *</label>
+					<p:inputText value="#{protocoloSecretariaMB.protocoloExterno.rg}"
+						required="true" requiredMessage="O campo RG não pode ser nulo" />
+
+				</div>
+				<div class="col-md-6">
+					<label>CPF *</label>
+					<p:inputText value="#{protocoloSecretariaMB.protocoloExterno.cpf}"
+						required="true" requiredMessage="O campo CPF não pode ser nulo" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-6">
+					<label>Telefone </label>
+					<p:inputText
+						value="#{protocoloSecretariaMB.protocoloExterno.telefone}" />
+				</div>
+
+				<div class="col-md-6">
+					<label>Celular </label>
+					<p:inputText
+						value="#{protocoloSecretariaMB.protocoloExterno.telefone2}" />
+				</div>
+
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Tipo Requerimento *</label>
+					<p:autoComplete dropdown="true" required="true"
+						requiredMessage="Campo Requerimento não deve ser nulo"
+						value="#{protocoloSecretariaMB.protocoloExterno.requerimento}"
+						scrollHeight="170"
+						completeMethod="#{protocoloSecretariaMB.completeRequerimento}"
+						forceSelection="true" var="set"
+						converter="#{converterRequerimento}" itemLabel="#{set.nome}"
+						itemValue="#{set}">
+
+						<p:ajax event="itemSelect" update="codNecessarioExterno "
+							listener="#{protocoloSecretariaMB.preencherDadosRequerimentoExterno()}" />
+
+
+
+					</p:autoComplete>
+
+				</div>
+				<div class="col-md-12">
+					<label>Documentos Necessários *</label>
+					<p:inputText id="codNecessarioExterno"
+						value="#{protocoloSecretariaMB.protocoloExterno.requerimento.documetosNecessarios}"
+						readonly="true" />
+				</div>
+				<div class="col-md-12">
+					<label>Descrição Requerente *</label>
+					<p:inputText
+						value="#{protocoloSecretariaMB.protocoloExterno.descricaoRequerente}"
+						required="true"
+						requiredMessage="O campo descrição requerente não pode ser nulo" />
+				</div>
+				<!-- anexar arquivo  -->
+
+				<div class="col-md-12">
+					<label> </label>
+				</div>
+				<div class="col-md-12">
+					<p:commandButton value="Anexar Arquivo"
+						oncomplete="PF('dlgAnexo').show();"
+						actionListener="#{protocoloSecretariaMB.criarNovoAnexo()}"
+						update=":formAnexo :formTabelaUp:tabelaUpload" />
+				</div>
+				<div class="col-md-12">
+					<label>Total de Anexos:</label>
+					<h:outputText id="qtdAnexo"
+						value="#{protocoloSecretariaMB.quantidadeArquivos}" />
+				</div>
+
+				<!-- fim do anexar -->
+			</div>
+			<div class="modal-footer">
+				<p:commandButton value="Protocolar" styleClass="ui-priority-primary"
+					actionListener="#{protocoloSecretariaMB.salvarExterno()}"
+					update=":dlgInformacao :frmTabela" />
+
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- fim dialog protocolo externa -->
+
+
+	<!-- DIALOG DETALHES -->
+	<p:dialog header="Detalhe Protocolo" widgetVar="dlgDetalhe"
+		responsive="true" modal="true" closeOnEscape="true" resizable="false"
+		closable="true" draggable="false">
+		<p:outputPanel id="protocoloDetalhe">
+			<h:form id="frmDetalhesProtocolo">
+				<h:panelGrid columns="2">
+					<label>Requerente: </label>
+					<h:outputText rendered="#{protocoloSecretariaMB.exibeExterno}"
+						value="#{protocoloSecretariaMB.protocoloDetalhe.nome}" />
+
+					<h:outputText rendered="#{protocoloSecretariaMB.exibeNormal}"
+						value="#{protocoloSecretariaMB.protocoloDetalhe.pessoa.nome}" />
+
+					<label>Email: </label>
+					<h:outputText rendered="#{protocoloSecretariaMB.exibeExterno}"
+						value="#{protocoloSecretariaMB.protocoloDetalhe.email}" />
+
+					<h:outputText rendered="#{protocoloSecretariaMB.exibeNormal}"
+						value="#{protocoloSecretariaMB.protocoloDetalhe.pessoa.usuario}" />
+
+					<label>Telefone: </label>
+					<h:outputText rendered="#{protocoloSecretariaMB.exibeExterno}"
+						value="#{protocoloSecretariaMB.protocoloDetalhe.telefone}" />
+
+					<h:outputText rendered="#{protocoloSecretariaMB.exibeNormal}"
+						value="#{protocoloSecretariaMB.protocoloDetalhe.pessoa.telefone}" />
+
+					<label>Telefone 2: </label>
+					<h:outputText rendered="#{protocoloSecretariaMB.exibeExterno}"
+						value="#{protocoloSecretariaMB.protocoloDetalhe.telefone2}" />
+
+					<h:outputText rendered="#{protocoloSecretariaMB.exibeNormal}"
+						value="#{protocoloSecretariaMB.protocoloDetalhe.pessoa.celular}" />
+
+					<label>Data Protocolação: </label>
+					<h:outputText
+						value="#{protocoloSecretariaMB.protocoloDetalhe.data}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+
+					<label>Status: </label>
+					<h:outputText
+						value="#{protocoloSecretariaMB.protocoloDetalhe.situacao}" />
+
+					<label>Descrição Requerente: </label>
+					<h:outputText
+						value="#{protocoloSecretariaMB.protocoloDetalhe.descricaoRequerente}" />
+
+					<label>Parecer Final: </label>
+					<h:outputText
+						value="#{protocoloSecretariaMB.protocoloDetalhe.parecerFinal}" />
+
+
+					<label>Setor Destino: </label>
+					<h:outputText
+						value="#{protocoloSecretariaMB.protocoloDetalhe.requerimento.setorDestino.descricao}" />
+
+					<label>Anexos: </label>
+					<p:commandButton alt="anexo PDF" title="anexo PDF"
+						styleClass="btn btn-block" onclick="PF('dlgAutenticar').show();"
+						icon="ui-icon-document" update=":frmAnexosAutentica"
+						actionListener="#{protocoloSecretariaMB.buscarAnexosVer()}" />
+
+				</h:panelGrid>
+			</h:form>
+		</p:outputPanel>
+	</p:dialog>
+	<!-- FIM DO DIALOG DETALHES -->
+
+
+	<!-- DIALOG Movimentação protocolo -->
+	<p:dialog header="Movimentações Protocolo" widgetVar="dlgMovimentacao"
+		responsive="true" modal="true" closeOnEscape="true" resizable="false"
+		closable="true" draggable="true" width="75%">
+
+		<h:form id="frmBotoesDados">
+
+			<p:commandButton value="Reencaminhar" update=":formReencaminhar"
+				onclick="PF('dlgReencaminhar').show();"
+				rendered="#{protocoloSecretariaMB.escondeBotao}"
+				styleClass="ui-priority-primary" />
+
+			<p:commandButton value="Tramites Necessários"
+				update="frmProtocoloTramites"
+				rendered="#{protocoloSecretariaMB.escondeBotao}"
+				onclick="PF('dlgTramitesProtocolo').show();"
+				styleClass="ui-priority-primary" />
+
+		</h:form>
+		<h:form id="frmMovimentacaoProtocolo">
+			<p:dataTable id="tabela" reflow="true" rows="10" paginator="true"
+				paginatorPosition="bottom" resizableColumns="true"
+				value="#{protocoloSecretariaMB.listEncaminhamento}"
+				emptyMessage="Nenhum Protocolo Encontrado" var="lista"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+
+				<p:column headerText="Requerente">
+					<h:outputText value="#{lista.protocolo.nome}" />
+					<h:outputText value="#{lista.protocolo.pessoa.nome}" />
+				</p:column>
+
+				<p:column headerText="Encaminhado Por">
+					<h:outputText value="#{lista.pessoaRemetente.nome}" />
+				</p:column>
+				<p:column headerText="Data Encaminhamento">
+					<h:outputText value="#{lista.dataEncaminhamento}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Encaminhado para ">
+					<h:outputText value="#{lista.pessoa.nome}" />
+				</p:column>
+				<p:column headerText="Data Parecer">
+					<h:outputText value="#{lista.dataParecer}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Parecer">
+					<h:outputText value="#{lista.descricao}" />
+				</p:column>
+
+
+
+				<!-- 				<p:column headerText="Despacho" style="width:120px"> -->
+				<!-- 					<p:commandButton alt="Movimentação" title="Movimentação" -->
+				<!-- 						disabled="true" styleClass="btn btn-block" -->
+				<!-- 						actionListener=" protocoloSecretariaMB.criarNovoObjetoEncaminhamentoParecer()}" -->
+				<!-- 						icon="ui-icon-document" update=":formCiencia" -->
+				<!-- 						oncomplete="PF('dlgCiencia').show();"> -->
+
+				<!-- 						<f:setPropertyActionListener value="#{lista}" -->
+				<!-- 							target=" protocoloSecretariaMB.encaminhamentoParecer}" /> -->
+
+				<!-- 					</p:commandButton> -->
+				<!-- 				</p:column> -->
+
+				<p:column headerText="Remover" style="width:120px"
+					rendered="#{protocoloSecretariaMB.escondeBotao}">
+					<p:commandButton alt="Movimentação" title="Movimentação"
+						styleClass="btn btn-block" icon="ui-icon-close"
+						update=":frmMovimentacaoProtocolo"
+						rendered="#{lista.dataParecer == null}"
+						actionListener="#{protocoloSecretariaMB.removerEncaminhamento(lista)}">
+						<p:confirm header="Confirmação" message="Deseja excluir?" />
+					</p:commandButton>
+				</p:column>
+
+
+			</p:dataTable>
+
+			<div class="modal-footer">
+				<p:commandButton value="Finalizar" styleClass="ui-priority-primary"
+					update=":frmProtocoloParecerFinal :dlgInformacao" 
+					rendered="#{protocoloSecretariaMB.escondeBotao}"
+					actionListener="#{protocoloSecretariaMB.validaFinaliza()}" />
+
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- FIM DO DIALOG movimentação protocolo -->
+
+
+	<!-- DIALOG TRAMITES PROTOCOLO -->
+	<p:dialog header="Tramites Protocolo" widgetVar="dlgTramitesProtocolo"
+		responsive="true" modal="true" closeOnEscape="true" resizable="false"
+		closable="true" draggable="false">
+		<p:outputPanel id="protocoloTramites">
+			<h:form id="frmProtocoloTramites">
+				<h:panelGrid columns="2">
+					<label>Tramites Necessários: </label>
+					<h:outputText
+						value="#{protocoloSecretariaMB.protocoloDetalhe.requerimento.tramitesNecessarios}" />
+
+				</h:panelGrid>
+			</h:form>
+		</p:outputPanel>
+	</p:dialog>
+	<!-- FIM DO DIALOG TRAMITES PROTOCOLO -->
+
+
+	<!-- DIALOG Parecer final -->
+	<p:dialog header="Parecer" widgetVar="dlgParecerFinalizar"
+		responsive="true" modal="true" closeOnEscape="true" resizable="false"
+		closable="true" draggable="true" width="60%">
+		<p:outputPanel id="protocoloParecerFinal">
+			<h:form id="frmProtocoloParecerFinal">
+
+				<div class="ui-fluid">
+					<div class="col-md-12">
+						<label>Procedimentos Adicionais : </label>
+
+						<h:outputText
+							value="#{protocoloSecretariaMB.protocoloDetalhe.requerimento.procedimentos}" />
+
+					</div>
+
+					<div class="col-md-12">
+						<label>Parecer * </label>
+						<p:inputText required="true"
+							requiredMessage="Informe o parecer final"
+							value="#{protocoloSecretariaMB.protocoloDetalhe.parecerFinal}" />
+					</div>
+
+					<div class="col-md-12">
+						<label>Situação </label>
+						<p:selectOneRadio id="situacao" required="true"
+							requiredMessage="Informe a situação do protocolo"
+							value="#{protocoloSecretariaMB.protocoloDetalhe.situacao}">
+							<f:selectItem itemLabel="Deferido" itemValue="Deferido" />
+							<f:selectItem itemLabel="Indeferido" itemValue="Indeferido" />
+							<f:selectItem itemLabel="Parcialmente Deferido"
+								itemValue="Parcialmente Deferido" />
+
+						</p:selectOneRadio>
+					</div>
+					<div class="col-md-12">
+						<label> </label>
+					</div>
+					<div class="col-md-3">
+						<p:commandButton value="Comunicar outros envolvidos"
+							styleClass="ui-priority-primary" update=":formComunicar"
+							oncomplete="PF('dlgComunicar').show();"
+							actionListener="#{protocoloSecretariaMB.criarNovoObjetoEncaminhar()}" />
+					</div>
+					<div class="col-md-9">
+						<label> </label>
+					</div>
+				</div>
+				<div class="modal-footer">
+
+					<h:outputText value="" />
+
+					<p:commandButton value="Finalizar" styleClass="ui-priority-primary"
+						update=":dlgInformacao :frmTabela"
+						actionListener="#{protocoloSecretariaMB.finalizaProtocolo()}" />
+
+				</div>
+
+
+
+			</h:form>
+
+		</p:outputPanel>
+
+	</p:dialog>
+	<!-- fim dlg parecer final -->
+
+
+	<!-- DLG COMUNICAR ENVOLVIDOS  -->
+	<p:dialog header="Comunicar Envolvidos" modal="true" responsive="true"
+		width="60%" id="dlgComunicar" closable="true" closeOnEscape="true"
+		draggable="false" showEffect="scale" resizable="false"
+		widgetVar="dlgComunicar">
+
+		<h:form id="formComunicar">
+
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Selecione o servidor</label>
+					<p:autoComplete dropdown="true" required="true"
+						requiredMessage="Campo servidor não deve ser nulo"
+						value="#{protocoloSecretariaMB.pessoaReencaminha}"
+						scrollHeight="170"
+						completeMethod="#{protocoloSecretariaMB.completeAServidor}"
+						forceSelection="true" var="set" converter="#{converterServidor}"
+						itemLabel="#{set.nome}" itemValue="#{set}">
+
+
+					</p:autoComplete>
+				</div>
+				<div class="col-md-12">
+					<label>Texto</label>
+					<p:inputTextarea required="true" requiredMessage="Informe o Texto"
+						value="#{protocoloSecretariaMB.textoEmail}" rows="6" cols="33" />
+				</div>
+
+			</div>
+			<div class="modal-footer">
+				<p:commandButton value="Enviar E-mail"
+					styleClass="ui-priority-primary" update=":dlgInformacao"
+					actionListener="#{protocoloSecretariaMB.comunicarEnvolvidos()}" />
+
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- FIM DLG COMUNICAR ENVOLVIDOS -->
+
+	<!-- INICIO DLG REENCAMINHAR -->
+	<p:dialog header="Reencaminhar" modal="true" responsive="true"
+		width="60%" id="dlgReencaminharComunicar" closable="true"
+		closeOnEscape="true" draggable="false" showEffect="scale"
+		resizable="false" widgetVar="dlgReencaminhar">
+
+		<h:form id="formReencaminhar">
+
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Selecione o servidor</label>
+					<p:autoComplete dropdown="true" required="true"
+						requiredMessage="Campo servidor não deve ser nulo"
+						value="#{protocoloSecretariaMB.reencaminhamento.pessoa}"
+						scrollHeight="170"
+						completeMethod="#{protocoloSecretariaMB.completeAServidor}"
+						forceSelection="true" var="set" converter="#{converterServidor}"
+						itemLabel="#{set.nome}" itemValue="#{set}">
+
+
+					</p:autoComplete>
+				</div>
+
+				<div class="col-md-12">
+					<label>Dias * </label>
+					<p:inputText required="true" requiredMessage="Informe o Dias"
+						value="#{protocoloSecretariaMB.reencaminhamento.prazoParecerDias}" />
+				</div>
+
+				<div class="col-md-12">
+					<label>Texto</label>
+					<p:inputTextarea
+						value="#{protocoloSecretariaMB.reencaminhamento.descricaoRemetente}"
+						rows="6" cols="33" />
+				</div>
+
+				<div class="col-md-12">
+					<label> </label>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton value="Comunicar" styleClass="ui-priority-primary"
+					update=":frmMovimentacaoProtocolo :frmBotoesDados :dlgInformacao"
+					actionListener="#{protocoloSecretariaMB.comunicar()}" />
+
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- dialog reencaminhar -->
+
+	<!-- DIALOG anexo -->
+	<p:dialog header="Anexos" widgetVar="dlgAnexo" modal="true"
+		responsive="true" width="65%" id="dlgAnexo" closable="true"
+		closeOnEscape="true" resizable="false" draggable="false"
+		showEffect="scale">
+
+		<h:form id="formAnexo">
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<p:outputLabel for="upload" value="Anexar Arquivo PDF" id="pdfID" />
+					<p:fileUpload mode="advanced" id="upload" fileLimit="10000"
+						fileLimitMessage="É possível selecionar apenas 100000 arquivo"
+						invalidFileMessage="Tipo de arquivo inválido" auto="true"
+						fileUploadListener="#{protocoloSecretariaMB.upload}"
+						allowTypes="/(\.|\/)(pdf)$/" sizeLimit="2000000" multiple="true"
+						invalidSizeMessage="Tamanho do arquivo inválido"
+						showButtons="true"
+						update=":formAnexo:pdfID   :formTabelaUp :formAnexo :formProtocoloExterno:qtdAnexo :formProtocoloAluno:qtdAnexoAlunoServidor" />
+
+
+				</div>
+
+			</div>
+
+		</h:form>
+
+		<h:form id="formTabelaUp">
+
+			<!-- TABELA-->
+			<div class="col-md-12">
+
+				<p:dataTable id="tabelaUpload"
+					value="#{protocoloSecretariaMB.listDocumentosAnexo}" var="lis"
+					resizableColumns="true" reflow="true" rows="10" paginator="true"
+					paginatorPosition="bottom" emptyMessage="Nenhum arquivo carregado"
+					rowsPerPageTemplate="5,10,15,30,50,100">
+
+
+					<p:column headerText="Caminho">
+						<h:outputText value="#{lis.caminho}" />
+					</p:column>
+					<p:column headerText="Remover" style="width:72px">
+						<p:commandButton alt="Movimentação" title="Movimentação"
+							styleClass="btn btn-block"
+							update=":formAnexo :formProtocoloExterno:qtdAnexo :formProtocoloAluno:qtdAnexoAlunoServidor :dlgInformacao :formTabelaUp"
+							actionListener="#{protocoloSecretariaMB.removerDocumento(lis)}"
+							icon="ui-icon-trash">
+
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</div>
+			<div class="col-md-12">
+				<label></label>
+			</div>
+			<div class="col-md-10">
+
+				<samp>São aceitos arquivos apenas no formato PDF</samp>
+			</div>
+			<div class="col-md-2">
+				<p:commandButton value="Sair e salvar "
+					onclick="PF('dlgAnexo').hide();" />
+			</div>
+
+
+		</h:form>
+
+	</p:dialog>
+	<!-- FIM DLG ANEXO -->
+
+
+	<!-- dialog dar ciencia -->
+	<p:dialog header="Dar Ciencia" modal="true" responsive="true"
+		width="60%" id="dlgCiencia" closable="true" closeOnEscape="true"
+		draggable="false" showEffect="scale" resizable="false"
+		widgetVar="dlgCiencia">
+
+		<h:form id="formCiencia">
+
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Descrição</label>
+					<p:inputTextarea
+						value="#{protocoloSecretariaMB.encaminhamentoParecer.descricao}"
+						rows="6" cols="33" />
+				</div>
+
+				<p:commandButton alt="PDF" title="PDF" styleClass="btn btn-block"
+					onclick="PF('dlgAutenticar').show();" icon="ui-icon-circle-check"
+					update=":frmAnexosAutentica"
+					actionListener="#{protocoloSecretariaMB.buscarAnexos()}">
+
+				</p:commandButton>
+
+			</div>
+			<div class="modal-footer">
+				<p:commandButton value="Dar Ciencia"
+					styleClass="ui-priority-primary"
+					update=":frmMovimentacaoProtocolo :frmBotoesDados"
+					actionListener="#{protocoloSecretariaMB.darCiencia()}" />
+
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- fim do dialog dar ciencia -->
+
+	<!-- ARQUIVO PDF -->
+	<p:dialog header="Arquivo" widgetVar="dlgArquivo" modal="true"
+		id="dlgArquivo" closable="true" closeOnEscape="true" responsive="true"
+		resizable="false" draggable="true">
+		<h:form id="uploadAnexoPdf">
+			<label>Documentos: </label>
+			<h:outputText value="#{protocoloSecretariaMB.anexos.caminho}" />
+			<object id="myPdff" type="application/pdf"
+				data="#{caminhoArquivosMB.caminhoDuasPastaProtocolo}#{protocoloSecretariaMB.anexos.caminho}.pdf"
+				height="500px" width="100%"> </object>
+		</h:form>
+	</p:dialog>
+	<!-- FIM ARQUIVO PDF -->
+
+
+	<!-- DIALOG AUTENTICAR ANEXOS -->
+	<p:dialog header="Autenticar Anexos" widgetVar="dlgAutenticar"
+		responsive="true" modal="true" closeOnEscape="true" resizable="false"
+		closable="true" draggable="true" width="60%">
+
+		<h:form id="frmAnexosAutentica">
+			<p:dataTable id="tabela" reflow="true" rows="10" paginator="true"
+				paginatorPosition="bottom" resizableColumns="true"
+				value="#{protocoloSecretariaMB.listAnexo}"
+				emptyMessage="Nenhum Anexo Encontrado" var="lista"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+
+				<p:column headerText="Anexo" style="width:60px">
+					<p:commandButton alt="Anexo PDF" title="Anexo PDF"
+						styleClass="btn btn-block" onclick="PF('dlgArquivo').show();"
+						icon="ui-icon-document" update=":uploadAnexoPdf">
+						<f:setPropertyActionListener value="#{lista}"
+							target="#{protocoloSecretariaMB.anexos}" />
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="Arquivo">
+					<h:outputText value="#{lista.caminho}" />
+				</p:column>
+
+
+				<p:column headerText="Válidar" style="width:120px">
+					<p:commandButton icon="ui-icon-check"
+						update=":dlgInformacao :frmAnexosAutentica"
+						disabled="#{lista.autenticado != 0}"
+						style="background-color: #00FF00;"
+						actionListener="#{protocoloSecretariaMB.validarAnexo(lista)}"
+						rendered="#{lista.autenticado != 2}" />
+					<p:commandButton icon="ui-icon-close"
+						disabled="#{lista.autenticado != 0}"
+						rendered="#{lista.autenticado != 1}"
+						update=":dlgInformacao :frmAnexosAutentica"
+						style="background-color: #FF0000;"
+						actionListener="#{protocoloSecretariaMB.invalidarAnexo(lista)}" />
+
+					<p:commandButton icon="ui-icon-arrowrefresh-1-n"
+						update=":dlgInformacao :frmAnexosAutentica"
+						rendered="#{lista.autenticado > 0}"
+						actionListener="#{protocoloSecretariaMB.penderAnexo(lista)}" />
+
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</p:dialog>
+	<!-- FIM DO DIALOG AUTENTICAR ANEXOS -->
+</h:body>
+</html>
+

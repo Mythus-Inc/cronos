@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:body>
+	<ui:composition
+		template="../resources/template/inventario/template-inventario.xhtml">
+		<ui:define name="mensagem">
+			<ui:include src="../componentes/mensagem.xhtml" />
+		</ui:define>
+		<ui:define name="conteudo">
+
+			<!-- TITULO -->
+			<div class="row">
+				<div class="col-md-12">
+					<h1 class="page-header">ATENÇÃO</h1>
+				</div>
+			</div>
+			<!-- FIM TITULO -->
+
+			<!-- barra de progresso -->
+			<p:ajaxStatus onstart="PF('statusDialog').show()"
+				onsuccess="PF('statusDialog').hide()" />
+
+			<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+				closable="false" resizable="false" showHeader="false">
+				<h4>Aguarde, isso poderá levar alguns minutos...</h4>
+
+				<f:facet name="start">
+					<p:graphicImage name="../../../resources/img/aguarde.gif" />
+				</f:facet>
+			</p:dialog>
+
+			<p:outputLabel style="color:red"
+				value="Todas a informações serão excluidas dos sistema, será necessário refazer a importação dos dados!!!" />
+
+
+			<!-- BOTÃO LIMPAR-->
+			<div class="row container-fluid">
+				<div class="col-md-12">
+					<ol class="breadcrumb">
+						<h:form id="frmCadastrar">
+							<p:commandButton value="Limpar Dados" id="btnCadastrar"
+								oncomplete="PF('dlgRemover').show();" update=":frmModalSalvar"
+								title="Limpar Dados"
+								actionListener="#{removerDadosMB.buscarDados()}">
+							</p:commandButton>
+						</h:form>
+					</ol>
+				</div>
+			</div>
+			<!-- FIM DO BOTÃO LIMPAR-->
+
+
+			<!-- DIALOG SALVAR -->
+			<p:dialog header="Local" widgetVar="dlgRemover" modal="true"
+				responsive=" true" width="60%" id="dlgLocal" closable="true"
+				closeOnEscape="true" resizable="false" draggable="false">
+
+				<h:form id="frmModalSalvar">
+					<div class="ui-fluid">
+
+						<div class="col-md-12">
+							<p:outputLabel value="Senha Incorreta" style="color:red"
+								rendered="#{removerDadosMB.esconderSenhaErrada}" />
+						</div>
+
+						<div class="col-md-12">
+							<label>Nome :</label>
+							<p:inputText title="Usuário" alt="descrição"
+								styleClass="col-md-12"
+								value="#{removerDadosMB.servidorLocado.nome}" readonly="true" />
+						</div>
+						<div class="col-md-12">
+							<label>Senha *</label>
+							<p:password title="senha" alt="senha" styleClass="col-md-12"
+								value="#{removerDadosMB.senha}" />
+						</div>
+
+
+						<div class="col-md-12"></div>
+					</div>
+					<div class="modal-footer">
+						<p:commandButton value="Limpar Dados" id="btnSalvar" alt="Sim"
+							styleClass="ui-priority-primary"
+							actionListener="#{removerDadosMB.removerDados()}"
+							update=":dlgInformacao :frmModalSalvar">
+							<p:confirm header="Confirmação" message="Deseja excluir?" />
+						</p:commandButton>
+
+					</div>
+				</h:form>
+
+			</p:dialog>
+			<!-- FIM DO DIALOG SALVAR -->
+
+
+
+
+
+		</ui:define>
+		<ui:define name="modal-confirmacao">
+			<ui:include src="../componentes/dialog-confirmacao.xhtml" />
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>
+

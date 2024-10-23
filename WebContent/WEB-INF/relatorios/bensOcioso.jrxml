@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.0.4.final using JasperReports Library version 6.0.4  -->
+<!-- 2019-08-26T17:42:23 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="grupo" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fe166493-b712-4ad9-88ef-0150cb98ee09">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="dbm"/>
+	<parameter name="IDINVENTARIO" class="java.lang.Long">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<queryString language="SQL">
+		<![CDATA[select  t.codigo as codigo, e.descricao as denominacao, l.descricao as localEncontrado, l.codigoLocalidade, invs.descricao as inventario
+, ei.observacoes
+from tab_equipamentoinventario ei inner join tab_tombamento t on 
+ei.tombamento_id = t.id inner join tab_equipamento e on 
+t.equipamento_id = e.id inner join tab_localinventario loc on
+loc.id =ei.localInventario_id inner join   tab_localidades l on 
+loc.local_id =l.id inner join tab_inventario invs on 
+loc.Inventario_id = invs.id 
+
+where ei.status = true and invs.id =  $P{IDINVENTARIO} and ei.naoTombado = false  and ei.estado = "OCIOSO" ORDER BY l.descricao]]>
+	</queryString>
+	<field name="codigo" class="java.lang.String"/>
+	<field name="denominacao" class="java.lang.String"/>
+	<field name="localEncontrado" class="java.lang.String"/>
+	<field name="codigoLocalidade" class="java.lang.String"/>
+	<field name="inventario" class="java.lang.String"/>
+	<field name="observacoes" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="48" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<staticText>
+				<reportElement x="4" y="0" width="90" height="25" forecolor="#1C33B8" uuid="3d1ff805-9a72-488d-a9ac-76144d2d7e0c">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="SansSerif" size="18" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[SGBENS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="26" y="28" width="469" height="20" forecolor="#000000" uuid="5fa90d9c-174b-4af2-bbff-4652711f2ceb"/>
+				<textElement>
+					<font fontName="SansSerif" size="14" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[SISTEMA DE GERENCIAMENTO DE INVENTÁRIO DE BENS MÓVEIS 
+]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm">
+				<reportElement key="" x="435" y="5" width="88" height="15" uuid="52e26928-c06e-4955-954c-a03339899b2a"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="85">
+			<staticText>
+				<reportElement x="3" y="51" width="60" height="29" uuid="4568cc4a-2fd7-4c0d-85a8-98990e3c9332"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[ TOMBAMENTO
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="63" y="51" width="187" height="29" uuid="d007c362-30ad-41f4-ad2f-31ea6b0027f0"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[DENOMINAÇÃO
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="163" y="1" width="395" height="20" uuid="7c955eff-c138-4073-a982-4916032bc066"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[ INVENTÁRIO :				
+				
+				]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="164" y="21" width="236" height="18" uuid="b02e5259-ff0e-40a1-a1be-ea79e1f77f56"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[BENS OCIOSOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="250" y="51" width="80" height="29" uuid="17e7f3a1-d92a-401b-9965-c91842574f57"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[CÓDIGO LOCALIDADE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="51" width="144" height="29" uuid="74b00fda-b617-4f33-bcea-cb47a630cbfd"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[NOME DA LOCALIDADE]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="240" y="0" width="316" height="21" uuid="3f869148-ef86-4e09-bdf6-206d090e9316"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{inventario}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="380" y="22" width="160" height="20" uuid="0357835b-8df8-4e3d-9024-7608a8c1c031"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[TOTAL DE TOMBAMENTOS :]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="505" y="23" width="50" height="9" uuid="954e4061-e876-40ad-9a1d-a72316a09044"/>
+				<subreportParameter name="IDINVENTARIO">
+					<subreportParameterExpression><![CDATA[$P{IDINVENTARIO}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["totalOcioso.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="474" y="51" width="80" height="29" uuid="35973216-9535-4861-a381-f71ef78776b0"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[OBSERVAÇÕES]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="31" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<textField>
+				<reportElement x="4" y="-65" width="59" height="30" uuid="f0c38a92-fa46-49db-8f90-734c826efd2d"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="65" y="-65" width="185" height="30" uuid="623ef389-c2df-4d82-ae75-056ed4f67d0a"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{denominacao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="250" y="-65" width="80" height="30" uuid="061e575e-f736-4fc5-87f6-a9b1839f4a75"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codigoLocalidade}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="330" y="-65" width="144" height="30" uuid="bd205277-d7d0-46d3-a8d1-873425835026"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{localEncontrado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="474" y="-65" width="80" height="30" uuid="8a04f091-e271-4ac0-91f9-6e0817cc5490"/>
+				<box>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{observacoes}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="19">
+			<textField>
+				<reportElement x="430" y="-1" width="69" height="20" uuid="13697cc0-49b6-496e-928c-8c79d060b4a2">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="500" y="-1" width="56" height="20" uuid="9df6b443-2ed7-41b4-a56e-035afe967363">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" de " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+</jasperReport>

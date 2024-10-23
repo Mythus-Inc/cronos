@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="grupo" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fe166493-b712-4ad9-88ef-0150cb98ee09">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="relat\NEW_DATAADAPTER.xml"/>
+	<parameter name="INVENTARIO" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[select equip.descricao as equipamento, tomb.codigo as tombamento, local.descricao as localOrigem, equipInvent.dataConferencia as dataConferencia,
+localEqui.descricao as localQEsta, invent.descricao as inventario
+ 
+from tab_equipamento equip inner join tab_tombamento tomb
+ on
+equip.id = tomb.equipamento_id inner join tab_local local 
+on
+ tomb.local_id = local.id inner join tab_equipamentoInventario equipInvent 
+ on
+ equipInvent.tombamento_id = tomb.id inner join tab_localInventario lI
+ on 
+ equipInvent.localInventario_id = lI.id inner join tab_local localEqui 
+ on 
+ lI.local_id = localEqui.id inner join tab_inventario invent
+ on 
+ lI.inventario_id = invent.id
+
+where
+ equipInvent.pertenceLocal = false and invent.id = $P{INVENTARIO}]]>
+	</queryString>
+	<field name="equipamento" class="java.lang.String"/>
+	<field name="tombamento" class="java.lang.String"/>
+	<field name="localOrigem" class="java.lang.String"/>
+	<field name="dataConferencia" class="java.sql.Date"/>
+	<field name="localQEsta" class="java.lang.String"/>
+	<field name="inventario" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="48" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<staticText>
+				<reportElement x="4" y="0" width="90" height="25" forecolor="#1C33B8" uuid="3d1ff805-9a72-488d-a9ac-76144d2d7e0c">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font fontName="SansSerif" size="18" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[SGBENS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="26" y="28" width="469" height="20" forecolor="#000000" uuid="5fa90d9c-174b-4af2-bbff-4652711f2ceb"/>
+				<textElement>
+					<font fontName="SansSerif" size="14" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[SISTEMA DE GERENCIAMENTO DE INVENTÁRIO DE BENS MÓVEIS 
+]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm">
+				<reportElement key="" x="435" y="5" width="88" height="15" uuid="52e26928-c06e-4955-954c-a03339899b2a"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="66" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<line>
+				<reportElement x="0" y="-2" width="555" height="1" forecolor="#000000" uuid="58004af4-86ea-4686-89ba-d92f66aba1fd">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="2.0" lineColor="#000000"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="70" y="10" width="482" height="20" uuid="2cbf5e3f-7b7f-48c4-9ecb-73642b995c8b"/>
+				<textFieldExpression><![CDATA[$F{inventario}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="10" y="10" width="70" height="20" uuid="b5a08267-02a2-4f90-91c1-b2c74c8ca00d"/>
+				<text><![CDATA[Inventário:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="36" width="100" height="14" uuid="afa1403d-6e1a-43c0-93f4-00b76ebbe937"/>
+				<text><![CDATA[equipamento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="140" y="36" width="100" height="14" uuid="83eb8521-afe9-4bb2-a8de-21190553e3ed"/>
+				<text><![CDATA[tombamento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="250" y="36" width="100" height="14" uuid="4a1c950e-e23d-4b40-ba02-10443b032c24"/>
+				<text><![CDATA[Local Origem]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="352" y="36" width="100" height="14" uuid="3b8823cf-da38-4408-a57d-07a95e0c39aa"/>
+				<text><![CDATA[Local Encontrado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="460" y="36" width="100" height="14" uuid="c4d97218-895b-46bc-b682-4a8b7934656b"/>
+				<text><![CDATA[Data Conferência]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="26" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+			<textField>
+				<reportElement x="10" y="0" width="100" height="20" uuid="f4d18dc4-51f5-4d6f-9da8-fd35c6f356d1"/>
+				<textFieldExpression><![CDATA[$F{equipamento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="140" y="0" width="100" height="20" uuid="c3c5d09f-078d-41d1-8c05-caa83de4dc04"/>
+				<textFieldExpression><![CDATA[$F{tombamento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="250" y="0" width="100" height="20" uuid="3f22654e-9b9f-490c-a2d9-7ecbdb88eb5a"/>
+				<textFieldExpression><![CDATA[$F{localOrigem}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="352" y="0" width="100" height="20" uuid="3213d3f0-da3f-4869-8ea7-c05f878f8c03"/>
+				<textFieldExpression><![CDATA[$F{localQEsta}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="460" y="0" width="100" height="20" uuid="0a176a5f-a6e6-4564-af5d-d760797646ed"/>
+				<textFieldExpression><![CDATA[$F{dataConferencia}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="30" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<textField>
+				<reportElement x="426" y="9" width="69" height="20" uuid="49ea1af5-c3fb-4908-85eb-8052c5584171">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Página " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="496" y="9" width="56" height="20" uuid="397b76db-3150-455a-8622-bc8eafcb46f1">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font fontName="SansSerif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" de " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

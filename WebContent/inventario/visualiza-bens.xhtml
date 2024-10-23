@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:body>
+	<ui:composition
+		template="../resources/template/inventario/template-inventario.xhtml">
+		<ui:define name="mensagem">
+			<ui:include src="../componentes/mensagem.xhtml" />
+		</ui:define>
+		<ui:define name="conteudo">
+
+			<!-- TITULO -->
+			<div class="row">
+				<div class="col-md-12">
+					<h1 class="page-header">Visualizar Bens</h1>
+				</div>
+			</div>
+			<!-- FIM TITULO -->
+
+
+			<!-- TABELA-->
+			<div class="col-md-12">
+				<h:form id="frmTabela">
+
+
+					<p:dataTable id="tabela" resizableColumns="true" var="obj"
+						reflow="true" rows="20" paginator="true"
+						value="#{visualizaBensMB.listTombamento}"
+						paginatorPosition="bottom"
+						emptyMessage="Nenhum Equipamento Cadastrado"
+						rowsPerPageTemplate="10,15,30,50,100">
+
+
+						<p:column headerText="Equipamento"
+							sortBy="#{obj.equipamento.descricao}"
+							filterBy="#{obj.equipamento.descricao}"
+							filterMatchMode="contains">
+							<h:outputText value="#{obj.equipamento.descricao}" />
+						</p:column>
+
+						<p:column headerText="Código Tombamento" sortBy="#{obj.codigo}"
+							filterBy="#{obj.codigo}" filterMatchMode="contains">
+							<h:outputText value="#{obj.codigo}" />
+						</p:column>
+						
+							<p:column headerText="Localidade" sortBy="#{obj.local.descricao}"
+							filterBy="#{obj.local.descricao}" filterMatchMode="contains">
+							<h:outputText value="#{obj.local.descricao}" />
+						</p:column>
+
+						<p:column headerText="Código Localidade" sortBy="#{obj.local.codigoLocalidade}"
+							filterBy="#{obj.local.codigoLocalidade}" filterMatchMode="contains">
+							<h:outputText value="#{obj.local.codigoLocalidade}" />
+						</p:column>
+
+						<p:column headerText="Remover" style="width:100px">
+							<p:commandButton icon="ui-icon-trash" title="Excluir"
+								actionListener="#{visualizaBensMB.inativar(obj)}"
+								styleClass="btn btn-block" alt="Excluir"
+								update=":frmTabela :dlgInformacao">
+								<p:confirm header="Confirmação" message="Deseja excluir?" />
+							</p:commandButton>
+						</p:column>
+						<f:facet name="footer">
+						Quantidade de Tombamentos encontrado: #{visualizaBensMB.quantidadeTombamentos}  
+						</f:facet>
+						<f:facet name="footer">
+							<p:commandButton icon="ui-icon-print" title="Imprimir"								 
+								actionListener="#{relatorioIventarioMB.imprimirTombamentosTotal()}"
+								styleClass="btn btn-block" alt="Imprimir" ajax="false">
+							</p:commandButton>
+						</f:facet>
+
+
+
+					</p:dataTable>
+				</h:form>
+			</div>
+			<!--FIM DA TABELA-->
+
+
+
+		</ui:define>
+		<ui:define name="modal-confirmacao">
+			<ui:include src="../componentes/dialog-confirmacao.xhtml" />
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>
+

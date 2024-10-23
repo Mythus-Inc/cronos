@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Importar Bens</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+	<!-- barra de progresso -->
+	<p:ajaxStatus onstart="PF('statusDialog').show()"
+		onsuccess="PF('statusDialog').hide()" />
+
+	<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+		closable="false" resizable="false" showHeader="false">
+		<h4>Aguarde, isso poderá levar alguns minutos... </h4>
+
+
+
+		<f:facet name="start">
+			<p:graphicImage
+				value="#{FacesContext.getCurrentInstance().getExternalContext()}/resources/img/aguarde.gif" />
+		</f:facet>
+	</p:dialog>
+
+
+
+	<div class="row container-fluid">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+				<label>Upload Dados</label>
+				<h:form id="subirCer">
+					<p:fileUpload mode="advanced" id="certificadoPDF" fileLimit="10000"
+						fileLimitMessage="É possível selecionar apenas 100000 arquivo"
+						onstart="PF('statusDialog').show();"
+						invalidFileMessage="Tipo de arquivo inválido" oncomplete="rc()"
+						fileUploadListener="#{importarDadosInventarioBensMB.uploadDados}"
+						allowTypes="/(\.|\/)(xls)$/" sizeLimit="2000000" multiple="false"
+						invalidSizeMessage="Tamanho do arquivo inválido"
+						showButtons="true"
+						update=":dlgInformacao :btImport :frmTabelaLocais"
+						dragDropSupport="false" />
+
+				</h:form>
+			</ol>
+		</div>
+
+	</div>
+
+	<!-- FIM DO BOTÃO Backup -->
+
+
+
+	<!-- INICIO LOCAIS INVENTÁRIO -->
+	<div class="col-md-12">
+		<h:form id="frmTabelaLocais">
+
+			<p:remoteCommand name="rc" update=":frmTabelaLocais"
+				actionListener="#{importarDadosInventarioBensMB.chamarFechar()}" />
+
+
+			<p:dataTable id="tabelaLocais" resizableColumns="true" var="obj"
+				reflow="true" rows="10" paginator="true"
+				value="#{importarDadosInventarioBensMB.listTombamento}"
+				paginatorPosition="bottom"
+				emptyMessage="Nenhum tombamento encontrada"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+
+				<p:column headerText="Tombamento" sortBy="#{obj.codigo}"
+					filterBy="#{obj.codigo}" filterMatchMode="contains">
+					<h:outputText value="#{obj.codigo}" />
+				</p:column>
+
+				<p:column headerText="Equipamento"
+					sortBy="#{obj.equipamento.descricao}"
+					filterBy="#{obj.equipamento.descricao}" filterMatchMode="contains">
+					<h:outputText value="#{obj.equipamento.descricao}" />
+				</p:column>
+
+				<p:column headerText="Localidade" sortBy="#{obj.local.descricao}"
+					filterBy="#{obj.local.descricao}" filterMatchMode="contains">
+					<h:outputText value="#{obj.local.descricao}" />
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+	</div>
+
+	<!-- DIALOG SALVAR -->
+	<p:dialog
+		header="Não foi possível importar os dados dos seguintes tombamentos"
+		widgetVar="dlgRAERRAD" modal="true" responsive=" true" width="75%"
+		id="dlgRAE" closable="true" closeOnEscape="true" resizable="false"
+		draggable="true">
+
+
+
+		<!-- INICIO LOCAIS INVENTÁRIO -->
+		<div class="col-md-12">
+			<h:form id="frmTabelaLocaisERR">
+				<p:dataTable id="tabelaLocais" resizableColumns="true" var="obj"
+					reflow="true" rows="10" paginator="true"
+					value="#{importarDadosInventarioBensMB.listTombamentoNaoAdd}"
+					paginatorPosition="bottom"
+					emptyMessage="Nenhum Local Inventário Cadastrado"
+					rowsPerPageTemplate="5,10,15,30,50,100">
+
+					<p:column headerText="Tombamento" sortBy="#{obj.codigo}"
+						filterBy="#{obj.codigo}" filterMatchMode="contains">
+						<h:outputText value="#{obj.codigo}" />
+					</p:column>
+
+					<p:column headerText="Equipamento"
+						sortBy="#{obj.equipamento.descricao}"
+						filterBy="#{obj.equipamento.descricao}" filterMatchMode="contains">
+						<h:outputText value="#{obj.equipamento.descricao}" />
+					</p:column>
+					
+					<p:column headerText="Localidade"
+						sortBy="#{obj.local.descricao}"
+						filterBy="#{obj.local.descricao}" filterMatchMode="contains">
+						<h:outputText value="#{obj.local.descricao}" />
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+		</div>
+		<!--FIM DA TABELA LOCAIS INVANTARIO-->
+
+	</p:dialog>
+
+
+	<!-- BOTÃO CADASTRAR -->
+	<div class="row container-fluid">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+				<h:form id="btImport">
+					<p:commandButton
+						actionListener="#{importarDadosInventarioBensMB.importa()}"
+						value="Importar Dados" id="btnCadastrar" oncomplete="PF('dlgRAERRAD').show();"
+						update=":dlgInformacao :frmTabelaLocais :frmTabelaLocaisERR" title="Cadastrar">
+						<p:confirm header="Confirmação" message="deseja continuar ?" />
+					</p:commandButton>
+				</h:form>
+			</ol>
+		</div>
+	</div>
+	<!-- 	disabled="  importarDadosInventarioMB.botaoImporta}" -->
+	<!-- FIM DO BOTÃO CADASTRAR -->
+</h:body>
+</html>

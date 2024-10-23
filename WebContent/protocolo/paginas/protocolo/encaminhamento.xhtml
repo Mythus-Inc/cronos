@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Encaminhadentos</h1>
+
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+	<!-- barra de progresso -->
+	<p:ajaxStatus onstart="PF('statusDialog').show()"
+		onsuccess="PF('statusDialog').hide()" />
+
+	<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+		closable="false" resizable="false" showHeader="false">
+		<h4>Aguarde...</h4>
+
+		<f:facet name="start">
+			<p:graphicImage name="../../../resources/img/aguarde.gif" />
+		</f:facet>
+	</p:dialog>
+
+
+	<!-- FIM DO BOTÃO CADASTRAR -->
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+			<p:dataTable id="tabela" reflow="true" rows="10" paginator="true"
+				paginatorPosition="bottom" resizableColumns="true"
+				value="#{protocoloEncaminhamentoMB.listEncaminhamentoTodas}"
+				emptyMessage="Nenhum Protocolo Encontrado" var="list"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+
+				<p:column headerText="Anexos" style="width:90px">
+					<p:commandButton alt="PDF" title="PDF" styleClass="btn btn-block"
+						onclick="PF('dlgAutenticar').show();" icon="ui-icon-circle-check"
+						update=":frmAnexosAutentica"
+						actionListener="#{protocoloEncaminhamentoMB.buscarAnexos(list)}">
+
+					</p:commandButton>
+				</p:column>
+
+				<p:column headerText="Código" filterBy="#{list.id}">
+					<h:outputText value="#{list.protocolo.id}" />
+				</p:column>
+				<p:column headerText="Nome Requerente">
+					<h:outputText value="#{list.protocolo.pessoa.nome}" />
+					<h:outputText value="#{list.protocolo.nome}" />
+				</p:column>
+
+				<p:column headerText="Data Encaminhamento">
+					<h:outputText value="#{list.dataEncaminhamento}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Data Parecer">
+					<h:outputText value="#{list.dataParecer}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Encaminhado para ">
+					<h:outputText value="#{list.pessoa.nome}" />
+				</p:column>
+				<p:column headerText="Movimentação" style="width:120px">
+					<p:commandButton alt="Movimentação" title="Movimentação"
+						styleClass="btn btn-block" onclick="PF('dlgMovimentacao').show();"
+						icon="ui-icon-document" update=":frmMovimentacaoProtocolo"
+						actionListener="#{protocoloEncaminhamentoMB.buscarEncaminhamentos(list)}">
+
+					</p:commandButton>
+				</p:column>
+
+
+			</p:dataTable>
+		</h:form>
+
+	</div>
+	<!--FIM DA TABELA-->
+
+	<!-- DIALOG DETALHES -->
+	<p:dialog header="Movimentações Protocolo" widgetVar="dlgMovimentacao"
+		responsive="true" modal="true" closeOnEscape="true" resizable="false"
+		closable="true" draggable="false" width="75%">
+		<p:outputPanel id="protocoloMovimentacao">
+			<h:form id="frmMovimentacaoProtocolo">
+
+
+				<p:dataTable id="tabela" reflow="true" rows="10" paginator="true"
+					paginatorPosition="bottom" resizableColumns="true"
+					value="#{protocoloEncaminhamentoMB.listEncaminhamento}"
+					emptyMessage="Nenhum Protocolo Encontrado" var="lista"
+					rowsPerPageTemplate="5,10,15,30,50,100">
+
+					<p:column headerText="Requerente">
+						<h:outputText value="#{lista.protocolo.nome}" />
+						<h:outputText value="#{lista.protocolo.pessoa.nome}" />
+					</p:column>
+					<p:column headerText="Encaminhado Por">
+						<h:outputText value="#{lista.pessoaRemetente.nome}" />
+					</p:column>
+
+					<p:column headerText="Data Encaminhamento">
+						<h:outputText value="#{lista.dataEncaminhamento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Encaminhado para ">
+						<h:outputText value="#{lista.pessoa.nome}" />
+					</p:column>
+
+					<p:column headerText="Data Parecer">
+						<h:outputText value="#{lista.dataParecer}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Despacho" style="width:120px">
+						<p:commandButton alt="Movimentação" title="Movimentação"
+							disabled="#{lista.pessoa.id != protocoloEncaminhamentoMB.servidorLoado.id or lista.dataParecer != null}"
+							styleClass="btn btn-block" icon="ui-icon-document"
+							actionListener="#{protocoloEncaminhamentoMB.criarNovoObjetoEncaminhamento()}"
+							oncomplete="PF('dlgCiencia').show();" update=":formCiencia">
+
+							<f:setPropertyActionListener value="#{lista}"
+								target="#{protocoloEncaminhamentoMB.encaminhamentoParecer}" />
+
+
+						</p:commandButton>
+
+					</p:column>
+					<p:column headerText="Observação" style="width:120px" >
+						<p:commandButton alt="Observação" title="Observação" icon="ui-icon-search" update="frmObservacao" styleClass="btn btn-block"
+							onclick="PF('dlgObservacao').show();" disabled="#{lista.pessoa.id != protocoloEncaminhamentoMB.servidorLoado.id or lista.dataParecer != null}" >
+							<f:setPropertyActionListener value="#{lista}"
+								target="#{protocoloEncaminhamentoMB.encaminhamentoParecer}" />
+						</p:commandButton>
+
+					</p:column>
+
+
+				</p:dataTable>
+
+			</h:form>
+		</p:outputPanel>
+	</p:dialog>
+	<!-- FIM DO DIALOG DETALHES -->
+
+
+	<!-- DIALOG TRAMITES PROTOCOLO -->
+	<p:dialog header="Observações" widgetVar="dlgObservacao"
+		responsive="true" modal="true" closeOnEscape="true" resizable="false"
+		closable="true" draggable="false">
+		<p:outputPanel id="protocoloTramites">
+			<h:form id="frmObservacao">
+				<h:panelGrid columns="2">
+					<label>Observação: </label>
+					<h:outputText
+						value="#{protocoloEncaminhamentoMB.encaminhamentoParecer.descricaoRemetente}" />
+
+				</h:panelGrid>
+			</h:form>
+		</p:outputPanel>
+	</p:dialog>
+	<!-- FIM DO DIALOG TRAMITES PROTOCOLO -->
+
+
+	<!-- dialog dar ciencia -->
+	<p:dialog header="Dar Ciência" modal="true" responsive="true"
+		width="60%" id="dlgCiencia" closable="true" closeOnEscape="true"
+		draggable="false" showEffect="scale" resizable="false"
+		widgetVar="dlgCiencia">
+
+		<h:form id="formCiencia">
+
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Descrição</label>
+					<p:inputTextarea
+						value="#{protocoloEncaminhamentoMB.encaminhamentoParecer.descricao}"
+						rows="6" cols="33" />
+				</div>
+
+			</div>
+			<div class="modal-footer">
+				<p:commandButton value="Enviar Parecer"
+					styleClass="ui-priority-primary"
+					update=":frmMovimentacaoProtocolo :frmTabela"
+					actionListener="#{protocoloEncaminhamentoMB.darCiencia()}" />
+
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- fim do dialog dar ciencia -->
+
+
+	<!-- DIALOG AUTENTICAR ANEXOS -->
+	<p:dialog header="Autenticar Anexos" widgetVar="dlgAutenticar"
+		responsive="true" modal="true" closeOnEscape="true" resizable="false"
+		closable="true" draggable="true" width="60%">
+
+		<h:form id="frmAnexosAutentica">
+			<p:dataTable id="tabela" reflow="true" rows="10" paginator="true"
+				paginatorPosition="bottom" resizableColumns="true"
+				value="#{protocoloEncaminhamentoMB.listAnexo}"
+				emptyMessage="Nenhum Anexo Encontrado" var="lista"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+
+				<p:column headerText="Anexo" style="width:60px">
+					<p:commandButton alt="Anexo PDF" title="Anexo PDF"
+						styleClass="btn btn-block" onclick="PF('dlgArquivo').show();"
+						icon="ui-icon-document" update=":uploadAnexoPdf">
+						<f:setPropertyActionListener value="#{lista}"
+							target="#{protocoloSecretariaMB.anexos}" />
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="Arquivo">
+					<h:outputText value="#{lista.caminho}" />
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+	</p:dialog>
+	<!-- FIM DO DIALOG AUTENTICAR ANEXOS -->
+
+
+	<!-- ARQUIVO PDF -->
+	<p:dialog header="Arquivo" widgetVar="dlgArquivo" modal="true"
+		id="dlgArquivo" closable="true" closeOnEscape="true" responsive="true"
+		resizable="false" draggable="true">
+		<h:form id="uploadAnexoPdf">
+			<label>Documentos: </label>
+			<h:outputText value="#{protocoloSecretariaMB.anexos.caminho}" />
+			<object id="myPdff" type="application/pdf"
+				data="#{caminhoArquivosMB.caminhoDuasPastaProtocolo}#{protocoloSecretariaMB.anexos.caminho}.pdf"
+				height="500px" width="100%"> </object>
+		</h:form>
+	</p:dialog>
+	<!-- FIM ARQUIVO PDF -->
+
+
+
+</h:body>
+</html>
+

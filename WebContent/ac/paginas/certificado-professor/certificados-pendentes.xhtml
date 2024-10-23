@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+#{certificadoProfessorMB.preencherListaPendentes()}
+<p:ajaxStatus onstart="PF('statusDialog').show()"
+		onsuccess="PF('statusDialog').hide()" />
+
+	<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+		closable="false" resizable="false" showHeader="false">
+		<h:outputText style="font-weight:bold"
+			value="Aguarde, realizando operação...." />
+		<br />
+		<center>
+			<p:graphicImage name="img/aguarde.gif" />
+		</center>
+	</p:dialog>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Certificado pendentes</h1>
+
+		</div>
+		<div></div>
+	</div>
+	<!-- FIM TITULO -->
+	<!-- <h:form>
+	<div class="row">
+		<div class="col-md-6">
+		
+			<p:selectOneMenu style="width:80%" dropdown="true" required="true"
+				value="{certificadoProfessorMB.turmaSelecionada}"
+				converter="{converterTurma}" panelStyle="width:180px">
+				<f:selectItems value="{certificadoProfessorMB.turmas}" var="cur"
+					itemLabel="{cur.curso.nome}" itemValue="#{cur}" />
+				<p:column style="white-space:normal !important;">
+					<h:outputText value="{cur}" />
+				</p:column>
+			</p:selectOneMenu>
+			
+			<p:commandButton value="Buscar" update="frmTabela" actionListener="{certificadoProfessorMB.buscarCertificadosTurma()}"></p:commandButton>
+			
+			
+		</div>
+		<div></div>
+	</div>
+	</h:form>-->
+
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+			<p:dataTable id="tabela" widgetVar="tabelaT" resizableColumns="true"
+				value="#{certificadoProfessorMB.certificadosPendentes}" var="obj"
+				reflow="true" rows="10" paginator="true" paginatorPosition="bottom"
+				emptyMessage="Nenhum certificado cadastrado"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+				<p:ajax event="filter" global="false" />
+
+
+				<p:column headerText="Ver" style="width:50px">
+					<p:commandButton update=":frmDetalhesCertificado"
+						styleClass="btn btn-block" title="Ver" alt="detlhes evento"
+						icon="ui-icon-search" oncomplete="PF('dlgDetalhes').show()">
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{certificadoProfessorMB.certificado}" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column headerText="PDF" style="width:50px">
+					<p:commandButton
+						rendered="#{obj.caminhoCertificado!=null and obj.caminhoCertificado.length()>5}"
+						alt="Certificado PDF" title="Certificado PDF"
+						styleClass="btn btn-block" onclick="PF('dlgArquivo').show();"
+						icon="ui-icon-document" update=":uploadCertificado">
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{certificadoMB.certificado}" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column headerText="Aluno"
+					filterBy="#{obj.aluno.nome} #{obj.alunoTurma.turma.abreviacaoTurma} #{obj.atividadeTurma.atividade.descricao}"
+					style="white-space:normal !important;" filterMatchMode="contains"
+					filterValue="#{certificadoProfessorMB.filtroNome}">
+					<ul>
+						<li style="padding-bottom: 5px"><h:outputText
+								value="#{obj.alunoTurma.turma.abreviacaoTurma}" /></li>
+						<li style="padding-bottom: 5px"><h:outputText value="#{obj.aluno.nome}" /></li>
+						<li style="padding-bottom: 5px"><h:outputText
+								value="#{obj.atividadeTurma.atividade.descricao}" /></li>
+								<li style="padding-bottom: 5px"><h:outputText value="#{obj.quantidadeMaximaHora} hora(s) cadastrada(s)" /></li>
+						<li style="padding-bottom: 5px"><h:outputText value="#{obj.horaComputada} hora(s) computada(s)" /></li>
+					</ul>
+
+				</p:column>
+				<p:column headerText="Descrição" filterBy="#{obj.descricao}"
+					style="white-space:normal !important;" sortBy="#{obj.descricao}"
+					filterMatchMode="contains">
+					<h:outputText escape="false" value="#{obj.descricao}" />
+				</p:column>
+
+				<p:column headerText="Alterar" style="width:80px">
+					<p:commandButton alt="Alterar" update=":frmModalSalvar"
+						styleClass="btn btn-block"
+						onclick="PF('dlgCertificado').show(); PF('dlgCertificado').content.scrollTop('0')"
+						icon="ui-icon-pencil">
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{certificadoProfessorMB.certificado}" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column headerText="Validar" style="width:80px">
+					<p:commandButton alt="Validar" title="Validar"
+						styleClass="btn btn-block" onclick="PF('dlgValidar').show();"
+						icon="ui-icon-circle-check">
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{certificadoProfessorMB.certificado}" />
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="Invalidar" style="width:80px">
+					<p:commandButton alt="Inválidar" title="Inválidar"
+						update=":frmModalInvalidar" styleClass="btn btn-block"
+						onclick="PF('dlgInvalidar').show();" icon="ui-icon-circle-close">
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{certificadoProfessorMB.certificado}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</div>
+	<!--FIM DA TABELA-->
+
+
+	<!-- DIALOG DETALHES  -->
+	<p:dialog header="Certificado" width="80%" widgetVar="dlgDetalhes"
+		modal="true" closeOnEscape="true" resizable="false" closable="true"
+		responsive="true" draggable="false">
+		<p:outputPanel id="eventoDetalhe">
+			<h:form id="frmDetalhesCertificado">
+				<h:panelGrid columns="2">
+
+					<label>Grupo: </label>
+					<h:outputText
+						value="#{certificadoProfessorMB.certificado.atividadeTurma.atividade.grupo.descricao}" />
+
+					<label>Atividade: </label>
+					<h:outputText
+						value="#{certificadoProfessorMB.certificado.atividadeTurma.atividade.descricao}" />
+
+					<label>Matriz: </label>
+					<h:outputText
+						value="#{certificadoProfessorMB.certificado.atividadeTurma.matriz.descricao}" />
+
+					<label>Turma: </label>
+					<h:outputText
+						value="#{certificadoProfessorMB.certificado.alunoTurma.turma.abreviacaoTurma}" />
+
+					<label>Data de início da turma: </label>
+					<h:outputText
+						value="#{certificadoProfessorMB.certificado.alunoTurma.turma.dataInicioTurma}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+
+					<label>Curso: </label>
+					<h:outputText
+						value="#{certificadoProfessorMB.certificado.alunoTurma.turma.curso.abreviacaoCurso}" />
+
+					<label>Descrição: </label>
+					<h:outputText escape="false"
+						value="#{certificadoProfessorMB.certificado.descricao}" />
+
+
+
+					<label>Código de Autenticação: </label>
+					<h:outputText escape="false"
+						value="#{certificadoProfessorMB.certificado.codigoAutenticacao}" />
+
+					<label>Instituição: </label>
+					<h:outputText
+						value="#{certificadoProfessorMB.certificado.instituicao}" />
+
+					<label>Data de início: </label>
+					<h:outputText
+						value="#{certificadoProfessorMB.certificado.dataInicio}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+
+					<label>Data de fim: </label>
+					<h:outputText
+						value="#{certificadoProfessorMB.certificado.dataFinalizado}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+
+					<label>Data do cadastro: </label>
+					<h:outputText
+						value="#{certificadoProfessorMB.certificado.dataCadastro}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+
+					<label>Quantidade de horas totais: </label>
+					<h:outputText
+						value="#{certificadoProfessorMB.certificado.quantidadeMaximaHora}" />
+
+					<label>Quantidade de horas computadas: </label>
+					<h:outputText
+						value="#{certificadoProfessorMB.certificado.horaComputada}" />
+
+					<label>Arquivo: </label>
+					<h:outputText
+						value="#{certificadoProfessorMB.certificado.caminhoCertificado}" />
+
+					<label>Autenticado: </label>
+					<h:outputText
+						value="#{certificadoProfessorMB.certificado.autenticadoSecretaria}" />
+
+					<label>Justificativa secretaria: </label>
+					<h:outputText
+						value="#{certificadoProfessorMB.certificado.justificativa}" />
+
+					<label>Justificativa professor: </label>
+					<h:outputText
+						value="#{certificadoProfessorMB.certificado.justificativaProfessor}" />
+				</h:panelGrid>
+
+				<center>
+					<h:panelGrid
+						rendered="#{certificadoProfessorMB.certificado.caminhoCertificado.length()>5}"
+						columns="4">
+
+
+						<p:outputLabel
+							rendered="#{certificadoProfessorMB.certificado.caminhoCertificado.length()>5}"
+							value="Certificado PDF" />
+
+						<p:outputLabel value="Validar" />
+
+
+						<p:outputLabel value="Invalidar" />
+
+						<p:outputLabel value="Alterar" />
+
+
+						<p:commandButton style="width:150px"
+							rendered="#{certificadoProfessorMB.certificado.caminhoCertificado.length()>5}"
+							alt="Certificado PDF" title="Certificado PDF"
+							styleClass="btn btn-block" onclick="PF('dlgArquivo').show();"
+							icon="ui-icon-document" update=":uploadCertificado">
+							<f:setPropertyActionListener
+								value="#{certificadoProfessorMB.certificado}"
+								target="#{certificadoMB.certificado}" />
+						</p:commandButton>
+
+
+
+						<p:commandButton style="width:150px" alt="Validar" title="Validar"
+							styleClass="btn btn-block" onclick="PF('dlgValidar').show();"
+							icon="ui-icon-circle-check">
+
+						</p:commandButton>
+
+
+
+						<p:commandButton style="width:150px" alt="Inválidar"
+							title="Inválidar" styleClass="btn btn-block"
+							onclick="PF('dlgInvalidar').show();" icon="ui-icon-circle-close">
+
+						</p:commandButton>
+
+						<p:commandButton style="width:150px" alt="Alterar"
+							update=":frmModalSalvar" styleClass="btn btn-block"
+							onclick="PF('dlgCertificado').show(); PF('dlgCertificado').content.scrollTop('0')"
+							icon="ui-icon-pencil">
+
+						</p:commandButton>
+
+
+					</h:panelGrid>
+
+					<h:panelGrid style="padding:50px"
+						rendered="#{certificadoProfessorMB.certificado.caminhoCertificado.length()==0}"
+						columns="3">
+
+
+						<p:outputLabel value="Validar" />
+
+
+						<p:outputLabel value="Invalidar" />
+
+
+						<p:outputLabel value="Alterar" />
+
+
+						<p:commandButton style="width:150px" alt="Validar" title="Validar"
+							styleClass="btn btn-block" onclick="PF('dlgValidar').show();"
+							icon="ui-icon-circle-check">
+
+						</p:commandButton>
+
+
+
+						<p:commandButton style="width:150px" alt="Inválidar"
+							title="Inválidar" styleClass="btn btn-block"
+							onclick="PF('dlgInvalidar').show();" icon="ui-icon-circle-close">
+
+						</p:commandButton>
+
+						<p:commandButton style="width:150px" alt="Alterar"
+							update=":frmModalSalvar" styleClass="btn btn-block"
+							onclick="PF('dlgCertificado').show(); PF('dlgCertificado').content.scrollTop('0')"
+							icon="ui-icon-pencil">
+
+						</p:commandButton>
+
+					</h:panelGrid>
+
+				</center>
+
+			</h:form>
+		</p:outputPanel>
+	</p:dialog>
+	<!-- FIM DO DIALOG DETALHES -->
+
+	<!-- AUTENTICAR CERTIFICADO-->
+	<p:dialog header="Validar" widgetVar="dlgValidar" modal="true"
+		width="50%" id="dlgValidar" closable="true" closeOnEscape="true"
+		responsive="true" resizable="false" draggable="false">
+		<h:form id="frmModalAutenticar">
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Justificativa</label>
+					<p:inputText id="justificativaAutenticar"
+						value="#{certificadoProfessorMB.certificado.justificativaProfessor}"
+						styleClass="col-md-12" />
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton value="Salvar"
+					actionListener="#{certificadoProfessorMB.validar()}"
+					update=":dlgInformacao :frmTabela" alt="Sim"
+					styleClass="ui-priority-primary"
+					oncomplete="PF('tabelaT').filter()" />
+				<p:commandButton value="Cancelar" onclick="PF('dlgValidar').hide();"
+					alt="Cancelar" />
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- FIM AUTENTICAR CERTIFICADO -->
+
+	<!-- INVALIDAR CERTIFICADO-->
+	<p:dialog header="Inválidar" widgetVar="dlgInvalidar" modal="true"
+		width="50%" id="dlgInvalidar" closable="true" closeOnEscape="true"
+		responsive="true" resizable="false" draggable="false">
+		<h:form id="frmModalInvalidar">
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Justificativa</label>
+					<p:inputText id="justificativa"
+						value="#{certificadoProfessorMB.certificado.justificativaProfessor}"
+						styleClass="col-md-12" />
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton value="Salvar"
+					actionListener="#{certificadoProfessorMB.invalidar()}"
+					update=":dlgInformacao :frmTabela" alt="Sim"
+					styleClass="ui-priority-primary"
+					oncomplete="PF('tabelaT').filter()" />
+				<p:commandButton value="Cancelar"
+					onclick="PF('dlgInvalidar').hide();" alt="Cancelar" />
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- FIM INVALIDAR CERTIFICADO -->
+
+	<!-- DIALOG SALVAR -->
+	<p:dialog header="Certificado" widgetVar="dlgCertificado" modal="true"
+		responsive="true" width="60%" id="dlgCertificado" closable="true"
+		closeOnEscape="true" resizable="false" draggable="false">
+		<h:form id="frmModalSalvar">
+			<div class="row">
+				<div class="col-md-12">
+					<p:panelGrid columnClasses="ui-grid-col-1, ui-grid-col-12"
+						styleClass="ui-panelgrid-blank" columns="1">
+						<label>Calcular equivalência? </label>
+						<p:selectBooleanCheckbox
+							value="#{certificadoProfessorMB.calculaEquivalencia}">
+							<p:ajax event="change" update="frmModalSalvar" />
+						</p:selectBooleanCheckbox>
+					</p:panelGrid>
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Descrição *</label>
+					<p:inputText title="Descrição" alt="descrição"
+						styleClass="col-md-12" id="descricao"
+						value="#{certificadoProfessorMB.certificado.descricao}"
+						required="true"
+						requiredMessage="O campo descrição não deve ser nulo" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Instituição *</label>
+					<p:inputText title="Instituição" alt="instituicao"
+						styleClass="col-md-12" id="instituicao"
+						value="#{certificadoProfessorMB.certificado.instituicao}"
+						required="true"
+						requiredMessage="O campo instituição não deve ser nulo" />
+				</div>
+			</div>
+
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Atividade *</label>
+					<p:autoComplete id="atividade" dropdown="true" scrollHeight="170"
+						value="#{certificadoProfessorMB.certificado.atividadeTurma}"
+						completeMethod="#{certificadoProfessorMB.completarAtividadeTurma}"
+						forceSelection="true" converter="#{converterAtividadeTurma}"
+						var="att"
+						itemLabel="#{att.atividade.descricao} - #{att.grupoTurma.grupo.abreviacao} - #{att.matriz.descricao}"
+						itemValue="#{att}" />
+				</div>
+			</div>
+
+			<div class="ui-fluid">
+				<div class="col-md-6">
+					<label>Quantidade de horas *</label>
+					<p:inputText title="Quantidade de horas" alt="Quantidade de horas"
+						type="number" id="quantidadeHoras"
+						value="#{certificadoProfessorMB.certificado.quantidadeMaximaHora}"
+						required="true"
+						requiredMessage="O campo quantidade de horas não deve ser nulo" />
+
+				</div>
+
+				<div class="col-md-6">
+					<label>Quantidade de horas computada</label>
+
+					<p:inputText title="Quantidade de horas computadas"
+						alt="Quantidade de horas computadas" type="number"
+						id="quantidadeHorasComputadas"
+						disabled="#{certificadoProfessorMB.calculaEquivalencia}"
+						value="#{certificadoProfessorMB.certificado.horaComputada}" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-6">
+					<label>Data de início *</label>
+					<p:calendar id="dtInicio" alt="Data de início"
+						title="Data de início"
+						value="#{certificadoProfessorMB.certificado.dataInicio}"
+						pattern="dd/MM/yyyy" mask="true" required="true"
+						requiredMessage="O campo data de início não deve ser nulo" />
+				</div>
+				<div class="col-md-6">
+					<label>Data de finalização *</label>
+					<p:calendar id="dtFinalizacao" alt="Data de finalização"
+						title="Data de finalização"
+						value="#{certificadoProfessorMB.certificado.dataFinalizado}"
+						pattern="dd/MM/yyyy" mask="true" required="true"
+						requiredMessage="O campo data de finalização não deve ser nulo" />
+				</div>
+			</div>
+
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Motivo da alteração*</label>
+					<p:inputText title="Motivo da alteração" alt="Motivo da alteração"
+						id="motivo"
+						value="#{certificadoProfessorMB.certificado.motivoAlteracao}"
+						required="true"
+						requiredMessage="O campo Motivo da alteração não deve ser nulo" />
+
+				</div>
+			</div>
+
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<small>Campos obrigatórios *</small>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton value="Salvar" id="btnSalvar" alt="Sim"
+					styleClass="ui-priority-primary"
+					actionListener="#{certificadoProfessorMB.alterar(false)}"
+					update=":dlgInformacao :frmTabela :frmDetalhesCertificado" />
+				<p:commandButton value="Cancelar"
+					onclick="PF('dlgCertificado').hide();" alt="Cancelar" />
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- FIM DO DIALOG SALVAR -->
+
+
+</h:body>
+</html>
+

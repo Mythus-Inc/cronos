@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Turma</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+	<!-- BOTÃO CADASTRAR -->
+	<div class="row container-fluid">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+				<h:form id="frmCadastrar">
+					<p:commandButton actionListener="#{turmaMB.criarNovaTurma}"
+						value="Cadastrar" update=":frmModalSalvar" id="btnCadastrar"
+						onclick="PF('dlgTurma').show(); PF('dlgTurma').content.scrollTop('0')"
+						title="Cadastrar" />
+				</h:form>
+			</ol>
+		</div>
+
+	</div>
+	<!-- FIM DO BOTÃO CADASTRAR -->
+
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+			<p:dataTable id="tabela" value="#{turmaMB.turmas}" var="obj"
+				resizableColumns="true" reflow="true" rows="10" paginator="true"
+				paginatorPosition="bottom" emptyMessage="Nenhuma turma cadastrada"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+				<p:column headerText="Curso" filterBy="#{obj.curso.nome}"
+					sortBy="#{obj.curso.nome}" filterMatchMode="contains">
+					<h:outputText value="#{obj.curso.nome}" />
+				</p:column>
+				<p:column headerText="Turma" filterBy="#{obj.descricao}"
+					sortBy="#{obj.descricao}" filterMatchMode="contains">
+					<h:outputText value="#{obj.descricao}" />
+				</p:column>
+				<p:column headerText="Data de início"
+					sortBy="#{obj.dataInicioTurma}">
+					<h:outputText value="#{obj.dataInicioTurma}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Alterar" style="width:68px">
+					<p:commandButton update=":frmModalSalvar" title="alterar"
+						alt="Alterar" onclick="PF('dlgTurma').show();"
+						styleClass="btn btn-block" icon="ui-icon-pencil">
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{turmaMB.turma}" />
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="Excluir" style="width:68px">
+					<p:commandButton actionListener="#{turmaMB.inativar(obj)}"
+						icon="ui-icon-trash" title="Excluir" styleClass="btn btn-block"
+						update="frmTabela :dlgInformacao" alt="Excluir">
+						<p:confirm header="Confirmação" message="Deseja excluir?" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+
+		</h:form>
+
+	</div>
+	<!--FIM DA TABELA-->
+
+	<!-- DIALOG SALVAR -->
+	<p:dialog header="Turma" widgetVar="dlgTurma" modal="true"
+		responsive="true" width="60%" id="dlgTurma" closable="true"
+		closeOnEscape="true" resizable="false" draggable="false">
+		<h:form id="frmModalSalvar">
+			<div class="ui-fluid">
+				<div class="col-md-11">
+					<label>Curso da turma *</label>
+					<p:autoComplete id="curso" dropdown="true"
+						value="#{turmaMB.turma.curso}" scrollHeight="170"
+						completeMethod="#{turmaMB.completarCursos}" forceSelection="true"
+						converter="converterCurso" var="cur" itemLabel="#{cur.nome}"
+						itemValue="#{cur}" required="true"
+						requiredMessage="O campo curso da turma não deve ser nulo" />
+				</div>
+			</div>
+
+			<div class="ui-fluid">
+				<div class="col-md-6">
+					<label>Descrição *</label>
+					<p:inputText title="Minímo de horas" id="ano" alt="ano da turma"
+						required="true"
+						requiredMessage="O campo ano da turma não deve ser nulo"
+						value="#{turmaMB.turma.descricao}" />
+				</div>
+				<div class="col-md-6">
+					<label>Data de abertura *</label>
+					<p:calendar id="dtAbertura"
+						value="#{turmaMB.turma.dataInicioTurma}" pattern="dd/MM/yyyy"
+						mask="true" required="true"
+						requiredMessage="O campo data de abertura não deve ser nulo" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12">
+
+					<small>Campos obrigatórios *</small>
+
+				</div>
+			</div>
+
+			<div class="modal-footer">
+
+				<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+					actionListener="#{turmaMB.salvar()}"
+					update="frmTabela :dlgInformacao" alt="Sim" />
+
+				<p:commandButton value="Cancelar"
+					oncomplete="PF('dlgTurma').hide();" alt="Cancelar" />
+
+			</div>
+		</h:form>
+	</p:dialog>
+	<!-- FIM DO DIALOG SALVAR -->
+</h:body>
+</html>
+

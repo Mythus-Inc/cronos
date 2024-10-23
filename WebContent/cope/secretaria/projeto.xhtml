@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+	<ui:composition
+		template="../../resources/template/cope/template-secretaria.xhtml">
+		<ui:define name="tituloPagina">
+		 - COPE
+		</ui:define>
+
+		<ui:define name="titulo">
+			Projetos com Pend&ecirc;ncias
+		</ui:define>
+
+		<ui:define name="conteudo">
+			<p:outputPanel id="pnLista">
+				<h:form>
+					<label>Projetos Pendentes</label>
+					<ui:include src="includes/projeto-lista.xhtml" />
+				</h:form>
+			</p:outputPanel>
+			<p:outputPanel id="pnDialog">
+				<ui:include src="includes/projeto-dialog.xhtml" />
+			</p:outputPanel>
+		</ui:define>
+
+		<ui:define name="modal-confirmacao">
+			<ui:include src="../../componentes/dialog-confirmacao.xhtml" />
+		</ui:define>
+
+
+	</ui:composition>
+</h:body>
+</html>

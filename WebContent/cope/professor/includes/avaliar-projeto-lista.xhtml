@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<p:dataTable value="#{projetoAvaliacaoMB.listaArquivoProjetoPendente}"
+	var="obj" resizableColumns="true" rows="10" paginator="true"
+	paginatorPosition="bottom" reflow="true"
+	emptyMessage="Nenhum projeto pendente"
+	rowsPerPageTemplate="5,10,15,30,50,100">
+	<p:column headerText="Nº do processo"
+		filterBy="#{obj.projeto.numeroProcesso}" width="150">
+		<h:outputText value="#{obj.projeto.numeroProcesso}" />
+	</p:column>
+	<p:column headerText="Título">
+		<h:outputText value="#{obj.projeto.nome}" />
+	</p:column>
+	<p:column headerText="Área" width="100">
+		<h:outputText value="#{obj.projeto.tipoProjeto}" />
+	</p:column>
+	<p:column headerText="Data Limite Avaliação" width="230">
+		<h:outputText value="#{obj.avaliacao.dataPrazoAvaliacao}">
+			<f:convertDateTime pattern="dd/MM/yyyy" />
+		</h:outputText>
+	</p:column>
+	<p:column headerText="Ações" width="60">
+		<p:commandButton
+			actionListener="#{projetoAvaliacaoMB.selecionaProjeto(obj)}"
+			update=":pnLista :pnAvaliacao" icon="fa fa-pencil-square-o"
+			styleClass="btn btn-default" title="Visualizar projeto" />
+	</p:column>
+</p:dataTable>
+
+</html>

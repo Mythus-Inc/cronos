@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:body>
+
+	<p:ajaxStatus onstart="PF('statusDialog').show()"
+		onsuccess="PF('statusDialog').hide()" />
+
+	<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+		closable="false" resizable="false" showHeader="false">
+		<h:outputText style="font-weight:bold"
+			value="Aguarde, realizando operação...." />
+		<br />
+		<center>
+			<p:graphicImage name="img/aguarde.gif" />
+		</center>
+	</p:dialog>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Certificado</h1>
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+
+
+	<!-- BOTÃO CADASTRAR -->
+	<div class="row container-fluid">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+				<h:form id="frmCadastrar">
+					<p:commandButton
+						actionListener="#{certificadoMB.criarNovoObjetoCertificado()}"
+						value="Cadastrar" update=":frmModalSalvar" id="btnCadastrar"
+						onclick="PF('dlgCertificado').show(); PF('dlgCertificado').content.scrollTop('0')"
+						title="Cadastrar" />
+				</h:form>
+			</ol>
+		</div>
+	</div>
+	<!-- FIM DO BOTÃO CADASTRAR -->
+
+
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+		<h5>Os certificados abaixo aguardam a autenticação da secretaria. Se você cadastrou um certificado que não possui um site para autenticação, leve o original na secretaria para que seja autenticado no sistema.</h5>
+			<h3>
+				<h:outputText style="color:red; font-weight: bold;"
+					value="#{certificadoMB.mensagemCertificadoImportado}" />
+			</h3>
+			<p:dataTable id="tabela" value="#{certificadoMB.certificadosAlunos}"
+				resizableColumns="true" var="obj" reflow="true" rows="10"
+				paginator="true" paginatorPosition="bottom"
+				emptyMessage="Nenhum certificado cadastrado"
+				rowsPerPageTemplate="5,10,15,30,50,100">
+				<p:ajax event="filter" global="false" />
+				<p:column headerText="Ver" style="width:50px">
+					<p:commandButton update=":frmDetalhesAtividadeTurma"
+						styleClass="btn btn-block" title="Ver" alt="detlhes certificado"
+						icon="ui-icon-search" oncomplete="PF('dlgDetalhes').show()">
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{certificadoMB.certificado}" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column headerText="PDF" style="width:50px">
+					<p:commandButton alt="Certificado PDF" title="Certificado PDF"
+						styleClass="btn btn-block" oncomplete="PF('dlgArquivo').show();"
+						icon="ui-icon-document" update=":uploadCertificado">
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{certificadoMB.certificado}" />
+					</p:commandButton>
+				</p:column>
+
+
+				<p:column headerText="Turma" style="white-space:normal !important;"
+					filterBy="#{obj.alunoTurma.turma.abreviacaoTurma}"
+					sortBy="#{obj.alunoTurma.turma.abreviacaoTurma}"
+					filterMatchMode="contains">
+					<h:outputText value="#{obj.alunoTurma.turma.abreviacaoTurma}" />
+				</p:column>
+
+				<p:column headerText="Grupo" style="white-space:normal !important;"
+					filterBy="#{obj.atividadeTurma.atividade.grupo.descricao}"
+					sortBy="#{obj.atividadeTurma.atividade.grupo.descricao}"
+					filterMatchMode="contains">
+					<h:outputText
+						value="#{obj.atividadeTurma.atividade.grupo.descricao}" />
+				</p:column>
+
+				<p:column headerText="Atividade"
+					style="white-space:normal !important;"
+					filterBy="#{obj.atividadeTurma.atividade.descricao}"
+					sortBy="#{obj.atividadeTurma.atividade.descricao}"
+					filterMatchMode="contains">
+					<h:outputText value="#{obj.atividadeTurma.atividade.descricao}" />
+				</p:column>
+
+				<p:column style="white-space:normal !important;"
+					headerText="Descrição" filterBy="#{obj.descricao}"
+					sortBy="#{obj.descricao}" filterMatchMode="contains">
+					<h:outputText value="#{obj.descricao}" />
+				</p:column>
+
+
+				<p:column headerText="Alterar" style="width:68px">
+					<p:commandButton alt="Alterar" update=":frmModalSalvarEditar"
+						styleClass="btn btn-block"
+						onclick="PF('dlgCertificadoEditar').show();" icon="ui-icon-pencil"
+						actionListener="#{certificadoMB.permitirPDF(obj)}">
+						<f:setPropertyActionListener value="#{obj}"
+							target="#{certificadoMB.certificado}" />
+					</p:commandButton>
+				</p:column>
+				<p:column headerText="Excluir" style="width:68px">
+					<p:commandButton actionListener="#{certificadoMB.inativar(obj)}"
+						icon="ui-icon-trash" title="Excluir" styleClass="btn btn-block"
+						update="frmTabela :dlgInformacao" alt="Excluir">
+						<p:confirm header="Confirmação" message="Deseja excluir?" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+	</div>
+	<!--FIM DA TABELA-->
+
+
+
+	<!-- DIALOG SALVAR -->
+	<p:dialog header="Certificado" widgetVar="dlgCertificado" modal="true"
+		responsive=" true" width="55%" id="dlgCertificado" closable="true"
+		closeOnEscape="true" resizable="false" draggable="true">
+		<h:form>
+			<p:commandButton styleClass="ui-priority-primary"
+				value="Buscar Certificados do Sistema Interno do Campus"
+				update=":frmPesquisarCertificados"
+				onclick="PF('dlgPesquisarCertificados').show(); PF('dlgPesquisarCertificados').content.scrollTop('0')"
+				title="Buscar Certificados do Sistema Interno do Campus" />
+		</h:form>
+		<br />
+
+		<h:form id="frmModalSalvar" enctype="multipart/form-data">
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Descrição:*&nbsp;&nbsp;&nbsp;</label>
+					<p:inputText
+						rendered="#{certificadoMB.certificado.codigoAutenticacaoSistemaCertificados==''}"
+						title="Descrição" alt="descrição" styleClass="col-md-12"
+						id="descricao" value="#{certificadoMB.certificado.descricao}"
+						required="true"
+						requiredMessage="O campo descrição não deve ser nulo" />
+
+					<h:outputText
+						rendered="#{certificadoMB.certificado.codigoAutenticacaoSistemaCertificados!=''}"
+						escape="false" value="#{certificadoMB.certificado.descricao}" />
+					<br />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12" style="padding-top: 10px">
+					<label>Instituição *</label>
+					<p:inputText title="Instituição" alt="instituicao"
+						styleClass="col-md-12" id="instituicao"
+						value="#{certificadoMB.certificado.instituicao}" required="true"
+						requiredMessage="O campo instituição não deve ser nulo" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12" style="padding-top: 10px">
+					<label>Turma *</label>
+
+					<p:selectOneMenu id="console"
+						disabled="#{certificadoMB.controleAltera}"
+						value="#{certificadoMB.certificado.alunoTurma}"
+						converter="#{alunoTurmaConverte}" required="true"
+						requiredMessage="Selecione uma turma">
+
+						<f:selectItem itemValue="" itemLabel="" />
+
+						<f:selectItems value="#{certificadoMB.listAlunoTurma}" var="t"
+							itemValue="#{t}" itemLabel="#{t.turma.abreviacaoTurma}" />
+
+						<p:ajax event="change" update="atividade"
+							listener="#{certificadoMB.controle()}" />
+
+
+					</p:selectOneMenu>
+
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-4" style="padding-top: 10px">
+					<label>Quantidade de horas *</label>
+					<p:inputText title="Quantidade de horas" alt="Quantidade de horas"
+						type="number" id="quantidadeHoras"
+						value="#{certificadoMB.certificado.quantidadeMaximaHora}"
+						required="true"
+						requiredMessage="O campo quantidade de horas não deve ser nulo" />
+
+				</div>
+				<div class="col-md-4" style="padding-top: 10px">
+					<label>Data de início *</label>
+					<p:calendar id="dtInicio" alt="Data de início"
+						title="Data de início"
+						value="#{certificadoMB.certificado.dataInicio}"
+						pattern="dd/MM/yyyy" mask="true" required="true"
+						requiredMessage="O campo data de início não deve ser nulo" />
+				</div>
+				<div class="col-md-4" style="padding-top: 10px">
+					<label>Data de finalização *</label>
+					<p:calendar id="dtFinalizacao" alt="Data de finalização"
+						title="Data de finalização"
+						value="#{certificadoMB.certificado.dataFinalizado}"
+						pattern="dd/MM/yyyy" mask="true" required="true"
+						requiredMessage="O campo data de finalização não deve ser nulo" />
+				</div>
+
+
+
+
+			</div>
+
+			<p:outputPanel id="painelCertificadoInterno"
+				rendered="#{certificadoMB.certificado.codigoAutenticacaoSistemaCertificados!='' and certificadoMB.certificado.atividadeSugerida!=''}">
+				<div class="ui-fluid">
+					<div class="col-md-12 col-xs-10" style="padding-top: 10px">
+						<label>Atividade Sugerida </label>
+						<h:outputText
+							value="#{certificadoMB.certificado.atividadeSugerida}" />
+
+
+					</div>
+				</div>
+			</p:outputPanel>
+
+			<div class="ui-fluid">
+				<div class="col-md-12 col-xs-10" style="padding-top: 10px">
+					<label>Atividade *</label>
+					<p:autoComplete id="atividade" dropdown="true" scrollHeight="170"
+						disabled="#{certificadoMB.controle}"
+						value="#{certificadoMB.certificado.atividadeTurma}"
+						completeMethod="#{certificadoMB.completarAtividadeTurma}"
+						forceSelection="true" converter="#{converterAtividadeTurma}"
+						var="att"
+						itemLabel="#{att.atividade.grupo.abreviacao}-#{att.atividade.descricao}"
+						itemValue="#{att}" required="true"
+						requiredMessage="O campo atividade não deve ser nulo" />
+
+
+				</div>
+			</div>
+			<p:outputPanel id="painelCertificadoExterno"
+				rendered="#{certificadoMB.certificado.codigoAutenticacaoSistemaCertificados==''}">
+				<div class="ui-fluid">
+					<br /> <br />
+					<div class="col-md-3" style="padding-top: 10px">
+						<label> </label> <label>Certificado digital : </label>
+
+					</div>
+					<div class="col-md-9" style="padding-top: 10px">
+						<p:selectOneRadio
+							disabled="#{certificadoMB.certificado.codigoAutenticacaoSistemaCertificados!=''}"
+							id="CertInterno" required="true"
+							requiredMessage="Informe se o certificado é interno ou não"
+							value="#{certificadoMB.certificado.certificadoInterno}">
+							<f:selectItem itemLabel="Sim" itemValue="sim" />
+							<f:selectItem itemLabel="Não" itemValue="não" />
+
+							<p:ajax event="change"
+								listener="#{certificadoMB.controleAutenticacaoURL()}"
+								update="url cod urlCode" />
+
+						</p:selectOneRadio>
+
+					</div>
+
+					<div class="clearfix"></div>
+
+
+
+				</div>
+
+				<p:outputPanel id="urlCode">
+					<p:outputPanel rendered="#{certificadoMB.controleURL}">
+						<div class="ui-fluid">
+							<div class="col-md-6" style="padding-top: 10px">
+								<label>URL para autenticação</label>
+								<p:inputText title="url" alt="autenticacao" id="url"
+									value="#{certificadoMB.certificado.url}" />
+							</div>
+
+							<div class="col-md-6" style="padding-top: 10px">
+								<label>Código de autenticação</label>
+								<p:inputText title="cod" alt="codigo" id="cod"
+									value="#{certificadoMB.certificado.codigoAutenticacao}" />
+							</div>
+
+							<div class="clearfix"></div>
+						</div>
+					</p:outputPanel>
+
+					<div class="ui-fluid">
+						<div class="col-md-12" style="padding-top: 10px">
+							<p:outputLabel for="certificadoPDF" value="Certificado PDF"
+								id="pdfID" />
+
+							<p:fileUpload mode="advanced" id="certificadoPDF" fileLimit="1"
+								fileLimitMessage="É possível selecionar apenas um arquivo"
+								invalidFileMessage="Tipo de arquivo inválido"
+								fileUploadListener="#{certificadoMB.upload}" auto="true"
+								allowTypes="/(\.|\/)(pdf)$/" sizeLimit="4000000"
+								multiple="false"
+								invalidSizeMessage="Tamanho do arquivo inválido"
+								disabled="#{certificadoMB.certificado.codigoAutenticacaoSistemaCertificados!='' }"
+								showButtons="false"
+								update=":frmModalSalvar:certificadoPDF :dlgInformacao :frmModalSalvar:painelAnexo" />
+						</div>
+						<p:outputPanel id="painelAnexo">
+							<div class="col-md-12" style="padding-top: 10px">
+								<p:outputLabel id="outputCaminhoPDF" style="color:#ff7600"
+									value="#{certificadoMB.certificado.nomeArquivoAnexado}" />
+							</div>
+						</p:outputPanel>
+
+					</div>
+				</p:outputPanel>
+			</p:outputPanel>
+
+			<div class="ui-fluid">
+				<div class="col-md-12" style="padding-top: 10px">
+					<small>Campos obrigatórios *</small>
+				</div>
+			</div>
+			<div class="modal-footer" style="padding-top: 10px">
+				<p:commandButton value="Salvar" id="btnSalvar" alt="Sim"
+					styleClass="ui-priority-primary"
+					actionListener="#{certificadoMB.salvar()}"
+					update=":frmTabela :dlgInformacao" />
+
+
+			</div>
+		</h:form>
+
+	</p:dialog>
+	<!-- FIM DO DIALOG SALVAR -->
+
+	<!-- DIALOG PESQUISAR CERTIFICADOS -->
+	<p:dialog
+		header="Pesquisar Certificados no Sistema de Certificados e Declarações"
+		widgetVar="dlgPesquisarCertificados" responsive="true" modal="true"
+		closeOnEscape="true" resizable="false" closable="true"
+		draggable="false">
+		<p:outputPanel id="panelPesquisarCertificados">
+			<h:form id="frmPesquisarCertificados">
+				<p:dataTable var="pes"
+					value="#{certificadoMB.listaCertificadosSistemaCertificados}"
+					style="margin-bottom:0" rows="3" paginator="true"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="3,6,9,12">
+					<f:facet name="header">
+						<h:outputText value="Certificados e Declarações" />
+					</f:facet>
+
+					<p:column headerText="CPF" width="120">
+						<h:outputText value="#{pes.pessoa.cpf}" />
+					</p:column>
+
+					<p:column headerText="Tipo" width="120">
+						<h:outputText value="#{pes.tipo}" />
+					</p:column>
+
+
+					<p:column headerText="Certificado/Declaração"
+						filterBy="#{pes.texto}" filterMatchMode="contains">
+						<h:outputText escape="false" value="#{pes.texto}" />
+					</p:column>
+					<p:column headerText="Utilizar nas AC">
+
+						<p:commandButton value="Selecionar" title="Selecionar"
+							update=":frmModalSalvar, :dlgInformacao" alt="Selecionar"
+							oncomplete="PF('dlgPesquisarCertificados').hide()"
+							actionListener="#{certificadoMB.selecionarCertificadoSistemaCertificado(pes)}">
+
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+		</p:outputPanel>
+	</p:dialog>
+	<!-- FIM DO DIALOG PESQUISAR CERTIFICADOS -->
+
+
+	<!-- DIALOG DETALHES -->
+	<p:dialog header="Atividade da turma" widgetVar="dlgDetalhes"
+		responsive="true" modal="true" closeOnEscape="true" resizable="false"
+		closable="true" draggable="false">
+		<p:outputPanel id="atividadeDetalhe">
+			<h:form id="frmDetalhesAtividadeTurma">
+				<h:panelGrid columns="2">
+					<label>Grupo: </label>
+					<h:outputText
+						value="#{certificadoMB.certificado.atividadeTurma.atividade.grupo.descricao}" />
+
+					<label>Turma: </label>
+					<h:outputText
+						value="#{certificadoMB.certificado.alunoTurma.turma.abreviacaoTurma}" />
+
+					<label>Atividade: </label>
+					<h:outputText
+						value="#{certificadoMB.certificado.atividadeTurma.atividade.descricao}" />
+
+					<label>Descrição: </label>
+					<h:outputText value="#{certificadoMB.certificado.descricao}" />
+
+					<label>Código de Autenticação: </label>
+					<h:outputText
+						value="#{certificadoMB.certificado.codigoAutenticacao}" />
+
+					<label>Instituição: </label>
+					<h:outputText value="#{certificadoMB.certificado.instituicao}" />
+
+					<label>Quantidade horas: </label>
+					<h:outputText
+						value="#{certificadoMB.certificado.quantidadeMaximaHora}" />
+
+					<label>Horas computadas: </label>
+					<h:outputText value="#{certificadoMB.certificado.horaComputada}" />
+
+					<label>Data de início: </label>
+					<h:outputText value="#{certificadoMB.certificado.dataInicio}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+
+					<label>Data de finalização: </label>
+					<h:outputText value="#{certificadoMB.certificado.dataFinalizado}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+
+					<label>Certificado: </label>
+					<p:commandButton alt="Certificado PDF" title="Certificado PDF"
+						styleClass="btn btn-block" onclick="PF('dlgArquivo').show();"
+						icon="ui-icon-document" update=":uploadCertificado" />
+				</h:panelGrid>
+			</h:form>
+		</p:outputPanel>
+	</p:dialog>
+	<!-- FIM DO DIALOG DETALHES -->
+
+
+
+
+
+
+
+	<!-- DIALOG Editar -->
+	<p:dialog header="Certificado" widgetVar="dlgCertificadoEditar"
+		modal="true" responsive=" true" width="60%" id="dlgCertificadoEditar"
+		closable="false" closeOnEscape="true" resizable="false"
+		draggable="false">
+
+		<h:form id="frmModalSalvarEditar" enctype="multipart/form-data">
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Descrição *</label>
+					<p:inputText title="Descrição" alt="descrição"
+						styleClass="col-md-12" id="descricao"
+						value="#{certificadoMB.certificado.descricao}" required="true"
+						requiredMessage="O campo descrição não deve ser nulo" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Instituição *</label>
+					<p:inputText title="Instituição" alt="instituicao"
+						styleClass="col-md-12" id="instituicao"
+						value="#{certificadoMB.certificado.instituicao}" required="true"
+						requiredMessage="O campo instituição não deve ser nulo" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Turma *</label>
+
+					<p:selectOneMenu id="consoleEditar" disabled="true"
+						value="#{certificadoMB.certificado.alunoTurma}"
+						converter="#{alunoTurmaConverte}">
+
+						<f:selectItem itemValue=""
+							itemLabel="#{certificadoMB.certificado.alunoTurma.turma.abreviacaoTurma}" />
+
+					</p:selectOneMenu>
+
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-4">
+					<label>Quantidade de horas *</label>
+					<p:inputText title="Quantidade de horas" alt="Quantidade de horas"
+						type="number" id="quantidadeHorasEditar"
+						value="#{certificadoMB.certificado.quantidadeMaximaHora}"
+						required="true"
+						requiredMessage="O campo quantidade de horas não deve ser nulo" />
+
+				</div>
+				<div class="col-md-4">
+					<label>Data de início *</label>
+					<p:calendar id="dtInicioEditar" alt="Data de início"
+						title="Data de início"
+						value="#{certificadoMB.certificado.dataInicio}"
+						pattern="dd/MM/yyyy" mask="true" required="true"
+						requiredMessage="O campo data de início não deve ser nulo" />
+				</div>
+				<div class="col-md-4">
+					<label>Data de finalização *</label>
+					<p:calendar id="dtFinalizacaoEditar" alt="Data de finalização"
+						title="Data de finalização"
+						value="#{certificadoMB.certificado.dataFinalizado}"
+						pattern="dd/MM/yyyy" mask="true" required="true"
+						requiredMessage="O campo data de finalização não deve ser nulo" />
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-11 col-xs-10">
+					<label>Atividade *</label>
+					<p:autoComplete id="atividadeEditar" dropdown="true"
+						scrollHeight="170" disabled="true"
+						value="#{certificadoMB.certificado.atividadeTurma}"
+						completeMethod="#{certificadoMB.completarAtividadeTurma}"
+						forceSelection="true" converter="#{converterAtividadeTurma}"
+						var="att" itemLabel="#{att.atividade.descricao}"
+						itemValue="#{att}" required="true"
+						requiredMessage="O campo atividade não deve ser nulo" />
+
+					<small>Campos obrigatórios *</small>
+				</div>
+			</div>
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<p:outputLabel for="certificadoPDFEditar" value="Certificado PDF"
+						id="pdfIDEditar" />
+
+					<p:fileUpload mode="advanced" id="certificadoPDFEditar"
+						fileLimit="1"
+						fileLimitMessage="É possível selecionar apenas um arquivo"
+						invalidFileMessage="Tipo de arquivo inválido"
+						fileUploadListener="#{certificadoMB.upload}" auto="true"
+						allowTypes="/(\.|\/)(pdf)$/" sizeLimit="2000000" multiple="false"
+						invalidSizeMessage="Tamanho do arquivo inválido"
+						disabled="#{certificadoMB.permitePDF}" showButtons="false"
+						update=":frmModalSalvar:certificadoPDF :dlgInformacao" />
+				</div>
+			</div>
+			<div class="modal-footer">
+				<p:commandButton value="Salvar" id="btnSalvarEditar" alt="Sim"
+					styleClass="ui-priority-primary"
+					actionListener="#{certificadoMB.salvar()}"
+					update=":frmTabela :dlgInformacao" />
+
+				<p:commandButton value="Cancelar"
+					onclick="PF('dlgCertificadoEditar').hide();" alt="Cancelar"
+					actionListener="#{certificadoMB.controleCancela()}" />
+			</div>
+		</h:form>
+
+	</p:dialog>
+	<!-- FIM DO DIALOG EDITAR -->
+
+
+</h:body>
+</html>

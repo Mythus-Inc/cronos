@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:body>
+	<ui:composition
+		template="../resources/template/inventario/template-inventario.xhtml">
+		<ui:define name="mensagem">
+			<ui:include src="../componentes/mensagem.xhtml" />
+		</ui:define>
+		<ui:define name="conteudo">
+
+			<!-- TITULO -->
+			<div class="row">
+				<div class="col-md-12">
+					<h1 class="page-header">Inventário</h1>
+				</div>
+			</div>
+			<!-- FIM TITULO -->
+
+			<h:form id="formInventario">
+				<div class="ui-fluid">
+					<div class="col-md-12">
+						<div class="col-md-8">
+							<label>Descrição *</label>
+							<p:inputText title="Descrição" alt="descrição"
+								styleClass="col-md-12"
+								value="#{inventarioMB.inventario.descricao}" />
+						</div>
+
+						<div class="col-md-4">
+							<label></label>
+
+						</div>
+
+					</div>
+
+					<div class="col-md-12">
+						<div class="col-md-4">
+							<label>Data Início*</label>
+							<p:calendar title="Data" alt="data" styleClass="col-md-12"
+								value="#{inventarioMB.inventario.dataInicio}" />
+						</div>
+
+						<div class="col-md-4">
+							<label>Data Término*</label>
+							<p:calendar title="Data" alt="data" styleClass="col-md-12"
+								value="#{inventarioMB.inventario.dataTermino}" />
+						</div>
+
+						<div class="col-md-4">
+							<label> </label>
+
+						</div>
+					</div>
+					<div class="col-md-12">
+						<small>Campos obrigatórios *</small>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<p:commandButton value="Inserir" id="btnInventario" alt="Sim"
+						styleClass="ui-priority-primary"
+						actionListener="#{inventarioMB.salvar()}"
+						update=":frmTabela :dlgInformacao :formInventario" />
+
+				</div>
+			</h:form>
+
+			<!-- TABELA-->
+			<div class="col-md-12">
+				<h:form id="frmTabela">
+					<p:dataTable id="tabela" resizableColumns="true" var="obj"
+						reflow="true" rows="10" paginator="true"
+						value="#{inventarioMB.listInventario}" paginatorPosition="bottom"
+						emptyMessage="Nenhum Inventário Cadastrado"
+						rowsPerPageTemplate="5,10,15,30,50,100">
+
+						<p:column headerText="Ver" style="width:50px">
+
+						</p:column>
+
+						<p:column headerText="Descrição">
+							<h:outputText value="#{obj.descricao}" />
+						</p:column>
+
+						<p:column headerText="Data Início">
+							<h:outputText value="#{obj.dataInicio}">
+								<f:convertDateTime pattern="dd-MM-yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Data Término">
+							<h:outputText value="#{obj.dataTermino}">
+								<f:convertDateTime pattern="dd-MM-yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Alterar" style="width:68px">
+							<p:commandButton alt="Alterar" update=":frmModalSalvar"
+								styleClass="btn btn-block"
+								onclick="PF('dlgEquipamento').show();" icon="ui-icon-pencil"
+								actionListener="#{equipamentoMB.preencherEquipamento(obj)}">
+								<f:setPropertyActionListener value="#{obj}"
+									target="#{equipamentoMB.equipamento}" />
+							</p:commandButton>
+						</p:column>
+
+					</p:dataTable>
+				</h:form>
+			</div>
+			<!--FIM DA TABELA-->
+
+
+
+
+
+
+
+
+			<!-- DIALOG SALVAR -->
+			<p:dialog header="Equipamento" widgetVar="dlgEquipamento"
+				modal="true" responsive=" true" width="60%" id="dlgEquipamento"
+				closable="true" closeOnEscape="true" resizable="false"
+				draggable="false">
+
+				<h:form id="frmModalSalvar">
+					<div class="ui-fluid">
+						<div class="col-md-12">
+							<label>Descrição *</label>
+							<p:inputText title="Descrição" alt="descrição"
+								styleClass="col-md-12"
+								value="#{equipamentoMB.equipamento.descricao}" />
+						</div>
+
+						<div class="col-md-6">
+							<label>Cor *</label>
+							<p:inputText title="Cor" alt="cor" styleClass="col-md-12"
+								value="#{equipamentoMB.equipamento.cor}" />
+						</div>
+
+						<div class="col-md-6">
+							<label>Material *</label>
+							<p:inputText title="Material" alt="material"
+								styleClass="col-md-12"
+								value="#{equipamentoMB.equipamento.material}" />
+						</div>
+
+						<div class="col-md-12">
+							<small>Campos obrigatórios *</small>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<p:commandButton value="Salvar" id="btnSalvar" alt="Sim"
+							styleClass="ui-priority-primary"
+							actionListener="#{equipamentoMB.salvar()}"
+							update=":frmTabela :dlgInformacao" />
+
+					</div>
+				</h:form>
+
+			</p:dialog>
+			<!-- FIM DO DIALOG SALVAR -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+		</ui:define>
+		<ui:define name="modal-confirmacao">
+			<ui:include src="../componentes/dialog-confirmacao.xhtml" />
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>
+

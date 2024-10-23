@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+    <!-- Título da página -->
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="page-header">Carteirinha</h1>
+        </div>
+    </div>
+
+    <!-- Card "Em Análise" -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="main-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px;">
+                <h2>Em Análise</h2>
+
+                <!-- Sub-card da solicitação do aluno -->
+                <div class="sub-card" style="border: 1px solid #ddd; padding: 10px; margin-bottom: 10px;" onclick="expandirCard(this)">
+                    <p><strong>Nome do Aluno:</strong> João da Silva Oliveira</p>
+                    <p><strong>Curso:</strong> Engenharia de Software</p>
+                    <p><strong>Status:</strong> Em Análise</p>
+
+                    <!-- Informações expandidas, inicialmente ocultas -->
+                    <div class="expanded-card" style="display: none; margin-top: 10px;">
+                        <p><strong>Email:</strong> joãosilva@gmail.com</p>
+                        <p><strong>Telefone:</strong> [Telefone do Aluno]</p>
+
+                        <!-- Botões "Aceitar" e "Recusar" -->
+                        <div style="margin-top: 10px;">
+                            <button type="button" onclick="moverParaAprovado(this)">Aceitar</button>
+                            <button type="button" onclick="moverParaRecusado(this)">Recusar</button>
+                            <button type="button" onclick="minimizarCard(this)">Minimizar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card "Aprovado" -->
+        <div class="col-md-4">
+            <div class="main-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px;">
+                <h2>Aprovado</h2>
+                <!-- Aqui vão as solicitações aprovadas (depois que o usuário clicar em "Aceitar") -->
+                <div id="aprovadoContainer">
+                    <!-- Solicitações aceitas aparecerão aqui -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Card "Recusado" -->
+        <div class="col-md-4">
+            <div class="main-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px;">
+                <h2>Recusado</h2>
+                <!-- Aqui vão as solicitações recusadas (depois que o usuário clicar em "Recusar") -->
+                <div id="recusadoContainer">
+                    <!-- Solicitações recusadas aparecerão aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript para manipular a expansão dos cards e mover entre abas -->
+    <script>
+      
+        window.onload = function() {
+        	    buscarSolicitacaoCarteirinha();
+
+        	    // Delegação de evento para capturar cliques em botões de cards
+        	    document.addEventListener('click', function(event) {
+        	        if (event.target.matches('.sub-card .expanded-card button')) {
+        	            minimizarCard(event.target);
+        	        }
+        	    });
+        	};
+
+        	// Expande o card para mostrar mais informações
+        	function expandirCard(card) {
+        	    card.querySelector('.expanded-card').style.display = 'block';
+        	}
+
+        	// Minimiza o card para esconder as informações detalhadas
+        	function minimizarCard(button) {
+        	    const card = button.closest('.sub-card');
+
+        	    if (!card) {
+        	        console.error('Card não encontrado.');
+        	        return;
+        	    }
+
+        	    const expandedCard = card.querySelector('.expanded-card');
+
+        	    if (!expandedCard) {
+        	        console.error('Parte expandida não encontrada.');
+        	        return;
+        	    }
+
+        	    expandedCard.style.display = 'none';
+        	    console.log('Card minimizado com sucesso.');
+        	}
+
+        	// Move a solicitação para a aba "Aprovado"
+        	function moverParaAprovado(button) {
+        	    fetch('http://localhost:8080/cronos/rest/service/solicitacao-carteirinha/validacao', {
+        	        method: 'POST',
+        	        headers: {
+        	            'Content-Type': 'application/json; charset=UTF-8'
+        	        },
+        	        body: JSON.stringify({ "status": "aprovado" })
+        	    })
+        	    .then(response => response.json())
+        	    .then(aluno => {
+        	        const subCard = button.closest('.sub-card');
+        	        document.getElementById('aprovadoContainer').appendChild(subCard);
+        	        minimizarCard(button);
+
+        	        // Atualiza as informações do card com os dados do aluno
+        	        subCard.querySelector('.nome-aluno').innerHTML = 'Nome do Aluno: ' + aluno.nome;
+        	        subCard.querySelector('.email-aluno').innerHTML = 'Email: ' + aluno.email;
+        	        subCard.querySelector('.ra-aluno').innerHTML = 'RA: ' + aluno.ra;
+        	    })
+        	    .catch((error) => {
+        	        console.error('Erro ao aprovar solicitação:', error);
+        	    });
+        	}
+
+        	// Move a solicitação para a aba "Recusado"
+        	function moverParaRecusado(button) {
+        	    const subCard = button.closest('.sub-card');
+
+        	    if (!subCard) {
+        	        console.error('Card não encontrado.');
+        	        return;
+        	    }
+
+        	    // Mover o card para o container "Recusado"
+        	    document.getElementById('recusadoContainer').appendChild(subCard);
+
+        	    // Minimizar o card após movê-lo
+        	    minimizarCard(button);
+        	}
+
+        	// Buscar as solicitações de carteirinha
+        	function buscarSolicitacaoCarteirinha() {
+        	    fetch('http://localhost:8080/cronos/rest/service/solicitacao-carteirinha', {
+        	        method: 'GET',
+        	        headers: {
+        	            'Content-Type': 'application/json; charset=UTF-8'
+        	        }
+        	    })
+        	    .then(response => response.json())
+        	    .then(ra => {
+        	        document.querySelector('.sub-card p strong').innerHTML = 'RA: ' + ra;
+        	    })
+        	    .catch((error) => {
+        	        console.error('Erro ao buscar solicitação:', error);
+        	    });
+        	}
+    </script>
+
+</h:body>
+</html>

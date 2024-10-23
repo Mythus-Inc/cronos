@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:body>
+	<ui:composition
+		template="../resources/template/inventario/template-inventario.xhtml">
+		<ui:define name="mensagem">
+			<ui:include src="../componentes/mensagem.xhtml" />
+		</ui:define>
+		<ui:define name="conteudo">
+
+			<!-- TITULO -->
+			<div class="row">
+				<div class="col-md-12">
+					<h1 class="page-header">Relatórios</h1>
+				</div>
+			</div>
+			<!-- FIM TITULO -->
+
+
+
+			<p:tabView>
+				<p:tab title="BENS COM DIVERGÊNCIA DE LOCALIDADE">
+					<h:form id="eqErrado">
+						<div class="ui-fluid">
+							<div class="col-md-8">
+								<label>Selecione o Inventário</label>
+								<p:autoComplete id="eq" dropdown="true" scrollHeight="170"
+									value="#{relatorioIventarioMB.inventario}"
+									completeMethod="#{relatorioIventarioMB.completarInventario}"
+									forceSelection="true" converter="#{converteInventario}"
+									var="mov" itemLabel="#{mov.descricao}" itemValue="#{mov}"
+									required="true" requiredMessage="Selecione um inventário" />
+
+								<br />
+								<p:commandButton value="Gerar Relatório" title="Gerar Relatório"
+									ajax="false" alt="Gerar Relatório"
+									action="#{relatorioIventarioMB.imprimirRelatorioBensLocalErrado()}"
+									update=":dlgInformacao">
+								</p:commandButton>
+							</div>
+						</div>
+					</h:form>
+				</p:tab>
+
+				<p:tab title="BENS TOMBADOS - POR LOCALIDADE">
+					<h:form id="eqLocalidade">
+						<div class="ui-fluid">
+							<div class="col-md-8">
+								<label>Selecione o Inventário</label>
+								<p:autoComplete id="eqpp" dropdown="true" scrollHeight="170"
+									value="#{relatorioIventarioMB.inventario}"
+									completeMethod="#{relatorioIventarioMB.completarInventario}"
+									forceSelection="true" converter="#{converteInventario}"
+									var="mov" itemLabel="#{mov.descricao}" itemValue="#{mov}"
+									required="true" requiredMessage="Selecione um inventário">
+
+									<p:ajax event="itemSelect" update="local"
+										listener="#{relatorioIventarioMB.completaLocalInventario()}" />
+
+								</p:autoComplete>
+
+								<br /> <label>Selecione Uma Localidade</label>
+								<p:autoComplete id="local" dropdown="true" scrollHeight="170"
+									value="#{relatorioIventarioMB.localInventairo}"
+									completeMethod="#{relatorioIventarioMB.completarLocal}"
+									forceSelection="true" converter="#{converteLocalInventario}"
+									var="serv" itemLabel="#{serv.local.descricao}"
+									itemValue="#{serv}" required="true"
+									requiredMessage="O campo Local não deve ser nulo">
+
+								</p:autoComplete>
+
+								<br />
+
+								<p:commandButton value="Gerar Relatório" title="Gerar Relatório"
+									ajax="false" alt="Gerar Relatório"
+									action="#{relatorioIventarioMB.imprimirRelatorioBensTombadosPorLocalidade()}"
+									update=":dlgInformacao">
+								</p:commandButton>
+							</div>
+						</div>
+					</h:form>
+				</p:tab>
+				<p:tab title="BENS TOMBADOS - RELATÓRIO GERAL">
+					<h:form id="getalTombamento">
+						<div class="ui-fluid">
+							<div class="col-md-8">
+								<label>Selecione o Inventário</label>
+								<p:autoComplete id="eqInventarioGeral" dropdown="true"
+									scrollHeight="170" value="#{relatorioIventarioMB.inventario}"
+									completeMethod="#{relatorioIventarioMB.completarInventario}"
+									forceSelection="true" converter="#{converteInventario}"
+									var="mov" itemLabel="#{mov.descricao}" itemValue="#{mov}"
+									required="true" requiredMessage="Selecione um inventário" />
+
+								<br />
+								<p:commandButton value="Gerar Relatório" title="Gerar Relatório"
+									ajax="false" alt="Gerar Relatório"
+									action="#{relatorioIventarioMB.imprimirRelatorioBensGeral()}"
+									update=":dlgInformacao">
+								</p:commandButton>
+							</div>
+						</div>
+					</h:form>
+				</p:tab>
+
+				<p:tab title="BENS NÃO TOMBADOS - POR LOCALIDADE">
+					<h:form id="eqLocalidadeNaoTombado">
+						<div class="ui-fluid">
+							<div class="col-md-8">
+								<label>Selecione o Inventário</label>
+								<p:autoComplete id="eqppss" dropdown="true" scrollHeight="170"
+									value="#{relatorioIventarioMB.inventario}"
+									completeMethod="#{relatorioIventarioMB.completarInventario}"
+									forceSelection="true" converter="#{converteInventario}"
+									var="mov" itemLabel="#{mov.descricao}" itemValue="#{mov}"
+									required="true" requiredMessage="Selecione um inventário">
+
+									<p:ajax event="itemSelect" update="localInvent"
+										listener="#{relatorioIventarioMB.completaLocalInventario()}" />
+
+								</p:autoComplete>
+
+								<br /> <label>Selecione Uma Localidade</label>
+								<p:autoComplete id="localInvent" dropdown="true"
+									scrollHeight="170"
+									value="#{relatorioIventarioMB.localInventairo}"
+									completeMethod="#{relatorioIventarioMB.completarLocal}"
+									forceSelection="true" converter="#{converteLocalInventario}"
+									var="serv" itemLabel="#{serv.local.descricao}"
+									itemValue="#{serv}" required="true"
+									requiredMessage="O campo Local não deve ser nulo">
+
+								</p:autoComplete>
+
+								<br />
+
+								<p:commandButton value="Gerar Relatório" title="Gerar Relatório"
+									ajax="false" alt="Gerar Relatório"
+									action="#{relatorioIventarioMB.imprimirRelatorioBensNaoTombadosPorLocalidade()}"
+									update=":dlgInformacao">
+								</p:commandButton>
+							</div>
+						</div>
+					</h:form>
+				</p:tab>
+
+				<p:tab title="BENS NÃO TOMBADOS - RELATÓRIO GERAL">
+					<h:form id="getalNAOTombamento">
+						<div class="ui-fluid">
+							<div class="col-md-8">
+								<label>Selecione o Inventário</label>
+								<p:autoComplete id="eqnAOInventarioGeral" dropdown="true"
+									scrollHeight="170" value="#{relatorioIventarioMB.inventario}"
+									completeMethod="#{relatorioIventarioMB.completarInventario}"
+									forceSelection="true" converter="#{converteInventario}"
+									var="mov" itemLabel="#{mov.descricao}" itemValue="#{mov}"
+									required="true" requiredMessage="Selecione um inventário" />
+
+								<br />
+								<p:commandButton value="Gerar Relatório" title="Gerar Relatório"
+									ajax="false" alt="Gerar Relatório"
+									action="#{relatorioIventarioMB.imprimirRelatorioBensGeralNaoTombado()}"
+									update=":dlgInformacao">
+								</p:commandButton>
+							</div>
+						</div>
+					</h:form>
+				</p:tab>
+
+				<p:tab title="BENS TOMBADOS E NÃO LOCALIZADOS">
+					<h:form id="n">
+						<div class="ui-fluid">
+							<div class="col-md-8">
+
+								<label>Selecione o Inventário</label>
+								<p:autoComplete id="eqnAOInventarioGeral" dropdown="true"
+									scrollHeight="170" value="#{relatorioIventarioMB.inventario}"
+									completeMethod="#{relatorioIventarioMB.completarInventario}"
+									forceSelection="true" converter="#{converteInventario}"
+									var="mov" itemLabel="#{mov.descricao}" itemValue="#{mov}"
+									required="true" requiredMessage="Selecione um inventário" />
+
+								<br />
+
+								<p:commandButton value="Gerar Relatório" title="Gerar Relatório"
+									ajax="false" alt="Gerar Relatório"
+									action="#{relatorioIventarioMB.imprimirRelatorioBensTombadoNaoLocalizado()}"
+									update=":dlgInformacao">
+								</p:commandButton>
+							</div>
+						</div>
+					</h:form>
+				</p:tab>
+
+				<p:tab title="REIMPRESSÃO DE ETIQUETAS">
+					<h:form id="trocaEtiqueta">
+						<div class="ui-fluid">
+							<div class="col-md-8">
+								<label>Selecione o Inventário</label>
+								<p:autoComplete id="etiqueta" dropdown="true" scrollHeight="170"
+									value="#{relatorioIventarioMB.inventario}"
+									completeMethod="#{relatorioIventarioMB.completarInventario}"
+									forceSelection="true" converter="#{converteInventario}"
+									var="mov" itemLabel="#{mov.descricao}" itemValue="#{mov}"
+									required="true" requiredMessage="Selecione um inventário" />
+
+								<br />
+								<p:commandButton value="Gerar Relatório" title="Gerar Relatório"
+									ajax="false" alt="Gerar Relatório"
+									action="#{relatorioIventarioMB.imprimirRelatorioTrocaEtiqueta()}"
+									update=":dlgInformacao">
+								</p:commandButton>
+							</div>
+						</div>
+					</h:form>
+				</p:tab>
+
+				<p:tab title="BENS EM DUPLICIDADE">
+					<h:form id="duplicidade">
+						<div class="ui-fluid">
+							<div class="col-md-8">
+								<label>Selecione o Inventário</label>
+								<p:autoComplete id="bensEmDuplicidade" dropdown="true"
+									scrollHeight="170" value="#{relatorioIventarioMB.inventario}"
+									completeMethod="#{relatorioIventarioMB.completarInventario}"
+									forceSelection="true" converter="#{converteInventario}"
+									var="mov" itemLabel="#{mov.descricao}" itemValue="#{mov}"
+									required="true" requiredMessage="Selecione um inventário" />
+
+								<br />
+								<p:commandButton value="Gerar Relatório" title="Gerar Relatório"
+									ajax="false" alt="Gerar Relatório"
+									action="#{relatorioIventarioMB.imprimirRelatorioBensEmDuplicidade()}"
+									update=":dlgInformacao">
+								</p:commandButton>
+							</div>
+						</div>
+					</h:form>
+				</p:tab>
+
+				<p:tab title="BENS OCIOSOS">
+					<h:form id="duplBENSOCIOSOS">
+						<div class="ui-fluid">
+							<div class="col-md-8">
+								<label>Selecione o Inventário</label>
+								<p:autoComplete id="bensEmDupBENSOCIOSOS" dropdown="true"
+									scrollHeight="170" value="#{relatorioIventarioMB.inventario}"
+									completeMethod="#{relatorioIventarioMB.completarInventario}"
+									forceSelection="true" converter="#{converteInventario}"
+									var="mov" itemLabel="#{mov.descricao}" itemValue="#{mov}"
+									required="true" requiredMessage="Selecione um inventário" />
+
+								<br />
+								<p:commandButton value="Gerar Relatório" title="Gerar Relatório"
+									ajax="false" alt="Gerar Relatório"
+									action="#{relatorioIventarioMB.imprimirRelatorioBensOcioso()}"
+									update=":dlgInformacao">
+								</p:commandButton>
+							</div>
+						</div>
+					</h:form>
+				</p:tab>
+
+				<p:tab title="BENS INSERVÍVEIS">
+					<h:form id="duplBEINSERVV">
+						<div class="ui-fluid">
+							<div class="col-md-8">
+								<label>Selecione o Inventário</label>
+								<p:autoComplete id="bensEmDOSOS" dropdown="true"
+									scrollHeight="170" value="#{relatorioIventarioMB.inventario}"
+									completeMethod="#{relatorioIventarioMB.completarInventario}"
+									forceSelection="true" converter="#{converteInventario}"
+									var="mov" itemLabel="#{mov.descricao}" itemValue="#{mov}"
+									required="true" requiredMessage="Selecione um inventário" />
+
+								<br />
+								<p:commandButton value="Gerar Relatório" title="Gerar Relatório"
+									ajax="false" alt="Gerar Relatório"
+									action="#{relatorioIventarioMB.imprimirRelatorioBensINSERVIVEL()}"
+									update=":dlgInformacao">
+								</p:commandButton>
+							</div>
+						</div>
+					</h:form>
+				</p:tab>
+				
+				<p:tab title="BENS CONFERIDOS E REMOVIDOS">
+					<h:form id="remv">
+						<div class="ui-fluid">
+							<div class="col-md-8">
+								<label>Selecione o Inventário</label>
+								<p:autoComplete id="removid" dropdown="true"
+									scrollHeight="170" value="#{relatorioIventarioMB.inventario}"
+									completeMethod="#{relatorioIventarioMB.completarInventario}"
+									forceSelection="true" converter="#{converteInventario}"
+									var="mov" itemLabel="#{mov.descricao}" itemValue="#{mov}"
+									required="true" requiredMessage="Selecione um inventário" />
+
+								<br />
+								<p:commandButton value="Gerar Relatório" title="Gerar Relatório"
+									ajax="false" alt="Gerar Relatório"
+									action="#{relatorioIventarioMB.imprimirRelatorioBensRemovidos()}"
+									update=":dlgInformacao">
+								</p:commandButton>
+							</div>
+						</div>
+					</h:form>
+				</p:tab>
+
+			</p:tabView>
+		</ui:define>
+		<ui:define name="modal-confirmacao">
+			<ui:include src="../componentes/dialog-confirmacao.xhtml" />
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>
+

@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:body>
+
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-md-12">
+			<h1 class="page-header">Setor</h1>
+
+		</div>
+	</div>
+	<!-- FIM TITULO -->
+
+	<!-- BOTÃO CADASTRAR -->
+	<div class="row container-fluid">
+		<div class="col-md-12">
+			<ol class="breadcrumb">
+				<h:form id="frmNovoRequerimento">
+					<p:commandButton value="Setor" update=":formSetor"
+						actionListener="#{setorMB.criarNovoObjeto()}"
+						onclick="PF('dlgSetor').show();" />
+
+				</h:form>
+			</ol>
+		</div>
+	</div>
+
+
+	<!-- FIM DO BOTÃO CADASTRAR -->
+	<!-- TABELA-->
+	<div class="col-md-12">
+		<h:form id="frmTabela">
+			<p:dataTable id="tabela" reflow="true" rows="10" paginator="true"
+				paginatorPosition="bottom" resizableColumns="true"
+				value="#{setorMB.listSetor}"
+				emptyMessage="Nenhum Requerimento Encontrado"
+				rowsPerPageTemplate="5,10,15,30,50,100" var="lista">
+				<p:column headerText="Número" style="width:90px">
+					<h:outputText value="#{lista.id}" />
+				</p:column>
+				<p:column headerText="Setor">
+					<h:outputText value="#{lista.descricao}" />
+				</p:column>
+
+				<p:column headerText="Alterar" style="width:100px">
+					<p:commandButton onclick="PF('dlgSetor').show();"
+						update="formSetor " icon="ui-icon-pencil"
+						actionListener="#{setorMB.abrirDetalhes(lista)}"
+						title="Detalhes do Setor" styleClass="btn btn-block">
+					</p:commandButton>
+
+				</p:column>
+
+				<p:column headerText="Servidores" style="width:100px">
+					<p:commandButton onclick="PF('dlgAdicionar').show();"
+						update=":frmAdicionaServidor :frmAdicionaServidorTabela"
+						icon="ui-icon-circle-plus"
+						actionListener="#{setorMB.abrirDetalhes(lista)}"
+						title="Detalhes do Setor" styleClass="btn btn-block">
+					</p:commandButton>
+
+				</p:column>
+
+				<p:column headerText="Detalhes" style="width:100px">
+					<p:commandButton onclick="PF('dlgDetalhes').show();"
+						update=":frmTabelaSetor :frmDados :frmTabelaSetor"
+						icon="ui-icon-search"
+						actionListener="#{setorMB.abrirDetalhes(lista)}"
+						title="Detalhes do Setor" styleClass="btn btn-block">
+					</p:commandButton>
+
+				</p:column>
+
+				<p:column headerText="Remover" style="width:100px">
+					<p:commandButton onclick="PF('dlgExcluir').show();"
+						update=":frmDadosExcluir" icon="ui-icon-trash"
+						actionListener="#{setorMB.abrirDetalhes(lista)}"
+						title="Detalhes do Setor" styleClass="btn btn-block">
+					</p:commandButton>
+
+				</p:column>
+
+
+
+
+			</p:dataTable>
+		</h:form>
+
+	</div>
+	<!--FIM DA TABELA-->
+
+	<!-- inicio do dialog requerimento -->
+
+	<p:dialog header="Setor" modal="true" responsive="true" width="70%"
+		id="dlgSetor" closable="true" closeOnEscape="true" draggable="false"
+		showEffect="scale" resizable="false" widgetVar="dlgSetor">
+
+		<h:form id="formSetor">
+			<div class="ui-fluid">
+
+				<div class="col-md-12">
+					<label>Nome Setor *</label>
+					<p:inputText title="Setor" styleClass="col-md-12" id="setor"
+						alt="Setor" value="#{setorMB.setor.descricao}" required="true"
+						requiredMessage="O campo Nome Setor não deve ser nulo" />
+				</div>
+
+
+
+				<div class="col-md-12">
+					<label>Servidor Responsável*</label>
+					<p:autoComplete dropdown="true"
+						value="#{setorMB.pessoaSetor.servidor}" scrollHeight="170"
+						completeMethod="#{setorMB.completeServidor}" forceSelection="true"
+						var="pes" converter="#{converterServidor}" itemLabel="#{pes.nome}"
+						itemValue="#{pes}">
+
+
+					</p:autoComplete>
+				</div>
+
+				<div class="col-md-12">
+					<label>Curso</label>
+					<p:autoComplete dropdown="true"
+						value="#{setorMB.setor.curso}" scrollHeight="170"
+						completeMethod="#{setorMB.completeCurso}" forceSelection="true"
+						var="pes" converter="#{converterCurso}" itemLabel="#{pes.nome}"
+						itemValue="#{pes}">
+
+
+					</p:autoComplete>
+				</div>
+
+				<small>Campos obrigatórios *</small>
+			</div>
+
+			<div class="modal-footer">
+				<p:commandButton value="Salvar" styleClass="ui-priority-primary"
+					actionListener="#{setorMB.salvar()}"
+					update=":dlgInformacao :frmTabela" />
+				<p:commandButton value="Cancelar" onclick="PF('dlgSetor').hide();" />
+			</div>
+
+		</h:form>
+	</p:dialog>
+	<!-- fim dialog requerimento -->
+
+
+	<!-- DETALHES SETOR -->
+	<p:dialog header="Detalhes Setor" widgetVar="dlgDetalhes" modal="true"
+		responsive="true" width="60%" id="dlgDetalhes" closable="true"
+		closeOnEscape="true" resizable="false" draggable="false">
+
+		<div class="ui-fluid">
+			<h:form id="frmDados">
+				<div class="col-md-12">
+					<label>Nome Setor : </label>
+					<h:outputLabel value="#{setorMB.setor.descricao}" />
+				</div>
+
+				<div class="col-md-12">
+					<label>Responsável : </label>
+					<h:outputLabel value="#{setorMB.pessoaSetor.servidor.nome}" />
+				</div>
+
+			</h:form>
+		</div>
+
+		<br />
+		<!-- TABELA-->
+		<div class="col-md-12">
+			<h:form id="frmTabelaSetor">
+				<p:dataTable id="tabelaDetalhes" value="#{setorMB.listPessoaSetor}"
+					reflow="true" var="li" rows="10" paginator="true"
+					paginatorPosition="bottom"
+					emptyMessage="Nenhum cadastrado encontrado"
+					rowsPerPageTemplate="5,10,15,30,50,100">
+					<p:column headerText="Servidores Vinculado">
+						<h:outputText value="#{li.servidor.nome}" />
+					</p:column>
+					<!-- 					<p:column headerText="Remover" style="width:90px"> -->
+					<!-- 						<p:commandButton styleClass="btn btn-block" -->
+					<!-- 							icon="ui-icon-closethick" title="Remover Servidor" -->
+					<!-- 							update=":frmTabelaSetor:tabelaDetalhes :dlgInformacao" -->
+					<!-- 							alt="Remover Servidor" -->
+					<!-- 							actionListener="  setorMB.removerServidor(li) "> -->
+					<!-- 							<p:confirm header="Confirmação" message="Deseja remover Servidor" /> -->
+					<!-- 						</p:commandButton> -->
+					<!-- 					</p:column> -->
+
+				</p:dataTable>
+			</h:form>
+
+		</div>
+		<!--FIM DA TABELA-->
+	</p:dialog>
+	<!-- FIM DETALHES setor -->
+
+
+	<!-- Adicionar servidor SETOR -->
+	<p:dialog header="Adicionar Servidor" widgetVar="dlgAdicionar"
+		modal="true" responsive="true" width="60%" id="dlgAdicionar"
+		closable="true" closeOnEscape="true" resizable="false"
+		draggable="false">
+
+		<div class="ui-fluid">
+			<h:form id="frmAdicionaServidor">
+
+				<div class="col-md-12">
+					<label>Nome Setor : </label>
+					<h:outputLabel value="#{setorMB.setor.descricao}" />
+				</div>
+
+				<div class="col-md-12">
+					<label>Responsável : </label>
+					<h:outputLabel value="#{setorMB.pessoaSetor.servidor.nome}" />
+				</div>
+
+				<div class="col-md-12">
+					<label>Vincular Servidor : </label>
+
+				</div>
+				<!-- 				<div class="col-md-6"> -->
+				<!-- 					<label>Visualizar Protocolo : </label> -->
+
+				<!-- 				</div> -->
+
+				<div class="col-md-6">
+					<p:autoComplete dropdown="true"
+						value="#{setorMB.pessoaSetorAdiciona.servidor}" scrollHeight="170"
+						completeMethod="#{setorMB.completeServidor}" forceSelection="true"
+						var="pes" converter="#{converterServidor}" itemLabel="#{pes.nome}"
+						itemValue="#{pes}" required="true"
+						requiredMessage="Selecione um servidor"></p:autoComplete>
+				</div>
+
+				<!-- 				<div class="col-md-2" style="margin-left: 25px; width: 22%;"> -->
+				<!-- 					<p:selectOneRadio id="Visualiza" required="true" -->
+				<!-- 						requiredMessage="Informe se o servidor poderá visualizar os protocolos" -->
+				<!-- 						value="#{setorMB.pessoaSetorAdiciona.visualizaProtocolo}"> -->
+				<!-- 						<f:selectItem itemLabel="Sim" itemValue="#{true}" /> -->
+				<!-- 						<f:selectItem itemLabel="Não" itemValue="#{false}" /> -->
+				<!-- 					</p:selectOneRadio> -->
+
+				<!-- 				</div> -->
+
+				<div class="col-md-2" style="margin-left: 25px; width: 22%;">
+					<p:commandButton id="botaoAdd" value="Adicionar"
+						styleClass="ui-priority-primary" alt="Sim"
+						update=":dlgInformacao :frmTabela :frmAdicionaServidor :frmAdicionaServidorTabela"
+						actionListener="#{setorMB.adicionaServidor()}" />
+
+				</div>
+				<div class="col-md-12">
+					<h:outputLabel value=" " />
+				</div>
+
+			</h:form>
+		</div>
+
+		<br />
+		<!-- TABELA-->
+		<div class="col-md-12">
+			<h:form id="frmAdicionaServidorTabela">
+				<p:dataTable id="tabelaDetalhes" value="#{setorMB.listPessoaSetor}"
+					reflow="true" var="li" rows="10" paginator="true"
+					paginatorPosition="bottom"
+					emptyMessage="Nenhum cadastrado encontrado"
+					rowsPerPageTemplate="5,10,15,30,50,100">
+					<p:column headerText="Servidores Vinculado">
+						<h:outputText value="#{li.servidor.nome}" />
+					</p:column>
+
+					<p:column headerText="Remover" style="width:90px">
+						<p:commandButton styleClass="btn btn-block"
+							icon="ui-icon-closethick" title="Remover Servidor"
+							update=":frmTabelaSetor:tabelaDetalhes :dlgInformacao :frmAdicionaServidorTabela"
+							alt="Remover Servidor"
+							actionListener="#{setorMB.removerServidor(li)}">
+							<p:confirm header="Confirmação" message="Deseja remover Servidor" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+
+		</div>
+
+
+		<!--FIM DA TABELA-->
+
+
+
+	</p:dialog>
+	<!-- FIM DETALHES setor -->
+
+
+	<!-- Alterar SETOR -->
+	<p:dialog header="Excluir Setor" widgetVar="dlgExcluir" modal="true"
+		responsive="true" width="60%" id="dlgExcluir" closable="true"
+		closeOnEscape="true" resizable="false" draggable="false">
+
+
+
+		<h:form id="frmDadosExcluir">
+			<div class="ui-fluid">
+				<div class="col-md-12">
+					<label>Nome Setor : </label>
+					<h:outputLabel value="#{setorMB.setor.descricao}" />
+				</div>
+
+				<div class="col-md-12">
+					<label>Responsável : </label>
+					<h:outputLabel value="#{setorMB.pessoaSetor.servidor.nome}" />
+				</div>
+			</div>
+
+			<br />
+
+			<!-- BOTÃO EDITAR -->
+			<div class="modal-footer">
+				<p:commandButton value="Excluir" styleClass="ui-priority-primary"
+					update=":dlgInformacao :frmTabela"
+					actionListener="#{setorMB.remover()}">
+					<p:confirm header="Confirmação"
+						message="Deseja remover Requerimento" />
+				</p:commandButton>
+				<p:commandButton value="Cancelar" onclick="PF('dlgExcluir').hide();" />
+			</div>
+			<!-- FIM BOTÃO SALVAR -->
+
+		</h:form>
+
+
+	</p:dialog>
+	<!-- FIM DETALHES setor -->
+
+
+
+</h:body>
+</html>
+

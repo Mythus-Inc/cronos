@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<div class="ui-fluid">
+	<div class="col-md-2">
+		<p:outputLabel value="Nº do Processo" />
+		<p:inputText
+			value="#{projetoAvaliacaoMB.arquivoProjeto.projeto.numeroProcesso}"
+			disabled="true" />
+	</div>
+	<div class="col-md-10">
+		<p:outputLabel value="Nome do projeto " />
+		<p:inputText value="#{projetoAvaliacaoMB.arquivoProjeto.projeto.nome}"
+			required="true" disabled="true" />
+	</div>
+	<div class="col-md-2">
+		<p:outputLabel value="Programa " />
+		<p:selectOneMenu
+			value="#{projetoAvaliacaoMB.arquivoProjeto.projeto.programa}"
+			required="true" disabled="true">
+			<f:selectItem itemLabel="Sim" itemValue="true" />
+			<f:selectItem itemLabel="Não" itemValue="false" />
+		</p:selectOneMenu>
+	</div>
+	<div class="col-md-4">
+		<p:outputLabel value="Tipo da ação " />
+		<p:selectOneMenu
+			value="#{projetoAvaliacaoMB.arquivoProjeto.projeto.tipoProjeto}"
+			required="true" disabled="true">
+			<f:selectItem itemLabel="Selecione" itemValue=""
+				noSelectionOption="true" />
+			<f:selectItem itemLabel="Pesquisa" itemValue="pesquisa" />
+			<f:selectItem itemLabel="Extensão" itemValue="extensão" />
+		</p:selectOneMenu>
+	</div>
+	<div class="col-md-3">
+		<p:outputLabel value="Data de início " />
+		<p:calendar required="true" mask="true"
+			value="#{projetoAvaliacaoMB.arquivoProjeto.projeto.dataInicio}"
+			disabled="true" />
+	</div>
+	<div class="col-md-3">
+		<p:outputLabel value="Data de término" />
+		<p:calendar required="true" mask="true"
+			value="#{projetoAvaliacaoMB.arquivoProjeto.projeto.dataTermino}"
+			disabled="true" />
+	</div>
+	<div class="col-md-6">
+		<p:outputLabel value="Participantes do Projeto" />
+		<p:dataTable value="#{projetoAvaliacaoMB.listaParticipanteProjeto}"
+			resizableColumns="true" var="obj" reflow="true" paginator="false"
+			emptyMessage="Nenhum participante cadastrado" style="padding:0px">
+			<p:column headerText="Participante">
+				<p:outputLabel value="#{obj.pessoa.nome}" />
+			</p:column>
+			<p:column headerText="Função no projeto">
+				<p:outputLabel value="#{obj.funcao}" />
+			</p:column>
+		</p:dataTable>
+	</div>
+	<div class="col-md-6">
+		<p:outputLabel value="Histórico de envios" />
+		<p:dataList styleClass="cope-lista"
+			value="#{projetoAvaliacaoMB.listaArquivo}" var="obj"
+			type="definition" emptyMessage="Nenhum arquivo foi enviado"
+			itemStyleClass="cope-lista-item" style="height:150px;overflow:auto">
+			<p:commandButton value="v #{obj.versao}.0" ajax="false"
+				icon="ui-icon-arrowthick-1-s" style="width:auto;padding:0px"
+				styleClass="btn">
+				<p:fileDownload value="#{projetoMB.downloadArquivoProjeto(obj)}" />
+			</p:commandButton>
+			<p:outputLabel value="#{obj.situacao.descricao}"
+				styleClass="text-center" />
+			<p:outputLabel value="- #{obj.descricao}  -" styleClass="text-center" />
+			<p:outputLabel value="#{obj.dataEnvio}" styleClass="pull-right">
+				<f:convertDateTime pattern="dd/MM/yyyy" />
+			</p:outputLabel>
+		</p:dataList>
+	</div>
+	<div class="clearfix"></div>
+	<p:commandButton value="Avaliar"
+		styleClass="btn btn-default pull-right" style="width:auto"
+		onclick="PF('dlgAvaliacao').show();"
+		disabled="#{!projetoAvaliacaoMB.verificaPermissaoParaAvaliar}" />
+</div>
+
+</html>
