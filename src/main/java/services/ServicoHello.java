@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -111,6 +112,84 @@ public class ServicoHello {
 
 	@Inject
 	private GenericDAO<AlunoTurma> daoAlunoTurma;
+	
+	 String ra = "202200006996";
+	
+// CARTEIRINHA Inicio
+	@POST
+    @Path("/solicitacao-carteirinha")
+    @Produces("application/json; charset=UTF-8")
+    @Consumes("application/json; charset=UTF-8")
+    public Response recebimentoDeSolicitacao( AlunoDTO dadosAluno) {
+        ra = dadosAluno.getRa();
+        // Na próxima sprint, aqui deverá persistir os dados em um banco de dados 
+        System.out.println("Envio de dados" + ra);
+        return Response.status(Response.Status.OK)
+                       .entity(dadosAluno)
+                       .build();
+    }
+	
+	
+	@GET
+	@Path("/solicitacao-carteirinha")
+	@Produces("application/json; charset=UTF-8")
+	public Response buscarSolicitacaoCarteirinha() {
+		System.out.println("Solicitaçao do aluno, cujo o ra é: " + ra);
+		return Response.status(Response.Status.OK).entity(ra).build();
+	}
+	
+	@GET
+	@Path("/solicitacao-carteirinha/validada")
+	@Produces("application/json; charset=UTF-8")
+	public Response buscarSolicitacaoCarteirinhaAprovada() {
+		AlunoTurmaDTO turma = new AlunoTurmaDTO();
+		turma.setRa("123888");
+		turma.setTurma("Noturna");
+		turma.setCurso("Engenharia de Software");
+		turma.setDataMatricula(new Date());
+		
+		List<AlunoTurmaDTO> turmas = new ArrayList<>();
+		turmas.add(turma);
+		
+		AlunoDTO aluno = new AlunoDTO();
+	    aluno.setNome("João da Silva");
+        aluno.setEmail("joao.silva@email.com");
+        aluno.setSenha("senha123");
+        aluno.setRa("20231234");
+        aluno.setAlunoTurma(turmas);
+        
+        
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        String dadosAlunoJson = gson.toJson(aluno);
+        System.out.println(dadosAlunoJson);
+	    return Response.status(Response.Status.OK)
+	                   .entity(dadosAlunoJson)
+	                   .build();
+	}
+	
+	@POST
+    @Path("/solicitacao-carteirinha/validacao")
+    @Produces("application/json; charset=UTF-8")
+    public Response aceitarEnvioDeCarteirinha() {
+	    AlunoDTO aluno = new AlunoDTO();
+	   
+	    aluno.setNome("João da Silva");
+        aluno.setEmail("joao.silva@email.com");
+        aluno.setSenha("senha123");
+        aluno.setRa("20231234");
+        aluno.setAlunoTurma(null);
+        
+        
+        Gson gson = new Gson();
+        String dadosAlunoJson = gson.toJson(aluno);
+        System.out.println(dadosAlunoJson);
+	    return Response.status(Response.Status.OK)
+	                   .entity(dadosAlunoJson)
+	                   .build();
+    }
+	
+	
+// CARTEIRINHA Final
 
 	@POST
 	@Produces("application/json; charset=UTF-8")

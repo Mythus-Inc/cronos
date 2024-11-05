@@ -16,8 +16,6 @@ public class AlunoDTO {
 	private String ra;
 	private List<AlunoTurmaDTO> alunoTurma=new ArrayList<AlunoTurmaDTO>();
 	
-	
-	
 	public String getRa() {
 		return ra;
 	}
