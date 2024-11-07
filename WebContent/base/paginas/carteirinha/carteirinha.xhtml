@@ -29,22 +29,6 @@
 	</div>
 	<!-- FIM TITULO -->
 
-	<!-- BOTÃƒO CADASTRAR -->
-	<div class="row container-fluid">
-		<div class="col-md-12">
-			<ol class="breadcrumb">
-				<h:form id="frmCadastrar">
-					<p:commandButton actionListener="#{alunoMB.criarNovoObjetoAluno()}"
-						value="Cadastrar" id="btnCadastrar"
-						update=":frmModalSalvarEditarDados"
-						onclick="PF('dlgAlunoEditarDados').show(); PF('dlgAlunoEditarDados').content.scrollTop('0')"
-						title="Cadastrar" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				</h:form>
-			</ol>
-		</div>
-	</div>
-	<!-- FIM DO BOTÃƒO CADASTRAR -->
-
 	<!-- TABELA-->
 	<div class="col-md-12">
 		<h:form id="frmTabela">
@@ -88,36 +72,54 @@
 	</div>
 	<!--FIM DA TABELA-->
 
-	<!-- DIALOG DETALHES -->
-	<p:dialog header="Aluno" widgetVar="dlgDetalhes" modal="true"
-		closeOnEscape="true" resizable="false" closable="true"
-		draggable="false">
-		<p:outputPanel id="alunoDetalhe">
-			<h:form id="frmDetalhesAluno">
-				<h:panelGrid columns="2">
-					<label>Nome: </label>
-					<h:outputText value="#{alunoMB.aluno.nome}" />
-					
-					<label>R.A.: </label>
-					<h:outputText value="202200000000" />
-					
-					<label>Curso: </label>
-					<h:outputText value="Engenharia de Software" />
-					
-					<label>E-mail: </label>
-					<h:outputText value="#{alunoMB.aluno.usuario}" />
+<!-- Button to Open Dialog -->
+<p:commandButton value="Ver Detalhes"
+    onclick="PF('dlgDetalhes').show()"
+    title="Ver Detalhes" />
 
-					<label>CPF: </label>
-					<h:outputText value="#{alunoMB.aluno.cpf}" />
-					
-					<label>Telefone: </label>
-					<h:outputText value="(44)99888-9565" />
+<!-- DIALOG DETALHES -->
+<p:dialog header="Aluno" widgetVar="dlgDetalhes" modal="true"
+    closeOnEscape="true" resizable="false" closable="true"
+    draggable="false">
+    <p:outputPanel id="alunoDetalhe">
+        <h:form id="frmDetalhesAluno">
+            <h:panelGrid columns="2">
+                <label>Nome: </label>
+                <h:outputText value="#{alunoMB.aluno.nome}" />
+                
+                <label>R.A.: </label>
+                <h:outputText value="202200000000" />
+                
+                <label>Curso: </label>
+                <h:outputText value="Engenharia de Software" />
+                
+                <label>E-mail: </label>
+                <h:outputText value="#{alunoMB.aluno.usuario}" />
 
-				</h:panelGrid>
-			</h:form>
-		</p:outputPanel>
-	</p:dialog>
-	<!-- FIM DO DIALOG DETALHES -->
+                <label>CPF: </label>
+                <h:outputText value="#{alunoMB.aluno.cpf}" />
+                
+                <label>Telefone: </label>
+                <h:outputText value="(44)99888-9565" />
+            </h:panelGrid>
+
+            <!-- BOTÃO ACEITAR -->
+            <p:commandButton value="Aceitar" id="btnAceitar"
+                onclick="PF('dlgDetalhes').hide(); PF('dlgAlunoEditarDados').show();" 
+                title="Aceitar" />
+             <!-- FIM DO BOTÃO ACEITAR -->
+
+            <!-- BUTÃO RECUSAR -->
+            <p:commandButton value="Recusar" id="btnRecusar"
+                onclick="PF('dlgDetalhes').hide(); PF('dlgAlunoEditarDados').show();" 
+                title="Recusar" />
+            <!-- FIM DO BUTÃO RECUSAR -->
+        </h:form>
+    </p:outputPanel>
+</p:dialog>
+<!-- FIM DO DIALOG DETALHES -->
+
+
 
 	<!-- DIALOG SALVAR Editar -->
 	<p:dialog header="Carteirinha" widgetVar="dlgAlunoEditarDados" modal="true"
