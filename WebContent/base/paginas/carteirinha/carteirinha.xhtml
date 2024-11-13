@@ -7,134 +7,111 @@
       xmlns:f="http://java.sun.com/jsf/core">
       
 <h:body>
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+        <h:outputText style="font-weight:bold" value="Aguarde, realizando operação...." />
+        <br />
+        <center>
+            <p:graphicImage name="img/aguarde.gif" />
+        </center>
+    </p:dialog>
 
-	<p:ajaxStatus onstart="PF('statusDialog').show()" 
-		onsuccess="PF('statusDialog').hide()" />
+    <!-- TITULO -->
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="page-header">Carteirinha</h1>
+        </div>
+    </div>
+    <!-- FIM TITULO -->
 
-	<p:dialog widgetVar="statusDialog" modal="true" draggable="false" 
-		closable="false" resizable="false" showHeader="false">
-		<h:outputText style="font-weight:bold" 
-			value="Aguarde, realizando operação...." />
-		<br />
-		<center>
-			<p:graphicImage name="img/aguarde.gif" />
-		</center>
-	</p:dialog>
+    <!-- TABELA-->
+    <div class="col-md-12">
+        <h:form id="frmTabela">
 
-	<!-- TITULO -->
-	<div class="row">
-		<div class="col-md-12">
-			<h1 class="page-header">Carteirinha</h1>
-		</div>
-	</div>
-	<!-- FIM TITULO -->
+            <!-- Transformando "Em Análise" em um botão -->
+            <p:commandButton value="Em Análise" styleClass="ui-button-primary"  title="Em Análise" />
+            <p:commandButton value="Aprovados" styleClass="ui-button-primary"  title="Em Análise" />
+            <p:commandButton value="Recusados" styleClass="ui-button-primary"  title="Em Análise" />
 
-	<!-- TABELA-->
-	<div class="col-md-12">
-		<h:form id="frmTabela">
+            <h:panelGrid columns="2" cellpadding="10">
+                <p:dataTable id="tabela" value="#{alunoMB.alunos}" 
+                             resizableColumns="true" var="obj" reflow="true" rows="10"
+                             paginator="true" paginatorPosition="bottom" 
+                             emptyMessage="Nenhuma carteirinha foi requisitada" 
+                             rowsPerPageTemplate="5,10,15,30,50,100">
+                    <p:ajax event="filter" global="false" />
+                    <p:column headerText="Ver" style="width:50px">
+                        <p:commandButton update="frmDetalhesAluno"
+                                         styleClass="btn btn-block" title="Ver" alt="detalhes carteirinha"
+                                         icon="ui-icon-search" oncomplete="PF('dlgDetalhes').show()">
+                            <f:setPropertyActionListener value="#{obj}" 
+                                                        target="#{alunoMB.aluno}" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column style="white-space:normal !important;" headerText="Nome"
+                            sortBy="#{obj.nome}" filterBy="#{obj.nome}" 
+                            filterMatchMode="contains">
+                        <h:outputText value="#{obj.nome}-#{obj.cpf}" />
+                    </p:column>
 
-			<p:panel header="Em Análise">
-				<h:panelGrid columns="3" cellpadding="10" style="text-align: center; width: 100%;">
-					<!-- "Em Análise" section styled as a button -->
-					<p:commandButton value="Em Análise" style="width: 100px; background-color: #f0ad4e; color: white;" />
+                    <p:column style="white-space:normal !important;" 
+                            headerText="Data de Requisição" sortBy="#{obj.usuario}" 
+                            filterBy="#{obj.usuario}" filterMatchMode="contains">
+                        <h:outputText value="#{obj.usuario}" />
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+        </h:form>
+    </div>
+    <!-- FIM DA TABELA -->
 
-					<!-- Aprovados and Recusados buttons -->
-					<p:commandButton value="Aprovados" style="width: 100px; background-color: #5bc0de; color: white;" 
-						action="#{alunoMB.showApproved}" update="frmTabela" />
+    <!-- DIALOG DETALHES -->
+    <p:dialog header="Aluno" widgetVar="dlgDetalhes" modal="true" 
+              closeOnEscape="true" resizable="false" closable="true" 
+              draggable="false" width="35%">
+        
+        <p:outputPanel id="alunoDetalhe" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+            <h:form id="frmDetalhesAluno" style="width: 100%;">
+                <div style="display: flex; justify-content: space-between; align-items: start; width: 100%;">
+                    <h:panelGrid columns="2" cellpadding="5" style="flex: 1; width: 60%;">
+                        <label>Nome: </label>
+                        <h:outputText value="#{alunoMB.aluno.nome}" />
+                        
+                        <label>R.A.: </label>
+                        <h:outputText value="#{alunoMB.alunoTurma.ra}" />
+                        
+                        <label>Curso: </label>
+                        <h:outputText value="#{alunoMB.alunoTurma.turma}" />
+                        
+                        <label>E-mail: </label>
+                        <h:outputText value="#{alunoMB.aluno.usuario}" />
 
-					<p:commandButton value="Recusados" style="width: 100px; background-color: #d9534f; color: white;" 
-						action="#{alunoMB.showRejected}" update="frmTabela" />
-				</h:panelGrid>
+                        <label>CPF: </label>
+                        <h:outputText value="#{alunoMB.aluno.cpf}" />
+                        
+                        <label>Telefone: </label>
+                        <h:outputText value="#{alunoMB.aluno.telefone}" />
+                    </h:panelGrid>
+                    <div style="width: 130px; height: 150px; background-color: lightgray;  margin-right: 20px;">
+                        <p:graphicImage value="#{request.contextPath}/resources/img/aluno.jpg" width="130" height="150" />
+                    </div>
+                </div>
 
-				<h:panelGrid columns="2" cellpadding="10">
-					<p:dataTable id="tabela" value="#{alunoMB.alunos}" 
-						resizableColumns="true" var="obj" reflow="true" rows="10"
-						paginator="true" paginatorPosition="bottom" 
-						emptyMessage="Nenhuma carteirinha foi requisitada" 
-						rowsPerPageTemplate="5,10,15,30,50,100">
-						<p:ajax event="filter" global="false" />
-						<p:column headerText="Ver" style="width:50px">
-							<p:commandButton update="frmDetalhesAluno"
-								styleClass="btn btn-block" title="Ver" alt="detalhes carteirinha"
-								icon="ui-icon-search" oncomplete="PF('dlgDetalhes').show()">
-								<f:setPropertyActionListener value="#{obj}" 
-									target="#{alunoMB.aluno}" />
-							</p:commandButton>
-						</p:column>
-						<p:column style="white-space:normal !important;" headerText="Nome"
-							sortBy="#{obj.nome}" filterBy="#{obj.nome}" 
-							filterMatchMode="contains">
-							<h:outputText value="#{obj.nome}-#{obj.cpf}" />
-						</p:column>
-
-						<p:column style="white-space:normal !important;" 
-							headerText="Data de Requisição" sortBy="#{obj.usuario}" 
-							filterBy="#{obj.usuario}" filterMatchMode="contains">
-							<h:outputText value="#{obj.usuario}" />
-						</p:column>
-					</p:dataTable>
-				</h:panelGrid>
-			</p:panel>
-
-		</h:form>
-
-	</div>
-	<!-- FIM DA TABELA -->
-
-	<!-- DIALOG DETALHES -->
-	<p:dialog header="Aluno" widgetVar="dlgDetalhes" modal="true" 
-		closeOnEscape="true" resizable="false" closable="true" 
-		draggable="false" width="35%">
-		
-		<p:outputPanel id="alunoDetalhe" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-			<h:form id="frmDetalhesAluno" style="width: 100%;">
-			
-				<!-- FLEX CONTAINER PARA O CONTEÚDO PRINCIPAL -->
-				<div style="display: flex; justify-content: space-between; align-items: start; width: 100%;">
-					
-					<!-- INFORMAÇÕES DO ALUNO -->
-					<h:panelGrid columns="2" cellpadding="5" style="flex: 1; width: 60%;">
-						<label>Nome: </label>
-						<h:outputText value="#{alunoMB.aluno.nome}" />
-						
-						<label>R.A.: </label>
-						<h:outputText value="202200000000" />
-						
-						<label>Curso: </label>
-						<h:outputText value="Engenharia de Software" />
-						
-						<label>E-mail: </label>
-						<h:outputText value="#{alunoMB.aluno.usuario}" />
-	
-						<label>CPF: </label>
-						<h:outputText value="#{alunoMB.aluno.cpf}" />
-						
-						<label>Telefone: </label>
-						<h:outputText value="(44)99888-9565" />
-					</h:panelGrid>
-					
-					<!-- IMAGEM -->
-					<div style="width: 130px; height: 150px; background-color: lightgray;  margin-right: 20px;">
-						<p:graphicImage value="#{request.contextPath}/resources/img/aluno.jpg" width="130" height="150" />
-					</div>
-				</div>
-
-				<!-- BOTÃO DE ACEITAR -->
-				<div style="text-align: center; margin-top: 2%; display: flex; justify-content: center;">
-					<p:commandButton value="Aceitar" id="btnAceitar" style="margin-right: 5%;"
-						onclick="PF('dlgDetalhes').hide(); PF('dlgAlunoEditarDados').show();" 
-						title="Aceitar" />
-					
-					<!-- BOTÃO DE RECUSAR -->        
-					<p:commandButton value="Recusar" id="btnRecusar" style="margin-left: 5%;"
-						onclick="PF('dlgDetalhes').hide(); PF('dlgAlunoEditarDados').show();" 
-						title="Recusar" />
-				</div>
-			</h:form>
-		</p:outputPanel>
-	</p:dialog>
-	<!-- FIM DO DIALOG DETALHES -->
+                <div style="text-align: center; margin-top: 2%; display: flex; justify-content: center;">
+                    <p:commandButton value="Aceitar" id="btnAceitar" style="margin-right: 5%;"
+                                     onclick="PF('dlgDetalhes').hide(); PF('dlgAlunoEditarDados').show();" 
+                                     title="Aceitar" />
+                    
+                    <p:commandButton value="Recusar" id="btnRecusar" style="margin-left: 5%;"
+                                     onclick="PF('dlgDetalhes').hide(); PF('dlgAlunoEditarDados').show();" 
+                                     title="Recusar" />
+                </div>
+            </h:form>
+        </p:outputPanel>
+    </p:dialog>
+    <!-- FIM DO DIALOG DETALHES -->
 
 </h:body>
+
 
 </html>
