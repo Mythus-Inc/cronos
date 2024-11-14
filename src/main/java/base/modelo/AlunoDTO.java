@@ -14,7 +14,17 @@ public class AlunoDTO {
 	private String senha;
 	@JsonIgnore
 	private String ra;
+	
+	private String caminhoArquivo;
+	
 	private List<AlunoTurmaDTO> alunoTurma=new ArrayList<AlunoTurmaDTO>();
+	
+	public String getCaminhoArquivo() {
+		return caminhoArquivo;
+	}
+	public void setCaminhoArquivo(String caminhoArquivo) {
+		this.caminhoArquivo = caminhoArquivo;
+	}
 	
 	public String getRa() {
 		return ra;
