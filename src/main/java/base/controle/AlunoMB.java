@@ -1,5 +1,8 @@
 package base.controle;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -11,7 +14,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -39,7 +41,8 @@ import questionario.modelo.Email;
 import questionario.service.EmailService;
 
 //@ViewScoped
-@ViewScoped
+//@ManagedBean
+@SessionScoped
 @Named("alunoMB")
 public class AlunoMB implements Serializable {
 
@@ -134,6 +137,9 @@ public class AlunoMB implements Serializable {
 	@Inject
 	private GenericDAO<Certificado> daoCertificado;
 
+	
+
+	
 	@PostConstruct
 	public void inicializar() {
 		// System.out.println("No Inicializar");
@@ -156,6 +162,12 @@ public class AlunoMB implements Serializable {
 		atualizarListas();
 		certificadosAluno = new ArrayList<Certificado>();
 
+	}
+	
+	public void informarAluno(Aluno aluno) {
+		System.out.println(aluno.getNome());
+		System.out.println(aluno.getUsuario());
+		this.aluno = aluno;
 	}
 	
 	public void buscarCertificadosAluno(Aluno aluno) {
