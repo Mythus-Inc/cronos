@@ -176,6 +176,8 @@ public class AlunoMB implements Serializable {
 				String email = separados[3].trim();
 				String dataMatricula = separados[4].trim();
 				String descricaoTurma = separados[5].trim();
+				//modificado 13/11
+				String caminhoImagem = separados[6].trim();
 
 				List<Turma> lt = daoTurma.listar(Turma.class, "descricao like '%" + descricaoTurma + "%'");
 
@@ -198,6 +200,7 @@ public class AlunoMB implements Serializable {
 						aluno.setUsuario(email);
 						aluno.setSenha("000");
 						aluno.setPerfilAluno("aluno");
+						aluno.setCaminhoImagem(caminhoImagem);
 						if (ValidaCPF.isCPF(cpfLimpo)) {
 							alunoService.inserirAlterar(aluno);
 						} else {
@@ -251,7 +254,7 @@ public class AlunoMB implements Serializable {
 		setAlunosImportar(mensagem);
 		atualizarListas();
 	}
-
+// Aqui pode ser utilizado na requisição da carteirinha
 	public void buscarRaAluno(AlunoTurma m) {
 		alunoTurma = daoAlunoTurma.buscarPorId(AlunoTurma.class, m.getId());
 		aluno = daoAluno.buscarPorId(Aluno.class, alunoTurma.getAluno().getId());
@@ -482,6 +485,7 @@ public class AlunoMB implements Serializable {
 		return true;
 	}
 
+// aqui pode ser utilizado
 	public void salvarEditar() {
 	
 		aluno.setPerfilAluno("aluno");
