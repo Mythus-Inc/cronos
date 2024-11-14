@@ -38,14 +38,26 @@ public class Aluno extends Pessoa implements Serializable {
 	private String nomeResponsavel;
 
 	private String telefoneResponsavel;
-
+ 
 	//
 	// private boolean liberado;
+	
+	//modificado dia 13/12
+	private String caminhoImagem;
 
 	private Integer qtdRespostas;
 
 	@Column(name = "permite_cadastro_certificado")
 	private Integer permiteCadastroCertificado=1;
+	
+	
+	public String getCaminhoImagem() {
+		return caminhoImagem;
+	}
+
+	public void setCaminhoImagem(String caminhoImagem) {
+		this.caminhoImagem = caminhoImagem;
+	}
 
 	public Integer getQtdRespostas() {
 		return qtdRespostas;
@@ -68,7 +80,7 @@ public class Aluno extends Pessoa implements Serializable {
 	}
 
 	public Double getTotalHorasComputadasG2() {
-		return totalHorasComputadasG2;
+		return total/HorasComputadasG2;
 	}
 
 	public void setTotalHorasComputadasG2(Double totalHorasComputadasG2) {
