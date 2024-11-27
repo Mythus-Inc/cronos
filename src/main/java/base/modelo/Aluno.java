@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import ac.modelo.Pessoa;
+import cope.modelo.enums.Parecer;
 
 /**
  * Entity implementation class for Entity: Aluno
@@ -39,12 +40,15 @@ public class Aluno extends Pessoa implements Serializable {
 
 	private String telefoneResponsavel;
  
-	//
+	
 	// private boolean liberado;
 	
-	//modificado dia 13/12
+	// modificado dia 13/12/2024
 	private String caminhoImagem;
-
+	
+	// modificado dia 23/11/2024
+	@Column(name = "status_carteirinha")
+	private  Parecer statusCarteirinha;
 	private Integer qtdRespostas;
 
 	@Column(name = "permite_cadastro_certificado")
@@ -57,6 +61,14 @@ public class Aluno extends Pessoa implements Serializable {
 
 	public void setCaminhoImagem(String caminhoImagem) {
 		this.caminhoImagem = caminhoImagem;
+	}
+	
+	public Parecer getStatusCarteirinha() {
+		return statusCarteirinha;
+	}
+
+	public void setStatusCarteirinha(Parecer statusCarteirinha) {
+		this.statusCarteirinha = statusCarteirinha;
 	}
 
 	public Integer getQtdRespostas() {
