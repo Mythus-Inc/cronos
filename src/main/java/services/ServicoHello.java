@@ -56,6 +56,7 @@ import base.modelo.AlunoDTO;
 import base.modelo.AlunoTurmaDTO;
 import base.modelo.Servidor;
 import base.modelo.ServidorDTO;
+import cope.modelo.enums.Parecer;
 import dao.GenericDAO;
 import inventario.modelo.Equipamento;
 import inventario.modelo.EquipamentoInventario;
@@ -113,60 +114,64 @@ public class ServicoHello {
 	@Inject
 	private GenericDAO<AlunoTurma> daoAlunoTurma;
 	
-	 String ra = "202200006996";
+
 	
 // CARTEIRINHA Inicio
+	
+	// metodo utilizado no mobile
 	@POST
     @Path("/solicitacao-carteirinha")
     @Produces("application/json; charset=UTF-8")
     @Consumes("application/json; charset=UTF-8")
     public Response recebimentoDeSolicitacao( AlunoDTO dadosAluno) {
-        ra = dadosAluno.getRa();
-        // Na próxima sprint, aqui deverá persistir os dados em um banco de dados 
-        System.out.println("Envio de dados" + ra);
-        return Response.status(Response.Status.OK)
-                       .entity(dadosAluno)
-                       .build();
+		//(Servidor.class, " usuario = '" + aluno.getEmail().trim().toLowerCase() + "'")
+		Aluno alunoCarteirinha = daoAluno.buscarCondicao(Aluno.class, "SELECT * FROM tab_aluno WHERE ra = '" + dadosAluno.getRa().trim() + "'");
+		
+		if(alunoCarteirinha != null) {
+			alunoCarteirinha.setStatusCarteirinha(Parecer.PENDENTE);
+			alunoCarteirinha.setCaminhoImagem(dadosAluno.getCaminhoArquivo());
+			daoAluno.inserir(alunoCarteirinha);
+	        System.out.println("Envio de dados" + dadosAluno.getRa());
+	        return Response.status(Response.Status.OK)
+	                       .entity(null) // aqui no caso ainda não pode permitir que retorne os dados 
+	                       .build();
+		}
+		return Response.status(404).build();
+		
     }
 	
 	
+	//metodo utilizado no mobile
 	@GET
-	@Path("/solicitacao-carteirinha")
+	@Path("/verificacao-status-carteirinha/{ra}")
+	@Produces("application/json; charset=UTF-8")
+	public Response verificarStatusCarteirinha(@PathParam("ra") String raAluno) {
+		
+		Aluno alunoStatus  = daoAluno.buscarCondicao(Aluno.class, "SELECT * FROM tab_aluno WHERE ra = '" + raAluno + "'" );
+		if(alunoStatus.getStatusCarteirinha() == Parecer.PENDENTE) {
+			return Response.status(Response.Status.OK).entity("O status da Carteirinha é pendente, aguarde a aprovação da Secretaria").build();	
+		}else if (alunoStatus.getStatusCarteirinha() == Parecer.RECUSADO) {
+			return Response.status(Response.Status.OK).entity("O status da Carteirinha é recusado, proucure a Secretaria para mais esclarecimentos").build();	
+		}else if (alunoStatus.getStatusCarteirinha() == Parecer.ACEITO) {
+			return Response.status(Response.Status.OK).entity(alunoStatus).build();	
+		}
+		return Response.status(404).build();
+		
+	}
+	
+	// método utilizado no web
+	@GET
+	@Path("/buscar-solicitacao-carteirinha-pendente")
 	@Produces("application/json; charset=UTF-8")
 	public Response buscarSolicitacaoCarteirinha() {
-		System.out.println("Solicitaçao do aluno, cujo o ra é: " + ra);
-		return Response.status(Response.Status.OK).entity(ra).build();
+		//List<Servidor> listServidor = new ArrayList<>();
+		//listServidor = daoServidor.listar(Servidor.class, " usuario = '" + login + "'");
+		List<Aluno> listarAlunosComSolicitaçãoPendente = new ArrayList<>();
+		listarAlunosComSolicitaçãoPendente = daoAluno.listar(Aluno.class, "SELECT * FROM tab_aluno WHERE status_carteirinha = 'PENDENTE' ");
+		return Response.status(Response.Status.OK).entity(listarAlunosComSolicitaçãoPendente).build();
 	}
 	
-	@GET
-	@Path("/solicitacao-carteirinha/validada")
-	@Produces("application/json; charset=UTF-8")
-	public Response buscarSolicitacaoCarteirinhaAprovada() {
-		AlunoTurmaDTO turma = new AlunoTurmaDTO();
-		turma.setRa("123888");
-		turma.setTurma("Noturna");
-		turma.setCurso("Engenharia de Software");
-		turma.setDataMatricula(new Date());
-		
-		List<AlunoTurmaDTO> turmas = new ArrayList<>();
-		turmas.add(turma);
-		
-		AlunoDTO aluno = new AlunoDTO();
-	    aluno.setNome("João da Silva");
-        aluno.setEmail("joao.silva@email.com");
-        aluno.setSenha("senha123");
-        aluno.setRa("20231234");
-        aluno.setAlunoTurma(turmas);
-        
-        
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-        String dadosAlunoJson = gson.toJson(aluno);
-        System.out.println(dadosAlunoJson);
-	    return Response.status(Response.Status.OK)
-	                   .entity(dadosAlunoJson)
-	                   .build();
-	}
-	
+	// Método utilizado pelo web
 	@POST
     @Path("/solicitacao-carteirinha/validacao")
     @Produces("application/json; charset=UTF-8")
