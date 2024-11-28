@@ -125,21 +125,19 @@ public class ServicoHello {
     @Consumes("application/json; charset=UTF-8")
     public Response recebimentoDeSolicitacao( AlunoDTO dadosAluno) {
 		//(Servidor.class, " usuario = '" + aluno.getEmail().trim().toLowerCase() + "'")
-		Aluno alunoCarteirinha = daoAluno.buscarCondicao(Aluno.class, "SELECT * FROM tab_aluno WHERE ra = '" + dadosAluno.getRa().trim() + "'");
-		
-		if(alunoCarteirinha != null) {
-			alunoCarteirinha.setStatusCarteirinha(Parecer.PENDENTE);
-			alunoCarteirinha.setCaminhoImagem(dadosAluno.getCaminhoArquivo());
-			daoAluno.inserir(alunoCarteirinha);
+		AlunoTurma alunoCarteirinha = daoAlunoTurma.buscarCondicao(AlunoTurma.class, "FROM AlunoTurma WHERE ra = '" + dadosAluno.getRa().trim() + "'");
+		Aluno aluno = alunoCarteirinha.getAluno();
+		if(aluno != null) {
+			aluno.setStatusCarteirinha(Parecer.PENDENTE);
+			aluno.setCaminhoImagem(dadosAluno.getCaminhoArquivo());
+			daoAluno.inserir(aluno);
 	        System.out.println("Envio de dados" + dadosAluno.getRa());
 	        return Response.status(Response.Status.OK)
 	                       .entity(null) // aqui no caso ainda não pode permitir que retorne os dados 
 	                       .build();
 		}
 		return Response.status(404).build();
-		
     }
-	
 	
 	//metodo utilizado no mobile
 	@GET
@@ -158,41 +156,43 @@ public class ServicoHello {
 		return Response.status(404).build();
 		
 	}
-	
+/*	
 	// método utilizado no web
 	@GET
 	@Path("/buscar-solicitacao-carteirinha-pendente")
 	@Produces("application/json; charset=UTF-8")
-	public Response buscarSolicitacaoCarteirinha() {
+	public Response buscarSolicitacaoCarteirinhaPendente() {
 		//List<Servidor> listServidor = new ArrayList<>();
 		//listServidor = daoServidor.listar(Servidor.class, " usuario = '" + login + "'");
-		List<Aluno> listarAlunosComSolicitaçãoPendente = new ArrayList<>();
-		listarAlunosComSolicitaçãoPendente = daoAluno.listar(Aluno.class, "SELECT * FROM tab_aluno WHERE status_carteirinha = 'PENDENTE' ");
-		return Response.status(Response.Status.OK).entity(listarAlunosComSolicitaçãoPendente).build();
+		List<Aluno> listarAlunosComSolicitacaoPendente = new ArrayList<>();
+		listarAlunosComSolicitacaoPendente = daoAluno.listar(Aluno.class, "SELECT * FROM tab_aluno WHERE status_carteirinha = '" + Parecer.PENDENTE + "'");
+		return Response.status(Response.Status.OK).entity(listarAlunosComSolicitacaoPendente).build();
 	}
 	
-	// Método utilizado pelo web
-	@POST
-    @Path("/solicitacao-carteirinha/validacao")
-    @Produces("application/json; charset=UTF-8")
-    public Response aceitarEnvioDeCarteirinha() {
-	    AlunoDTO aluno = new AlunoDTO();
-	   
-	    aluno.setNome("João da Silva");
-        aluno.setEmail("joao.silva@email.com");
-        aluno.setSenha("senha123");
-        aluno.setRa("20231234");
-        aluno.setAlunoTurma(null);
-        
-        
-        Gson gson = new Gson();
-        String dadosAlunoJson = gson.toJson(aluno);
-        System.out.println(dadosAlunoJson);
-	    return Response.status(Response.Status.OK)
-	                   .entity(dadosAlunoJson)
-	                   .build();
-    }
+	// método utilizado na web
+	@GET
+	@Path("/buscar-solicitacao-carteirinha-pendente")
+	@Produces("application/json; charset=UTF-8")
+	public Response buscarSolicitacaoCarteirinhaRecusada() {
+		//List<Servidor> listServidor = new ArrayList<>();
+		//listServidor = daoServidor.listar(Servidor.class, " usuario = '" + login + "'");
+		List<Aluno> listarAlunosComSolicitacaoRecusada = new ArrayList<>();
+		listarAlunosComSolicitacaoRecusada = daoAluno.listar(Aluno.class, "SELECT * FROM tab_aluno WHERE status_carteirinha = '" + Parecer.RECUSADO + "'");
+		return Response.status(Response.Status.OK).entity(listarAlunosComSolicitacaoRecusada).build();
+	}
 	
+	// método utilizado na web
+	@GET
+	@Path("/buscar-solicitacao-carteirinha-pendente")
+	@Produces("application/json; charset=UTF-8")
+	public Response buscarSolicitacaoCarteirinhaAprovada() {
+		//List<Servidor> listServidor = new ArrayList<>();
+		//listServidor = daoServidor.listar(Servidor.class, " usuario = '" + login + "'");
+		List<Aluno> listarAlunosComSolicitacaoAprovada = new ArrayList<>();
+		listarAlunosComSolicitacaoAprovada = daoAluno.listar(Aluno.class, "SELECT * FROM tab_aluno WHERE status_carteirinha = '" + Parecer.ACEITO + "'");
+		return Response.status(Response.Status.OK).entity(listarAlunosComSolicitacaoAprovada).build();
+	}
+	*/
 	
 // CARTEIRINHA Final
 
