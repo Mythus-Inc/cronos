@@ -21,7 +21,17 @@ public class AlunoDTO {
 	
 	private  Parecer statusCarteirinha;
 	
+	private String caminhoImagem;
+	
 	private List<AlunoTurmaDTO> alunoTurma=new ArrayList<AlunoTurmaDTO>();
+	
+	public String getCaminhoImagem() {
+		return caminhoImagem;
+	}
+
+	public void setCaminhoImagem(String caminhoImagem) {
+		this.caminhoImagem = caminhoImagem;
+	}
 	
 	public String getCaminhoArquivo() {
 		return caminhoArquivo;
