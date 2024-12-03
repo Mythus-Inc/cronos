@@ -44,6 +44,7 @@ public class Aluno extends Pessoa implements Serializable {
 	// private boolean liberado;
 	
 	// modificado dia 13/12/2024
+	@Column(name= "caminho_imagem")
 	private String caminhoImagem;
 	
 	// modificado dia 23/11/2024
