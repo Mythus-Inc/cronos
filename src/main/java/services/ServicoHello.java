@@ -1,6 +1,8 @@
 package services;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
@@ -9,10 +11,12 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -66,6 +70,7 @@ import inventario.modelo.Tombamento;
 import inventario.service.EquipamentoInventarioService;
 import inventario.service.EquipamentoService;
 import inventario.service.TombamentoService;
+import util.CaminhoArquivos;
 import util.CriptografiaSenha;
 import util.ExibirMensagem;
 
@@ -125,17 +130,40 @@ public class ServicoHello {
     @Consumes("application/json; charset=UTF-8")
     public Response recebimentoDeSolicitacao( AlunoDTO dadosAluno) {
 		//(Servidor.class, " usuario = '" + aluno.getEmail().trim().toLowerCase() + "'")
-		AlunoTurma alunoCarteirinha = daoAlunoTurma.buscarCondicao(AlunoTurma.class, "FROM AlunoTurma WHERE ra = '" + dadosAluno.getRa().trim() + "'");
+		System.out.println("Aqui passou");
+		System.out.println(dadosAluno.getRa());
+		System.out.println(dadosAluno.getCaminhoImagem());
+		
+		AlunoTurma alunoCarteirinha = daoAlunoTurma.buscarCondicao(AlunoTurma.class, "ra = '" + dadosAluno.getRa().trim() + "'");
+		System.out.println(alunoCarteirinha);
 		Aluno aluno = alunoCarteirinha.getAluno();
 		if(aluno != null) {
 			aluno.setStatusCarteirinha(Parecer.PENDENTE);
-			aluno.setCaminhoImagem(dadosAluno.getCaminhoArquivo());
+			
+			String imageBase64 = dadosAluno.getCaminhoImagem();
+			byte[] imageBytes = Base64.getDecoder().decode(imageBase64);
+			String nomeAlunoUnico = "\\aluno_" + UUID.randomUUID() + ".jpeg";
+			File outputFile = new File(CaminhoArquivos.caminhoFotosCarteirinha() + nomeAlunoUnico); 
+			System.out.println(outputFile.getAbsolutePath());
+			System.out.println(nomeAlunoUnico);
+			
+			try {
+				FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+				fileOutputStream.write(imageBytes); 
+				
+		        aluno.setCaminhoImagem(outputFile.getAbsolutePath());
+		        fileOutputStream.close();
+			}catch(IOException e) {
+				e.printStackTrace();
+			}
+			
+			
 			daoAluno.inserir(aluno);
-	        System.out.println("Envio de dados" + dadosAluno.getRa());
+	        System.out.println("Dados salvo em " + aluno.getCaminhoImagem());
 	        return Response.status(Response.Status.OK)
 	                       .entity(null) // aqui no caso ainda não pode permitir que retorne os dados 
 	                       .build();
-		}
+		};
 		return Response.status(404).build();
     }
 	
@@ -145,7 +173,7 @@ public class ServicoHello {
 	@Produces("application/json; charset=UTF-8")
 	public Response verificarStatusCarteirinha(@PathParam("ra") String raAluno) {
 		
-		Aluno alunoStatus  = daoAluno.buscarCondicao(Aluno.class, "SELECT * FROM tab_aluno WHERE ra = '" + raAluno + "'" );
+		Aluno alunoStatus  = daoAluno.buscarCondicao(AlunoTurma.class, "FROM AlunoTurma WHERE ra = '" + raAluno + "'" );
 		if(alunoStatus.getStatusCarteirinha() == Parecer.PENDENTE) {
 			return Response.status(Response.Status.OK).entity("O status da Carteirinha é pendente, aguarde a aprovação da Secretaria").build();	
 		}else if (alunoStatus.getStatusCarteirinha() == Parecer.RECUSADO) {
