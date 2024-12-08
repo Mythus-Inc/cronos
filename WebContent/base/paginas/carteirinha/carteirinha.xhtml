@@ -5,7 +5,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
-      
+     
 <h:body>
     <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
     <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
@@ -24,23 +24,14 @@
     </div>
     <!-- FIM TITULO -->
 
-    <!-- TABELA-->
+    <!-- TABELA DE ALUNOS -->
     <div class="col-md-12">
         <h:form id="frmTabela">
 
-            <!-- Transformando "Em Análise" em um botão -->
-            <p:commandButton value="Em Análise" styleClass="ui-button-primary" 
-                 
-                 title="Em Análise" />
-
-            <p:commandButton value="Aprovados" styleClass="ui-button-primary"  title="Aprovados" />
-            <p:commandButton value="Recusados" styleClass="ui-button-primary"  title="Recusados" />
-
-        </h:form>
-    </div>
-	<!-- TABELA EM ANÁLISE -->
-	<h:form id="emAnaliseContent">
-    	<h:panelGrid columns="2" cellpadding="10">
+            <p:wizard backLabel="Anterior" nextLabel="Próximo">
+                <p:tab id="ativo" title="Em Análise">
+                    <p:panel header="Alunos">
+                        <h:panelGrid columns="2" cellpadding="10">
                 <p:dataTable id="tabela" value="#{alunoMB.alunos}" 
                              resizableColumns="true" var="obj" reflow="true" rows="10"
                              paginator="true" paginatorPosition="bottom" 
@@ -52,7 +43,7 @@
                                          styleClass="btn btn-block" title="Ver" alt="detalhes carteirinha"
                                          icon="ui-icon-search" actionListener="#{alunoMB.informarAluno(obj)}" oncomplete="PF('dlgDetalhes').show()">
                         
-                        </p:commandButton>      <h:outputText value="ss#{alunoMB.aluno.usuario}" />   
+                        </p:commandButton>        
                     </p:column>
                     <p:column style="white-space:normal !important;" headerText="Nome"
                             sortBy="#{obj.nome}" filterBy="#{obj.nome}" 
@@ -68,14 +59,82 @@
                 </p:dataTable>
             </h:panelGrid>
             <p:remoteCommand name="remote" update="alunoDetalhe, frmDetalhesAluno" oncomplete=""/>
-            asd
-              <h:outputText value="#{alunoMB.aluno.nome}" />
-	</h:form>
-    <!-- FIM DA TABELA EM ANÁLISE -->
-   
-    
-    
+            <h:outputText value="#{alunoMB.aluno.nome}" />
+                    </p:panel>
+                </p:tab>
 
+                <!-- Outras tabs para diferentes status de alunos -->
+                <p:tab id="aprovados" title="Aprovados">
+                    <p:panel header="Aprovados">
+                    <h:panelGrid columns="2" cellpadding="10">
+                <p:dataTable id="tabelaAprovado" value="#{alunoMB.alunos}" 
+                             resizableColumns="true" var="obj" reflow="true" rows="10"
+                             paginator="true" paginatorPosition="bottom" 
+                             emptyMessage="Nenhuma carteirinha foi requisitada" 
+                             rowsPerPageTemplate="5,10,15,30,50,100">
+                    <p:ajax event="filter" global="false" />
+                    <p:column headerText="Ver" style="width:50px">
+                    <p:commandButton update="frmDetalhesAluno @form"
+                                         styleClass="btn btn-block" title="Ver" alt="detalhes carteirinha"
+                                         icon="ui-icon-search" actionListener="#{alunoMB.informarAluno(obj)}" oncomplete="PF('dlgDetalhes').show()">
+                        
+                        </p:commandButton>        
+                    </p:column>
+                    <p:column style="white-space:normal !important;" headerText="Nome"
+                            sortBy="#{obj.nome}" filterBy="#{obj.nome}" 
+                            filterMatchMode="contains">
+                        <h:outputText value="#{obj.nome}-#{obj.cpf}" />
+                    </p:column>
+
+                    <p:column style="white-space:normal !important;" 
+                            headerText="Data de Aprovação" sortBy="#{obj.usuario}" 
+                            filterBy="#{obj.usuario}" filterMatchMode="contains">
+                        <h:outputText value="#{obj.usuario}" />
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+            <p:remoteCommand name="remote" update="alunoDetalhe, frmDetalhesAluno" oncomplete=""/>
+            <h:outputText value="#{alunoMB.aluno.nome}" />
+                    </p:panel>
+                </p:tab>
+
+                <p:tab id="recusados" title="Recusados">
+                    <p:panel header="Recusados">
+                    <h:panelGrid columns="2" cellpadding="10">
+                <p:dataTable id="tabelaRecusados" value="#{alunoMB.alunos}" 
+                             resizableColumns="true" var="obj" reflow="true" rows="10"
+                             paginator="true" paginatorPosition="bottom" 
+                             emptyMessage="Nenhuma carteirinha foi requisitada" 
+                             rowsPerPageTemplate="5,10,15,30,50,100">
+                    <p:ajax event="filter" global="false" />
+                    <p:column headerText="Ver" style="width:50px">
+                    <p:commandButton update="frmDetalhesAluno @form"
+                                         styleClass="btn btn-block" title="Ver" alt="detalhes carteirinha"
+                                         icon="ui-icon-search" actionListener="#{alunoMB.informarAluno(obj)}" oncomplete="PF('dlgDetalhes').show()">
+                        
+                        </p:commandButton>        
+                    </p:column>
+                    <p:column style="white-space:normal !important;" headerText="Nome"
+                            sortBy="#{obj.nome}" filterBy="#{obj.nome}" 
+                            filterMatchMode="contains">
+                        <h:outputText value="#{obj.nome}-#{obj.cpf}" />
+                    </p:column>
+
+                    <p:column style="white-space:normal !important;" 
+                            headerText="Data de Rejeição" sortBy="#{obj.usuario}" 
+                            filterBy="#{obj.usuario}" filterMatchMode="contains">
+                        <h:outputText value="#{obj.usuario}" />
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+            <p:remoteCommand name="remote" update="alunoDetalhe, frmDetalhesAluno" oncomplete=""/>
+            <h:outputText value="#{alunoMB.aluno.nome}" />
+                    </p:panel>
+                </p:tab>
+            </p:wizard>
+        </h:form>
+    </div>
+    
     <!-- DIALOG DETALHES -->
    <p:dialog header="Aluno" widgetVar="dlgDetalhes" modal="true" 
               closeOnEscape="true" resizable="false" closable="true" 
@@ -121,23 +180,6 @@
         </p:outputPanel>
     </p:dialog>
     <!-- FIM DO DIALOG DETALHES -->
-    
-    <style>
-    /* Hide emAnaliseContent initially */
-    #emAnaliseContent {
-/*     display: none; */
-    }
-	</style>
-
-	<script>
-    	function toggleEmAnaliseForm() {
-        	const emAnaliseContent = document.getElementById('emAnaliseContent');
-        	emAnaliseContent.style.display = (emAnaliseContent.style.display === 'none' || emAnaliseContent.style.display === '') 
-                                         ? 'block' 
-                                         : 'none';
-    	}
-	</script>
-    
 
 </h:body>
 
