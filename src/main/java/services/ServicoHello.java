@@ -139,8 +139,11 @@ public class ServicoHello {
 		Aluno aluno = alunoCarteirinha.getAluno();
 		if(aluno != null) {
 			aluno.setStatusCarteirinha(Parecer.PENDENTE);
-			
 			String imageBase64 = dadosAluno.getCaminhoImagem();
+			
+			if (imageBase64.startsWith("data:image")) {
+	            imageBase64 = imageBase64.substring(imageBase64.indexOf(",") + 1);
+	        }
 			byte[] imageBytes = Base64.getDecoder().decode(imageBase64);
 			String nomeAlunoUnico = "\\aluno_" + UUID.randomUUID() + ".jpeg";
 			File outputFile = new File(CaminhoArquivos.caminhoFotosCarteirinha() + nomeAlunoUnico); 
@@ -245,6 +248,8 @@ public class ServicoHello {
 		}
 
 	}
+	
+	
 
 	@POST
 	@Produces("application/json; charset=UTF-8")
@@ -256,7 +261,9 @@ public class ServicoHello {
 				&& aluno.getSenha().length() > 0) {
 			return loginServidor(aluno);
 		} else if (aluno.getRa() != null && aluno.getSenha() != null) {
+			System.out.print("LOGADO COM SUCESSO");
 			return loginAluno(aluno);
+			
 		}
 
 		return Response.status(401).build();
