@@ -32,7 +32,7 @@
                 <p:tab id="ativo" title="Em Análise">
                     <p:panel header="Alunos">
                         <h:panelGrid columns="2" cellpadding="10">
-                <p:dataTable id="tabela" value="#{alunoMB.alunos}" 
+                <p:dataTable id="tabela" value="#{alunoMB.getAlunosPendentes()}" 
                              resizableColumns="true" var="obj" reflow="true" rows="10"
                              paginator="true" paginatorPosition="bottom" 
                              emptyMessage="Nenhuma carteirinha foi requisitada" 
@@ -67,7 +67,7 @@
                 <p:tab id="aprovados" title="Aprovados">
                     <p:panel header="Aprovados">
                     <h:panelGrid columns="2" cellpadding="10">
-                <p:dataTable id="tabelaAprovado" value="#{alunoMB.alunos}" 
+                <p:dataTable id="tabelaAprovado" value="#{alunoMB.getAlunosAprovados()}" 
                              resizableColumns="true" var="obj" reflow="true" rows="10"
                              paginator="true" paginatorPosition="bottom" 
                              emptyMessage="Nenhuma carteirinha foi requisitada" 
@@ -101,7 +101,7 @@
                 <p:tab id="recusados" title="Recusados">
                     <p:panel header="Recusados">
                     <h:panelGrid columns="2" cellpadding="10">
-                <p:dataTable id="tabelaRecusados" value="#{alunoMB.alunos}" 
+                <p:dataTable id="tabelaRecusados" value="#{alunoMB.getAlunosRecusados()}" 
                              resizableColumns="true" var="obj" reflow="true" rows="10"
                              paginator="true" paginatorPosition="bottom" 
                              emptyMessage="Nenhuma carteirinha foi requisitada" 
