@@ -46,6 +46,7 @@ import questionario.modelo.Email;
 import questionario.service.EmailService;
 import services.ServicoHello;
 
+
 //@ViewScoped
 @ManagedBean
 @SessionScoped
@@ -148,6 +149,8 @@ public class AlunoMB implements Serializable {
     private List<Aluno> listAprovados;
     private List<Aluno> listPendentes;
     private List<Aluno> listRecusados;
+    
+    private boolean hasPendingCarteirinhas;
     
 	
 	@PostConstruct
@@ -849,6 +852,19 @@ public class AlunoMB implements Serializable {
 	public void setCertificadosAluno(List<Certificado> certificadosAluno) {
 		this.certificadosAluno = certificadosAluno;
 	}
+
+
+    public boolean isHasPendingCarteirinhas() {
+        return hasPendingCarteirinhas;
+    }
+
+    private void checkPendingCarteirinhas() {
+        if( alunos.stream().anyMatch(student -> "PENDENTE".equals(aluno.getStatusCarteirinha()))) {
+        	hasPendingCarteirinhas = true;
+        }else {
+        	hasPendingCarteirinhas = false;
+        }
+    }
 	
 	public void aprovarAluno(Aluno aluno) {
 	    aluno.setStatusCarteirinha(Parecer.ACEITO);
@@ -868,6 +884,7 @@ public class AlunoMB implements Serializable {
 	public List<Aluno> getAlunosAprovados() {
     if (listAprovados == null) {
         listAprovados = daoAluno.listar(Aluno.class, "statusCarteirinha = '" + Parecer.ACEITO + "'");
+        System.out.println("DEBUG: Alunos pendentes: " + listAprovados);
     }
     return listAprovados;
 	}

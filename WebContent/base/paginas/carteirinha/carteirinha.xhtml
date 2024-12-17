@@ -30,7 +30,7 @@
 
             <p:wizard backLabel="Anterior" nextLabel="Próximo">
                 <p:tab id="ativo" title="Em Análise">
-                    <p:panel header="Alunos">
+                    <p:panel header="Em Análise">
                         <h:panelGrid columns="2" cellpadding="10">
                 <p:dataTable id="tabela" value="#{alunoMB.getAlunosPendentes()}" 
                              resizableColumns="true" var="obj" reflow="true" rows="10"
@@ -46,20 +46,19 @@
                         </p:commandButton>        
                     </p:column>
                     <p:column style="white-space:normal !important;" headerText="Nome"
-                            sortBy="#{obj.nome}" filterBy="#{obj.nome}" 
+                            sortBy="#{obj.usuario}" filterBy="#{obj.usuario}" 
                             filterMatchMode="contains">
-                        <h:outputText value="#{obj.nome}-#{obj.cpf}" />
+                        <h:outputText value="#{obj.usuario}" />
                     </p:column>
 
                     <p:column style="white-space:normal !important;" 
-                            headerText="Data de Requisição" sortBy="#{obj.usuario}" 
-                            filterBy="#{obj.usuario}" filterMatchMode="contains">
-                        <h:outputText value="#{obj.usuario}" />
+                            headerText="Data de Requisição" sortBy="#{obj.dataCadastro}" 
+                            filterBy="#{obj.dataCadastro}" filterMatchMode="contains">
+                        <h:outputText value="#{obj.dataCadastro}" />
                     </p:column>
                 </p:dataTable>
             </h:panelGrid>
             <p:remoteCommand name="remote" update="alunoDetalhe, frmDetalhesAluno" oncomplete=""/>
-            <h:outputText value="#{alunoMB.aluno.nome}" />
                     </p:panel>
                 </p:tab>
 
@@ -67,7 +66,7 @@
                 <p:tab id="aprovados" title="Aprovados">
                     <p:panel header="Aprovados">
                     <h:panelGrid columns="2" cellpadding="10">
-                <p:dataTable id="tabelaAprovado" value="#{alunoMB.getAlunosAprovados()}" 
+                <p:dataTable id="tabelaAprovados" value="#{alunoMB.getAlunosAprovados()}" 
                              resizableColumns="true" var="obj" reflow="true" rows="10"
                              paginator="true" paginatorPosition="bottom" 
                              emptyMessage="Nenhuma carteirinha foi requisitada" 
@@ -81,20 +80,20 @@
                         </p:commandButton>        
                     </p:column>
                     <p:column style="white-space:normal !important;" headerText="Nome"
-                            sortBy="#{obj.nome}" filterBy="#{obj.nome}" 
+                            sortBy="#{alunoMB.aluno.nome}" filterBy="#{alunoMB.aluno.nome}" 
                             filterMatchMode="contains">
-                        <h:outputText value="#{obj.nome}-#{obj.cpf}" />
+                        <h:outputText value="#{alunoMB.aluno.nome}" />
                     </p:column>
 
                     <p:column style="white-space:normal !important;" 
-                            headerText="Data de Aprovação" sortBy="#{obj.usuario}" 
-                            filterBy="#{obj.usuario}" filterMatchMode="contains">
-                        <h:outputText value="#{obj.usuario}" />
+                            headerText="Data de Requisição" sortBy="#{alunoMB.aluno.dataCadastro}" 
+                            filterBy="#{alunoMB.aluno.dataCadastro}" filterMatchMode="contains">
+                        <h:outputText value="#{alunoMB.aluno.dataCadastro}" />
                     </p:column>
                 </p:dataTable>
             </h:panelGrid>
             <p:remoteCommand name="remote" update="alunoDetalhe, frmDetalhesAluno" oncomplete=""/>
-            <h:outputText value="#{alunoMB.aluno.nome}" />
+            <h:outputText/>
                     </p:panel>
                 </p:tab>
 
@@ -115,20 +114,20 @@
                         </p:commandButton>        
                     </p:column>
                     <p:column style="white-space:normal !important;" headerText="Nome"
-                            sortBy="#{obj.nome}" filterBy="#{obj.nome}" 
+                            sortBy="#{alunoMB.aluno.nome}" filterBy="#{alunoMB.aluno.nome}" 
                             filterMatchMode="contains">
-                        <h:outputText value="#{obj.nome}-#{obj.cpf}" />
+                        <h:outputText value="#{alunoMB.aluno.nome}" />
                     </p:column>
 
                     <p:column style="white-space:normal !important;" 
-                            headerText="Data de Rejeição" sortBy="#{obj.usuario}" 
-                            filterBy="#{obj.usuario}" filterMatchMode="contains">
-                        <h:outputText value="#{obj.usuario}" />
+                            headerText="Data de Requisição" sortBy="#{alunoMB.aluno.dataCadastro}" 
+                            filterBy="#{alunoMB.aluno.dataCadastro}" filterMatchMode="contains">
+                        <h:outputText value="#{alunoMB.aluno.dataCadastro}" />
                     </p:column>
                 </p:dataTable>
             </h:panelGrid>
             <p:remoteCommand name="remote" update="alunoDetalhe, frmDetalhesAluno" oncomplete=""/>
-            <h:outputText value="#{alunoMB.aluno.nome}" />
+            <h:outputText />
                     </p:panel>
                 </p:tab>
             </p:wizard>
@@ -137,8 +136,8 @@
     
     <!-- DIALOG DETALHES -->
    <p:dialog header="Aluno" widgetVar="dlgDetalhes" modal="true" 
-              closeOnEscape="true" resizable="false" closable="true" 
-              draggable="false" width="35%">
+          closeOnEscape="true" resizable="false" closable="true" 
+          draggable="false" width="35%">
         
         <p:outputPanel id="alunoDetalhe" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
             <h:form id="frmDetalhesAluno" style="width: 100%;">
@@ -168,13 +167,23 @@
                 </div>
 
                 <div style="text-align: center; margin-top: 2%; display: flex; justify-content: center;">
-                    <p:commandButton value="Aceitar" id="btnAceitar" style="margin-right: 5%;"
-                                     onclick="PF('dlgDetalhes').hide(); PF('dlgAlunoEditarDados').show();" 
-                                     title="Aceitar" />
+                
+<p:commandButton value="Aceitar"
+                 id="btnAceitar"
+                 style="margin-right: 5%;"
+                 action="#{alunoMB.aprovarAluno(alunoMB.aluno)}"
+                 update="frmTabela"
+                 oncomplete="console.log(PF('dlgDetalhes')); PF('dlgDetalhes').hide();"
+                 title="Aceitar" />
                     
-                    <p:commandButton value="Recusar" id="btnRecusar" style="margin-left: 5%;"
-                                     onclick="PF('dlgDetalhes').hide(); PF('dlgAlunoEditarDados').show();" 
-                                     title="Recusar" />
+                    <p:commandButton value="Recusar" 
+                 id="btnRecusar" 
+                 style="margin-right: 5%;"
+                 action="#{alunoMB.recusarAluno(alunoMB.aluno)}"
+                 update="frmTabela"
+                 oncomplete="console.log(PF('dlgDetalhes')); PF('dlgDetalhes').hide();"
+                 title="Recusar" />
+
                 </div>
             </h:form>
         </p:outputPanel>
