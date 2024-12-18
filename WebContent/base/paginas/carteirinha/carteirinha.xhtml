@@ -80,15 +80,15 @@
                         </p:commandButton>        
                     </p:column>
                     <p:column style="white-space:normal !important;" headerText="Nome"
-                            sortBy="#{alunoMB.aluno.nome}" filterBy="#{alunoMB.aluno.nome}" 
+                            sortBy="#{obj.usuario}" filterBy="#{obj.usuario}" 
                             filterMatchMode="contains">
-                        <h:outputText value="#{alunoMB.aluno.nome}" />
+                        <h:outputText value="#{obj.usuario}" />
                     </p:column>
 
                     <p:column style="white-space:normal !important;" 
-                            headerText="Data de Requisição" sortBy="#{alunoMB.aluno.dataCadastro}" 
-                            filterBy="#{alunoMB.aluno.dataCadastro}" filterMatchMode="contains">
-                        <h:outputText value="#{alunoMB.aluno.dataCadastro}" />
+                            headerText="Data de Requisição" sortBy="#{obj.dataCadastro}" 
+                            filterBy="#{obj.dataCadastro}" filterMatchMode="contains">
+                        <h:outputText value="#{obj.dataCadastro}" />
                     </p:column>
                 </p:dataTable>
             </h:panelGrid>
@@ -114,15 +114,15 @@
                         </p:commandButton>        
                     </p:column>
                     <p:column style="white-space:normal !important;" headerText="Nome"
-                            sortBy="#{alunoMB.aluno.nome}" filterBy="#{alunoMB.aluno.nome}" 
+                            sortBy="#{obj.usuario}" filterBy="#{obj.usuario}" 
                             filterMatchMode="contains">
-                        <h:outputText value="#{alunoMB.aluno.nome}" />
+                        <h:outputText value="#{obj.usuario}" />
                     </p:column>
 
                     <p:column style="white-space:normal !important;" 
-                            headerText="Data de Requisição" sortBy="#{alunoMB.aluno.dataCadastro}" 
-                            filterBy="#{alunoMB.aluno.dataCadastro}" filterMatchMode="contains">
-                        <h:outputText value="#{alunoMB.aluno.dataCadastro}" />
+                            headerText="Data de Requisição" sortBy="#{obj.dataCadastro}" 
+                            filterBy="#{obj.dataCadastro}" filterMatchMode="contains">
+                        <h:outputText value="#{obj.dataCadastro}" />
                     </p:column>
                 </p:dataTable>
             </h:panelGrid>
@@ -172,15 +172,15 @@
                  id="btnAceitar"
                  style="margin-right: 5%;"
                  action="#{alunoMB.aprovarAluno(alunoMB.aluno)}"
-                 update="frmTabela"
-                 oncomplete="console.log(PF('dlgDetalhes')); PF('dlgDetalhes').hide();"
+                 update="frmTabela:tabelaAprovados :frmTabela:tabela :frmTabela:tabelaRecusados"
+                 oncomplete="PF('dlgDetalhes').hide();"
                  title="Aceitar" />
                     
                     <p:commandButton value="Recusar" 
                  id="btnRecusar" 
                  style="margin-right: 5%;"
                  action="#{alunoMB.recusarAluno(alunoMB.aluno)}"
-                 update="frmTabela"
+                 update="frmTabela:tabelaAprovados :frmTabela:tabela :frmTabela:tabelaRecusados"
                  oncomplete="console.log(PF('dlgDetalhes')); PF('dlgDetalhes').hide();"
                  title="Recusar" />
 
