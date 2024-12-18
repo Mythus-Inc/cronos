@@ -244,8 +244,9 @@ public class CertificadoMB implements Serializable {
 		// FacesContext.getCurrentInstance().getExternalContext().getRealPath("");
 		// File file = new File(path +
 		// "/certificadoUpload/certificados-cronos.zip");
-		// File file = new File("c:/certificado/certificados-cronos.zip");**
-		File file = new File(CaminhoArquivos.caminhoCertificados() + "/certificados-cronos.zip");
+		//modificado 13/11
+		 File file = new File("c:/certificado/certificados-cronos.zip");
+		//File file = new File(CaminhoArquivos.caminhoCertificados() + "/certificados-cronos.zip");
 		InputStream input = new FileInputStream(file);
 		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 		setDownload(new DefaultStreamedContent(input, externalContext.getMimeType(file.getName()), file.getName()));

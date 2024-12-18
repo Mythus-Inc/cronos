@@ -1,6 +1,8 @@
 package services;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
@@ -9,10 +11,12 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -56,6 +60,7 @@ import base.modelo.AlunoDTO;
 import base.modelo.AlunoTurmaDTO;
 import base.modelo.Servidor;
 import base.modelo.ServidorDTO;
+import cope.modelo.enums.Parecer;
 import dao.GenericDAO;
 import inventario.modelo.Equipamento;
 import inventario.modelo.EquipamentoInventario;
@@ -65,6 +70,7 @@ import inventario.modelo.Tombamento;
 import inventario.service.EquipamentoInventarioService;
 import inventario.service.EquipamentoService;
 import inventario.service.TombamentoService;
+import util.CaminhoArquivos;
 import util.CriptografiaSenha;
 import util.ExibirMensagem;
 
@@ -113,81 +119,114 @@ public class ServicoHello {
 	@Inject
 	private GenericDAO<AlunoTurma> daoAlunoTurma;
 	
-	 String ra = "202200006996";
+
 	
 // CARTEIRINHA Inicio
+	
+	// metodo utilizado no mobile
 	@POST
     @Path("/solicitacao-carteirinha")
     @Produces("application/json; charset=UTF-8")
     @Consumes("application/json; charset=UTF-8")
     public Response recebimentoDeSolicitacao( AlunoDTO dadosAluno) {
-        ra = dadosAluno.getRa();
-        // Na próxima sprint, aqui deverá persistir os dados em um banco de dados 
-        System.out.println("Envio de dados" + ra);
-        return Response.status(Response.Status.OK)
-                       .entity(dadosAluno)
-                       .build();
+		//(Servidor.class, " usuario = '" + aluno.getEmail().trim().toLowerCase() + "'")
+		System.out.println("Aqui passou");
+		System.out.println(dadosAluno.getRa());
+		System.out.println(dadosAluno.getCaminhoImagem());
+		
+		AlunoTurma alunoCarteirinha = daoAlunoTurma.buscarCondicao(AlunoTurma.class, "ra = '" + dadosAluno.getRa().trim() + "'");
+		System.out.println(alunoCarteirinha);
+		Aluno aluno = alunoCarteirinha.getAluno();
+		if(aluno != null) {
+			aluno.setStatusCarteirinha(1);
+			System.out.println("Status aluno " + aluno.getStatusCarteirinha());
+			String imageBase64 = dadosAluno.getCaminhoImagem();
+			
+			if (imageBase64.startsWith("data:image")) {
+	            imageBase64 = imageBase64.substring(imageBase64.indexOf(",") + 1);
+	        }
+			byte[] imageBytes = Base64.getDecoder().decode(imageBase64);
+			String nomeAlunoUnico = "\\aluno_" + UUID.randomUUID() + ".jpeg";
+			File outputFile = new File(CaminhoArquivos.caminhoFotosCarteirinha() + nomeAlunoUnico); 
+			System.out.println(outputFile.getAbsolutePath());
+			System.out.println(nomeAlunoUnico);
+			
+			try {
+				FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+				fileOutputStream.write(imageBytes); 
+				
+		        aluno.setCaminhoImagem(outputFile.getAbsolutePath());
+		        fileOutputStream.close();
+		        System.out.println("ID DO ALUNO:  " + aluno.getId());
+		        daoAluno.alterar(aluno);
+		        System.out.println("Dados salvo em " + aluno.getCaminhoImagem());
+			}catch(IOException e) {
+				e.printStackTrace();
+			}
+			
+			// aqui deve tomar cuidado
+			
+	        return Response.status(Response.Status.OK)
+	                       .entity(null) // aqui no caso ainda não pode permitir que retorne os dados 
+	                       .build();
+		};
+		return Response.status(404).build();
     }
 	
-	
+	//metodo utilizado no mobile
 	@GET
-	@Path("/solicitacao-carteirinha")
+	@Path("/verificacao-status-carteirinha/{ra}")
 	@Produces("application/json; charset=UTF-8")
-	public Response buscarSolicitacaoCarteirinha() {
-		System.out.println("Solicitaçao do aluno, cujo o ra é: " + ra);
-		return Response.status(Response.Status.OK).entity(ra).build();
+	public Response verificarStatusCarteirinha(@PathParam("ra") String raAluno) {
+		
+		Aluno alunoStatus  = daoAluno.buscarCondicao(AlunoTurma.class, "ra = '" + raAluno + "'" );
+		if(alunoStatus.getStatusCarteirinha() == 1) {
+			return Response.status(Response.Status.NO_CONTENT).entity("O status da Carteirinha é pendente, aguarde a aprovação da Secretaria").build();	
+		}else if (alunoStatus.getStatusCarteirinha() == 2) {
+			return Response.status(Response.Status.FORBIDDEN).entity("O status da Carteirinha é recusado, proucure a Secretaria para mais esclarecimentos").build();	
+		}else if (alunoStatus.getStatusCarteirinha() == 3) {
+			return Response.status(Response.Status.OK).entity(alunoStatus).build();	
+		}
+		return Response.status(404).build();
+		
+	}
+/*	
+	// método utilizado no web
+	@GET
+	@Path("/buscar-solicitacao-carteirinha-pendente")
+	@Produces("application/json; charset=UTF-8")
+	public Response buscarSolicitacaoCarteirinhaPendente() {
+		//List<Servidor> listServidor = new ArrayList<>();
+		//listServidor = daoServidor.listar(Servidor.class, " usuario = '" + login + "'");
+		List<Aluno> listarAlunosComSolicitacaoPendente = new ArrayList<>();
+		listarAlunosComSolicitacaoPendente = daoAluno.listar(Aluno.class, "SELECT * FROM tab_aluno WHERE status_carteirinha = '" + Parecer.PENDENTE + "'");
+		return Response.status(Response.Status.OK).entity(listarAlunosComSolicitacaoPendente).build();
 	}
 	
+	// método utilizado na web
 	@GET
-	@Path("/solicitacao-carteirinha/validada")
+	@Path("/buscar-solicitacao-carteirinha-pendente")
+	@Produces("application/json; charset=UTF-8")
+	public Response buscarSolicitacaoCarteirinhaRecusada() {
+		//List<Servidor> listServidor = new ArrayList<>();
+		//listServidor = daoServidor.listar(Servidor.class, " usuario = '" + login + "'");
+		List<Aluno> listarAlunosComSolicitacaoRecusada = new ArrayList<>();
+		listarAlunosComSolicitacaoRecusada = daoAluno.listar(Aluno.class, "SELECT * FROM tab_aluno WHERE status_carteirinha = '" + Parecer.RECUSADO + "'");
+		return Response.status(Response.Status.OK).entity(listarAlunosComSolicitacaoRecusada).build();
+	}
+	
+	// método utilizado na web
+	@GET
+	@Path("/buscar-solicitacao-carteirinha-pendente")
 	@Produces("application/json; charset=UTF-8")
 	public Response buscarSolicitacaoCarteirinhaAprovada() {
-		AlunoTurmaDTO turma = new AlunoTurmaDTO();
-		turma.setRa("123888");
-		turma.setTurma("Noturna");
-		turma.setCurso("Engenharia de Software");
-		turma.setDataMatricula(new Date());
-		
-		List<AlunoTurmaDTO> turmas = new ArrayList<>();
-		turmas.add(turma);
-		
-		AlunoDTO aluno = new AlunoDTO();
-	    aluno.setNome("João da Silva");
-        aluno.setEmail("joao.silva@email.com");
-        aluno.setSenha("senha123");
-        aluno.setRa("20231234");
-        aluno.setAlunoTurma(turmas);
-        
-        
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-        String dadosAlunoJson = gson.toJson(aluno);
-        System.out.println(dadosAlunoJson);
-	    return Response.status(Response.Status.OK)
-	                   .entity(dadosAlunoJson)
-	                   .build();
+		//List<Servidor> listServidor = new ArrayList<>();
+		//listServidor = daoServidor.listar(Servidor.class, " usuario = '" + login + "'");
+		List<Aluno> listarAlunosComSolicitacaoAprovada = new ArrayList<>();
+		listarAlunosComSolicitacaoAprovada = daoAluno.listar(Aluno.class, "SELECT * FROM tab_aluno WHERE status_carteirinha = '" + Parecer.ACEITO + "'");
+		return Response.status(Response.Status.OK).entity(listarAlunosComSolicitacaoAprovada).build();
 	}
-	
-	@POST
-    @Path("/solicitacao-carteirinha/validacao")
-    @Produces("application/json; charset=UTF-8")
-    public Response aceitarEnvioDeCarteirinha() {
-	    AlunoDTO aluno = new AlunoDTO();
-	   
-	    aluno.setNome("João da Silva");
-        aluno.setEmail("joao.silva@email.com");
-        aluno.setSenha("senha123");
-        aluno.setRa("20231234");
-        aluno.setAlunoTurma(null);
-        
-        
-        Gson gson = new Gson();
-        String dadosAlunoJson = gson.toJson(aluno);
-        System.out.println(dadosAlunoJson);
-	    return Response.status(Response.Status.OK)
-	                   .entity(dadosAlunoJson)
-	                   .build();
-    }
-	
+	*/
 	
 // CARTEIRINHA Final
 
@@ -212,6 +251,8 @@ public class ServicoHello {
 		}
 
 	}
+	
+	
 
 	@POST
 	@Produces("application/json; charset=UTF-8")
@@ -223,7 +264,9 @@ public class ServicoHello {
 				&& aluno.getSenha().length() > 0) {
 			return loginServidor(aluno);
 		} else if (aluno.getRa() != null && aluno.getSenha() != null) {
+			System.out.print("LOGADO COM SUCESSO");
 			return loginAluno(aluno);
+			
 		}
 
 		return Response.status(401).build();

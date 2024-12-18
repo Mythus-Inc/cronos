@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import cope.modelo.enums.Parecer;
+
 public class AlunoDTO {
 	
 	private String nome;
@@ -14,7 +16,36 @@ public class AlunoDTO {
 	private String senha;
 	@JsonIgnore
 	private String ra;
+	
+	private String caminhoArquivo;
+	
+	private  Integer statusCarteirinha;
+	
+	private String caminhoImagem;
+	
 	private List<AlunoTurmaDTO> alunoTurma=new ArrayList<AlunoTurmaDTO>();
+	
+	public String getCaminhoImagem() {
+		return caminhoImagem;
+	}
+
+	public void setCaminhoImagem(String caminhoImagem) {
+		this.caminhoImagem = caminhoImagem;
+	}
+	
+	public String getCaminhoArquivo() {
+		return caminhoArquivo;
+	}
+	public void setCaminhoArquivo(String caminhoArquivo) {
+		this.caminhoArquivo = caminhoArquivo;
+	}
+	
+	public Integer getStatusCarteirinha() {
+		return statusCarteirinha;
+	}
+	public void setRa(Integer statusCarteirinha) {
+		this.statusCarteirinha = statusCarteirinha;
+	}
 	
 	public String getRa() {
 		return ra;
