@@ -911,11 +911,11 @@ public class AlunoMB implements Serializable {
 	}
 	
 	public boolean hasPendente() {
-	    if (listPendentes != null) {
+	    if (listPendentes == null) {
 	    	System.out.println(listPendentes);
-	    	return true;
-	    }else {
 	    	return false;
+	    }else {
+	    	return true;
 	    }
 	}
 	
