@@ -1,5 +1,10 @@
 package base.controle;
 
+import javax.faces.bean.ManagedBean;
+import org.primefaces.context.RequestContext;
+
+import javax.faces.bean.ViewScoped;
+
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -8,12 +13,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.core.Response;
 
 import util.AtualizaHorasCertificado;
 import util.CriptografiaSenha;
@@ -33,13 +39,17 @@ import base.modelo.Turma;
 import base.service.AlunoTurmaService;
 import base.service.CertificadoService;
 import base.service.MovimentacaoService;
+import cope.modelo.enums.Parecer;
 import dao.GenericDAO;
 import dao.MovimentacaoAlunoDAO;
 import questionario.modelo.Email;
 import questionario.service.EmailService;
+import services.ServicoHello;
+
 
 //@ViewScoped
-@ViewScoped
+@ManagedBean
+@SessionScoped
 @Named("alunoMB")
 public class AlunoMB implements Serializable {
 
@@ -133,7 +143,14 @@ public class AlunoMB implements Serializable {
 	
 	@Inject
 	private GenericDAO<Certificado> daoCertificado;
-
+	
+	private ServicoHello servicoHello; 
+    
+    private List<Aluno> listAprovados;
+    private List<Aluno> listPendentes;
+    private List<Aluno> listRecusados;
+    
+	
 	@PostConstruct
 	public void inicializar() {
 		// System.out.println("No Inicializar");
@@ -155,7 +172,13 @@ public class AlunoMB implements Serializable {
 		listAlunoTurma = new ArrayList<>();
 		atualizarListas();
 		certificadosAluno = new ArrayList<Certificado>();
+		//carregarAlunosEmAnalise();
+		}
 
+	public void informarAluno(Aluno aluno) {
+		System.out.println(aluno.getNome());
+		System.out.println(aluno.getUsuario());
+		this.aluno = aluno;
 	}
 	
 	public void buscarCertificadosAluno(Aluno aluno) {
@@ -176,6 +199,8 @@ public class AlunoMB implements Serializable {
 				String email = separados[3].trim();
 				String dataMatricula = separados[4].trim();
 				String descricaoTurma = separados[5].trim();
+				//modificado 13/11
+				String caminhoImagem = separados[6].trim();
 
 				List<Turma> lt = daoTurma.listar(Turma.class, "descricao like '%" + descricaoTurma + "%'");
 
@@ -198,6 +223,7 @@ public class AlunoMB implements Serializable {
 						aluno.setUsuario(email);
 						aluno.setSenha("000");
 						aluno.setPerfilAluno("aluno");
+						aluno.setCaminhoImagem(caminhoImagem);
 						if (ValidaCPF.isCPF(cpfLimpo)) {
 							alunoService.inserirAlterar(aluno);
 						} else {
@@ -251,7 +277,7 @@ public class AlunoMB implements Serializable {
 		setAlunosImportar(mensagem);
 		atualizarListas();
 	}
-
+// Aqui pode ser utilizado na requisição da carteirinha
 	public void buscarRaAluno(AlunoTurma m) {
 		alunoTurma = daoAlunoTurma.buscarPorId(AlunoTurma.class, m.getId());
 		aluno = daoAluno.buscarPorId(Aluno.class, alunoTurma.getAluno().getId());
@@ -482,6 +508,7 @@ public class AlunoMB implements Serializable {
 		return true;
 	}
 
+// aqui pode ser utilizado
 	public void salvarEditar() {
 	
 		aluno.setPerfilAluno("aluno");
@@ -727,6 +754,26 @@ public class AlunoMB implements Serializable {
 //		alunosTrancadosProfessor = relacoesProfessor.recuperarAlunoMovimentacaoTrancados();
 
 //	}
+	
+	//MODIFICAÇÂOOOOO
+	/*public void carregarAlunosEmAnalise() {
+	    Response response = servicoHello.buscarSolicitacaoCarteirinhaPendente();
+	    System.out.println("Status da resposta: " + response.getStatus());
+	    if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+	        alunosEmAnalise = (List<AlunoDTO>) response.getEntity();
+	        System.out.println("Alunos carregados: " + alunosEmAnalise.size());
+	    } else {
+	        alunosEmAnalise = new ArrayList<>();
+	        System.out.println("Nenhum aluno encontrado.");
+	    }
+	}
+
+
+	    public List<AlunoDTO> getAlunosEmAnalise() {
+	        return alunosEmAnalise;
+	    }
+	}*/
+
 
 	public Aluno getAluno() {
 		return aluno;
@@ -808,6 +855,55 @@ public class AlunoMB implements Serializable {
 		this.certificadosAluno = certificadosAluno;
 	}
 	
+	public void aprovarAluno(Aluno aluno) {
+	    aluno.setStatusCarteirinha(3);
+	    daoAluno.inserir(aluno);
+	    refreshAlunos(); 
+	}
+	
+	public void recusarAluno(Aluno aluno) {
+	    aluno.setStatusCarteirinha(2);
+	    daoAluno.inserir(aluno);
+	    refreshAlunos(); 
+	}
+	
+	public void EmAnaliseAluno(Aluno aluno) {
+	    aluno.setStatusCarteirinha(1);
+	    daoAluno.inserir(aluno);
+	    refreshAlunos(); 
+	}
+
+	private void refreshAlunos() {
+		listAprovados = getAlunosAprovados();
+		listRecusados = getAlunosRecusados();
+		listPendentes = getAlunosPendentes();
+	}
+	
+	public List<Aluno> getAlunosAprovados() {
+    if (listAprovados == null) {
+        listAprovados = daoAluno.listar(Aluno.class, "statusCarteirinha = " + 3);
+        System.out.println("DEBUG: Alunos aprovados: " + listAprovados);
+    }
+    return listAprovados;
+	}
+
+	
+	public  List<Aluno> getAlunosRecusados() {
+	    if (listRecusados == null) {
+	    	listRecusados = daoAluno.listar(Aluno.class, "statusCarteirinha = " + 2);
+	    	System.out.println("DEBUG: Alunos recusados: " + listAprovados);
+	    }
+	    return listRecusados;
+	}
+	
+	public List<Aluno> getAlunosPendentes() {
+	    if (listPendentes == null) {
+	    	listPendentes = daoAluno.listar(Aluno.class, "statusCarteirinha = " + 1);
+	    	System.out.println("DEBUG: Alunos pendentes: " + listAprovados);
+	    }
+	    return listPendentes;
+	}
+
 	
 
 }

@@ -9,6 +9,12 @@ public class CaminhoArquivos {
 		 return "/home/certificados/";
 		//return "c:/certificado";
 	}
+	
+	public static String caminhoFotosCarteirinha() {
+		// return "/home/carteirinha";
+		 //return "/home/carteirinha/";
+		return "c:/carteirinha";
+	}
 
 	public static String caminhoProtocolo() {
 		return "/protocolosteste";
