@@ -138,7 +138,8 @@ public class ServicoHello {
 		System.out.println(alunoCarteirinha);
 		Aluno aluno = alunoCarteirinha.getAluno();
 		if(aluno != null) {
-			aluno.setStatusCarteirinha(Parecer.PENDENTE);
+			aluno.setStatusCarteirinha(1);
+			System.out.println("Status aluno " + aluno.getStatusCarteirinha());
 			String imageBase64 = dadosAluno.getCaminhoImagem();
 			
 			if (imageBase64.startsWith("data:image")) {
@@ -156,13 +157,15 @@ public class ServicoHello {
 				
 		        aluno.setCaminhoImagem(outputFile.getAbsolutePath());
 		        fileOutputStream.close();
+		        System.out.println("ID DO ALUNO:  " + aluno.getId());
+		        daoAluno.alterar(aluno);
+		        System.out.println("Dados salvo em " + aluno.getCaminhoImagem());
 			}catch(IOException e) {
 				e.printStackTrace();
 			}
 			
+			// aqui deve tomar cuidado
 			
-			daoAluno.inserir(aluno);
-	        System.out.println("Dados salvo em " + aluno.getCaminhoImagem());
 	        return Response.status(Response.Status.OK)
 	                       .entity(null) // aqui no caso ainda não pode permitir que retorne os dados 
 	                       .build();
@@ -176,12 +179,12 @@ public class ServicoHello {
 	@Produces("application/json; charset=UTF-8")
 	public Response verificarStatusCarteirinha(@PathParam("ra") String raAluno) {
 		
-		Aluno alunoStatus  = daoAluno.buscarCondicao(AlunoTurma.class, "FROM AlunoTurma WHERE ra = '" + raAluno + "'" );
-		if(alunoStatus.getStatusCarteirinha() == Parecer.PENDENTE) {
-			return Response.status(Response.Status.OK).entity("O status da Carteirinha é pendente, aguarde a aprovação da Secretaria").build();	
-		}else if (alunoStatus.getStatusCarteirinha() == Parecer.RECUSADO) {
-			return Response.status(Response.Status.OK).entity("O status da Carteirinha é recusado, proucure a Secretaria para mais esclarecimentos").build();	
-		}else if (alunoStatus.getStatusCarteirinha() == Parecer.ACEITO) {
+		Aluno alunoStatus  = daoAluno.buscarCondicao(AlunoTurma.class, "ra = '" + raAluno + "'" );
+		if(alunoStatus.getStatusCarteirinha() == 1) {
+			return Response.status(Response.Status.NO_CONTENT).entity("O status da Carteirinha é pendente, aguarde a aprovação da Secretaria").build();	
+		}else if (alunoStatus.getStatusCarteirinha() == 2) {
+			return Response.status(Response.Status.FORBIDDEN).entity("O status da Carteirinha é recusado, proucure a Secretaria para mais esclarecimentos").build();	
+		}else if (alunoStatus.getStatusCarteirinha() == 3) {
 			return Response.status(Response.Status.OK).entity(alunoStatus).build();	
 		}
 		return Response.status(404).build();

@@ -49,7 +49,7 @@ public class Aluno extends Pessoa implements Serializable {
 	
 	// modificado dia 23/11/2024
 	@Column(name = "status_carteirinha")
-	private  Parecer statusCarteirinha;
+	private  Integer statusCarteirinha;
 	private Integer qtdRespostas;
 
 	@Column(name = "permite_cadastro_certificado")
@@ -64,11 +64,11 @@ public class Aluno extends Pessoa implements Serializable {
 		this.caminhoImagem = caminhoImagem;
 	}
 	
-	public Parecer getStatusCarteirinha() {
+	public Integer getStatusCarteirinha() {
 		return statusCarteirinha;
 	}
 
-	public void setStatusCarteirinha(Parecer statusCarteirinha) {
+	public void setStatusCarteirinha(Integer statusCarteirinha) {
 		this.statusCarteirinha = statusCarteirinha;
 	}
 

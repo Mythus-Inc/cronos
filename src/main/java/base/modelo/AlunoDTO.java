@@ -19,7 +19,7 @@ public class AlunoDTO {
 	
 	private String caminhoArquivo;
 	
-	private  Parecer statusCarteirinha;
+	private  Integer statusCarteirinha;
 	
 	private String caminhoImagem;
 	
@@ -40,10 +40,10 @@ public class AlunoDTO {
 		this.caminhoArquivo = caminhoArquivo;
 	}
 	
-	public Parecer getStatusCarteirinha() {
+	public Integer getStatusCarteirinha() {
 		return statusCarteirinha;
 	}
-	public void setRa(Parecer statusCarteirinha) {
+	public void setRa(Integer statusCarteirinha) {
 		this.statusCarteirinha = statusCarteirinha;
 	}
 	
