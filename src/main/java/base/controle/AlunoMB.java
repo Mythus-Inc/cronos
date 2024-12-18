@@ -149,7 +149,7 @@ public class AlunoMB implements Serializable {
     private List<Aluno> listAprovados;
     private List<Aluno> listPendentes;
     private List<Aluno> listRecusados;
-    
+  
 	
 	@PostConstruct
 	public void inicializar() {
@@ -855,22 +855,28 @@ public class AlunoMB implements Serializable {
 		this.certificadosAluno = certificadosAluno;
 	}
 	
-	public void aprovarAluno(Aluno aluno) {
+	public String aprovarAluno(Aluno aluno) {
 	    aluno.setStatusCarteirinha(3);
-	    daoAluno.inserir(aluno);
+	    alunoService.inserirAlterar(aluno);
 	    refreshAlunos(); 
+	    System.out.println(aluno.getStatusCarteirinha());
+	    return "telaAtual.xhtml?faces-redirect=true";
 	}
 	
-	public void recusarAluno(Aluno aluno) {
+	public String recusarAluno(Aluno aluno) {
 	    aluno.setStatusCarteirinha(2);
-	    daoAluno.inserir(aluno);
+	    alunoService.inserirAlterar(aluno);
 	    refreshAlunos(); 
+	    System.out.println(aluno.getStatusCarteirinha());
+	    return "telaAtual.xhtml?faces-redirect=true";
 	}
 	
-	public void EmAnaliseAluno(Aluno aluno) {
+	public String emAnaliseAluno(Aluno aluno) {
 	    aluno.setStatusCarteirinha(1);
-	    daoAluno.inserir(aluno);
+	    alunoService.inserirAlterar(aluno);
 	    refreshAlunos(); 
+	    System.out.println(aluno.getStatusCarteirinha());
+	    return "telaAtual.xhtml?faces-redirect=true";
 	}
 
 	private void refreshAlunos() {
@@ -903,7 +909,15 @@ public class AlunoMB implements Serializable {
 	    }
 	    return listPendentes;
 	}
-
+	
+	public boolean hasPendente() {
+	    if (listPendentes == null) {
+	    	System.out.println(listPendentes);
+	    	return false;
+	    }else {
+	    	return true;
+	    }
+	}
 	
 
 }
