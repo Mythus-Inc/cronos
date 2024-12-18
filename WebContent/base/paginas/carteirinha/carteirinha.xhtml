@@ -5,163 +5,192 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">
+     
 <h:body>
+    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+        <h:outputText style="font-weight:bold" value="Aguarde, realizando operação...." />
+        <br />
+        <center>
+            <p:graphicImage name="img/aguarde.gif" />
+        </center>
+    </p:dialog>
 
-    <!-- Título da página -->
+    <!-- TITULO -->
     <div class="row">
         <div class="col-md-12">
             <h1 class="page-header">Carteirinha</h1>
         </div>
     </div>
+    <!-- FIM TITULO -->
 
-    <!-- Card "Em Análise" -->
-    <div class="row">
-        <div class="col-md-4">
-            <div class="main-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px;">
-                <h2>Em Análise</h2>
+    <!-- TABELA DE ALUNOS -->
+    <div class="col-md-12">
+        <h:form id="frmTabela">
 
-                <!-- Sub-card da solicitação do aluno -->
-                <div class="sub-card" style="border: 1px solid #ddd; padding: 10px; margin-bottom: 10px;" onclick="expandirCard(this)">
-                    <p><strong>Nome do Aluno:</strong> João da Silva Oliveira</p>
-                    <p><strong>Curso:</strong> Engenharia de Software</p>
-                    <p><strong>Status:</strong> Em Análise</p>
+            <p:wizard backLabel="Anterior" nextLabel="Próximo">
+                <p:tab id="ativo" title="Em Análise">
+                    <p:panel header="Em Análise">
+                        <h:panelGrid columns="2" cellpadding="10">
+                <p:dataTable id="tabela" value="#{alunoMB.getAlunosPendentes()}" 
+                             resizableColumns="true" var="obj" reflow="true" rows="10"
+                             paginator="true" paginatorPosition="bottom" 
+                             emptyMessage="Nenhuma carteirinha foi requisitada" 
+                             rowsPerPageTemplate="5,10,15,30,50,100">
+                    <p:ajax event="filter" global="false" />
+                    <p:column headerText="Ver" style="width:50px">
+                    <p:commandButton update="frmDetalhesAluno @form"
+                                         styleClass="btn btn-block" title="Ver" alt="detalhes carteirinha"
+                                         icon="ui-icon-search" actionListener="#{alunoMB.informarAluno(obj)}" oncomplete="PF('dlgDetalhes').show()">
+                        
+                        </p:commandButton>        
+                    </p:column>
+                    <p:column style="white-space:normal !important;" headerText="Nome"
+                            sortBy="#{obj.usuario}" filterBy="#{obj.usuario}" 
+                            filterMatchMode="contains">
+                        <h:outputText value="#{obj.usuario}" />
+                    </p:column>
 
-                    <!-- Informações expandidas, inicialmente ocultas -->
-                    <div class="expanded-card" style="display: none; margin-top: 10px;">
-                        <p><strong>Email:</strong> joãosilva@gmail.com</p>
-                        <p><strong>Telefone:</strong> [Telefone do Aluno]</p>
+                    <p:column style="white-space:normal !important;" 
+                            headerText="Data de Requisição" sortBy="#{obj.dataCadastro}" 
+                            filterBy="#{obj.dataCadastro}" filterMatchMode="contains">
+                        <h:outputText value="#{obj.dataCadastro}" />
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+            <p:remoteCommand name="remote" update="alunoDetalhe, frmDetalhesAluno" oncomplete=""/>
+                    </p:panel>
+                </p:tab>
 
-                        <!-- Botões "Aceitar" e "Recusar" -->
-                        <div style="margin-top: 10px;">
-                            <button type="button" onclick="moverParaAprovado(this)">Aceitar</button>
-                            <button type="button" onclick="moverParaRecusado(this)">Recusar</button>
-                            <button type="button" onclick="minimizarCard(this)">Minimizar</button>
-                        </div>
+                <!-- Outras tabs para diferentes status de alunos -->
+                <p:tab id="aprovados" title="Aprovados">
+                    <p:panel header="Aprovados">
+                    <h:panelGrid columns="2" cellpadding="10">
+                <p:dataTable id="tabelaAprovados" value="#{alunoMB.getAlunosAprovados()}" 
+                             resizableColumns="true" var="obj" reflow="true" rows="10"
+                             paginator="true" paginatorPosition="bottom" 
+                             emptyMessage="Nenhuma carteirinha foi requisitada" 
+                             rowsPerPageTemplate="5,10,15,30,50,100">
+                    <p:ajax event="filter" global="false" />
+                    <p:column headerText="Ver" style="width:50px">
+                    <p:commandButton update="frmDetalhesAluno @form"
+                                         styleClass="btn btn-block" title="Ver" alt="detalhes carteirinha"
+                                         icon="ui-icon-search" actionListener="#{alunoMB.informarAluno(obj)}" oncomplete="PF('dlgDetalhes').show()">
+                        
+                        </p:commandButton>        
+                    </p:column>
+                    <p:column style="white-space:normal !important;" headerText="Nome"
+                            sortBy="#{alunoMB.aluno.nome}" filterBy="#{alunoMB.aluno.nome}" 
+                            filterMatchMode="contains">
+                        <h:outputText value="#{alunoMB.aluno.nome}" />
+                    </p:column>
+
+                    <p:column style="white-space:normal !important;" 
+                            headerText="Data de Requisição" sortBy="#{alunoMB.aluno.dataCadastro}" 
+                            filterBy="#{alunoMB.aluno.dataCadastro}" filterMatchMode="contains">
+                        <h:outputText value="#{alunoMB.aluno.dataCadastro}" />
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+            <p:remoteCommand name="remote" update="alunoDetalhe, frmDetalhesAluno" oncomplete=""/>
+            <h:outputText/>
+                    </p:panel>
+                </p:tab>
+
+                <p:tab id="recusados" title="Recusados">
+                    <p:panel header="Recusados">
+                    <h:panelGrid columns="2" cellpadding="10">
+                <p:dataTable id="tabelaRecusados" value="#{alunoMB.getAlunosRecusados()}" 
+                             resizableColumns="true" var="obj" reflow="true" rows="10"
+                             paginator="true" paginatorPosition="bottom" 
+                             emptyMessage="Nenhuma carteirinha foi requisitada" 
+                             rowsPerPageTemplate="5,10,15,30,50,100">
+                    <p:ajax event="filter" global="false" />
+                    <p:column headerText="Ver" style="width:50px">
+                    <p:commandButton update="frmDetalhesAluno @form"
+                                         styleClass="btn btn-block" title="Ver" alt="detalhes carteirinha"
+                                         icon="ui-icon-search" actionListener="#{alunoMB.informarAluno(obj)}" oncomplete="PF('dlgDetalhes').show()">
+                        
+                        </p:commandButton>        
+                    </p:column>
+                    <p:column style="white-space:normal !important;" headerText="Nome"
+                            sortBy="#{alunoMB.aluno.nome}" filterBy="#{alunoMB.aluno.nome}" 
+                            filterMatchMode="contains">
+                        <h:outputText value="#{alunoMB.aluno.nome}" />
+                    </p:column>
+
+                    <p:column style="white-space:normal !important;" 
+                            headerText="Data de Requisição" sortBy="#{alunoMB.aluno.dataCadastro}" 
+                            filterBy="#{alunoMB.aluno.dataCadastro}" filterMatchMode="contains">
+                        <h:outputText value="#{alunoMB.aluno.dataCadastro}" />
+                    </p:column>
+                </p:dataTable>
+            </h:panelGrid>
+            <p:remoteCommand name="remote" update="alunoDetalhe, frmDetalhesAluno" oncomplete=""/>
+            <h:outputText />
+                    </p:panel>
+                </p:tab>
+            </p:wizard>
+        </h:form>
+    </div>
+    
+    <!-- DIALOG DETALHES -->
+   <p:dialog header="Aluno" widgetVar="dlgDetalhes" modal="true" 
+          closeOnEscape="true" resizable="false" closable="true" 
+          draggable="false" width="35%">
+        
+        <p:outputPanel id="alunoDetalhe" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+            <h:form id="frmDetalhesAluno" style="width: 100%;">
+                <div style="display: flex; justify-content: space-between; align-items: start; width: 100%;">
+                    <h:panelGrid columns="2" cellpadding="5" style="flex: 1; width: 50%;">
+                        <label>Nome: </label>
+                        <h:outputText value="#{alunoMB.aluno.nome}" />
+                        
+                        <label>R.A.: </label>
+                        <h:outputText value="#{alunoMB.alunoTurma.ra}" />
+                        
+                        <label>Curso: </label>
+                        <h:outputText value="#{alunoMB.alunoTurma.turma}" />
+                        
+                        <label>E-mail: </label>
+                        <h:outputText value="#{alunoMB.aluno.usuario}" />
+
+                        <label>CPF: </label>
+                        <h:outputText value="#{alunoMB.aluno.cpf}" />
+                        
+                        <label>Telefone: </label>
+                        <h:outputText value="#{alunoMB.aluno.telefone}" />
+                    </h:panelGrid>
+                    <div style="width: 130px; height: 150px; background-color: lightgray;  margin-right: 20px;">
+                        <p:graphicImage value="#{request.contextPath}/resources/img/aluno.jpg" width="130" height="150" />
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Card "Aprovado" -->
-        <div class="col-md-4">
-            <div class="main-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px;">
-                <h2>Aprovado</h2>
-                <!-- Aqui vão as solicitações aprovadas (depois que o usuário clicar em "Aceitar") -->
-                <div id="aprovadoContainer">
-                    <!-- Solicitações aceitas aparecerão aqui -->
+                <div style="text-align: center; margin-top: 2%; display: flex; justify-content: center;">
+                
+<p:commandButton value="Aceitar"
+                 id="btnAceitar"
+                 style="margin-right: 5%;"
+                 action="#{alunoMB.aprovarAluno(alunoMB.aluno)}"
+                 update="frmTabela"
+                 oncomplete="console.log(PF('dlgDetalhes')); PF('dlgDetalhes').hide();"
+                 title="Aceitar" />
+                    
+                    <p:commandButton value="Recusar" 
+                 id="btnRecusar" 
+                 style="margin-right: 5%;"
+                 action="#{alunoMB.recusarAluno(alunoMB.aluno)}"
+                 update="frmTabela"
+                 oncomplete="console.log(PF('dlgDetalhes')); PF('dlgDetalhes').hide();"
+                 title="Recusar" />
+
                 </div>
-            </div>
-        </div>
-
-        <!-- Card "Recusado" -->
-        <div class="col-md-4">
-            <div class="main-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px;">
-                <h2>Recusado</h2>
-                <!-- Aqui vão as solicitações recusadas (depois que o usuário clicar em "Recusar") -->
-                <div id="recusadoContainer">
-                    <!-- Solicitações recusadas aparecerão aqui -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- JavaScript para manipular a expansão dos cards e mover entre abas -->
-    <script>
-      
-        window.onload = function() {
-        	    buscarSolicitacaoCarteirinha();
-
-        	    // Delegação de evento para capturar cliques em botões de cards
-        	    document.addEventListener('click', function(event) {
-        	        if (event.target.matches('.sub-card .expanded-card button')) {
-        	            minimizarCard(event.target);
-        	        }
-        	    });
-        	};
-
-        	// Expande o card para mostrar mais informações
-        	function expandirCard(card) {
-        	    card.querySelector('.expanded-card').style.display = 'block';
-        	}
-
-        	// Minimiza o card para esconder as informações detalhadas
-        	function minimizarCard(button) {
-        	    const card = button.closest('.sub-card');
-
-        	    if (!card) {
-        	        console.error('Card não encontrado.');
-        	        return;
-        	    }
-
-        	    const expandedCard = card.querySelector('.expanded-card');
-
-        	    if (!expandedCard) {
-        	        console.error('Parte expandida não encontrada.');
-        	        return;
-        	    }
-
-        	    expandedCard.style.display = 'none';
-        	    console.log('Card minimizado com sucesso.');
-        	}
-
-        	// Move a solicitação para a aba "Aprovado"
-        	function moverParaAprovado(button) {
-        	    fetch('http://localhost:8080/cronos/rest/service/solicitacao-carteirinha/validacao', {
-        	        method: 'POST',
-        	        headers: {
-        	            'Content-Type': 'application/json; charset=UTF-8'
-        	        },
-        	        body: JSON.stringify({ "status": "aprovado" })
-        	    })
-        	    .then(response => response.json())
-        	    .then(aluno => {
-        	        const subCard = button.closest('.sub-card');
-        	        document.getElementById('aprovadoContainer').appendChild(subCard);
-        	        minimizarCard(button);
-
-        	        // Atualiza as informações do card com os dados do aluno
-        	        subCard.querySelector('.nome-aluno').innerHTML = 'Nome do Aluno: ' + aluno.nome;
-        	        subCard.querySelector('.email-aluno').innerHTML = 'Email: ' + aluno.email;
-        	        subCard.querySelector('.ra-aluno').innerHTML = 'RA: ' + aluno.ra;
-        	    })
-        	    .catch((error) => {
-        	        console.error('Erro ao aprovar solicitação:', error);
-        	    });
-        	}
-
-        	// Move a solicitação para a aba "Recusado"
-        	function moverParaRecusado(button) {
-        	    const subCard = button.closest('.sub-card');
-
-        	    if (!subCard) {
-        	        console.error('Card não encontrado.');
-        	        return;
-        	    }
-
-        	    // Mover o card para o container "Recusado"
-        	    document.getElementById('recusadoContainer').appendChild(subCard);
-
-        	    // Minimizar o card após movê-lo
-        	    minimizarCard(button);
-        	}
-
-        	// Buscar as solicitações de carteirinha
-        	function buscarSolicitacaoCarteirinha() {
-        	    fetch('http://localhost:8080/cronos/rest/service/solicitacao-carteirinha', {
-        	        method: 'GET',
-        	        headers: {
-        	            'Content-Type': 'application/json; charset=UTF-8'
-        	        }
-        	    })
-        	    .then(response => response.json())
-        	    .then(ra => {
-        	        document.querySelector('.sub-card p strong').innerHTML = 'RA: ' + ra;
-        	    })
-        	    .catch((error) => {
-        	        console.error('Erro ao buscar solicitação:', error);
-        	    });
-        	}
-    </script>
+            </h:form>
+        </p:outputPanel>
+    </p:dialog>
+    <!-- FIM DO DIALOG DETALHES -->
 
 </h:body>
+
+
 </html>
