@@ -150,8 +150,6 @@ public class AlunoMB implements Serializable {
     private List<Aluno> listPendentes;
     private List<Aluno> listRecusados;
     
-    private boolean hasPendingCarteirinhas;
-    
 	
 	@PostConstruct
 	public void inicializar() {
@@ -856,39 +854,35 @@ public class AlunoMB implements Serializable {
 	public void setCertificadosAluno(List<Certificado> certificadosAluno) {
 		this.certificadosAluno = certificadosAluno;
 	}
-
-
-    public boolean isHasPendingCarteirinhas() {
-        return hasPendingCarteirinhas;
-    }
-
-    private void checkPendingCarteirinhas() {
-        if( alunos.stream().anyMatch(student -> "PENDENTE".equals(aluno.getStatusCarteirinha()))) {
-        	hasPendingCarteirinhas = true;
-        }else {
-        	hasPendingCarteirinhas = false;
-        }
-    }
 	
 	public void aprovarAluno(Aluno aluno) {
-	    aluno.setStatusCarteirinha(Parecer.ACEITO);
+	    aluno.setStatusCarteirinha(3);
 	    daoAluno.inserir(aluno);
+	    refreshAlunos(); 
 	}
 	
 	public void recusarAluno(Aluno aluno) {
-	    aluno.setStatusCarteirinha(Parecer.RECUSADO);
+	    aluno.setStatusCarteirinha(2);
 	    daoAluno.inserir(aluno);
+	    refreshAlunos(); 
 	}
 	
 	public void EmAnaliseAluno(Aluno aluno) {
-	    aluno.setStatusCarteirinha(Parecer.PENDENTE);
+	    aluno.setStatusCarteirinha(1);
 	    daoAluno.inserir(aluno);
+	    refreshAlunos(); 
+	}
+
+	private void refreshAlunos() {
+		listAprovados = getAlunosAprovados();
+		listRecusados = getAlunosRecusados();
+		listPendentes = getAlunosPendentes();
 	}
 	
 	public List<Aluno> getAlunosAprovados() {
     if (listAprovados == null) {
-        listAprovados = daoAluno.listar(Aluno.class, "statusCarteirinha = '" + Parecer.ACEITO + "'");
-        System.out.println("DEBUG: Alunos pendentes: " + listAprovados);
+        listAprovados = daoAluno.listar(Aluno.class, "statusCarteirinha = " + 3);
+        System.out.println("DEBUG: Alunos aprovados: " + listAprovados);
     }
     return listAprovados;
 	}
@@ -896,17 +890,20 @@ public class AlunoMB implements Serializable {
 	
 	public  List<Aluno> getAlunosRecusados() {
 	    if (listRecusados == null) {
-	    	listRecusados = daoAluno.listar(Aluno.class, "statusCarteirinha = '" + Parecer.RECUSADO + "'");
+	    	listRecusados = daoAluno.listar(Aluno.class, "statusCarteirinha = " + 2);
+	    	System.out.println("DEBUG: Alunos recusados: " + listAprovados);
 	    }
 	    return listRecusados;
 	}
 	
 	public List<Aluno> getAlunosPendentes() {
 	    if (listPendentes == null) {
-	    	listPendentes = daoAluno.listar(Aluno.class, "statusCarteirinha = '" + Parecer.PENDENTE + "'");
+	    	listPendentes = daoAluno.listar(Aluno.class, "statusCarteirinha = " + 1);
+	    	System.out.println("DEBUG: Alunos pendentes: " + listAprovados);
 	    }
 	    return listPendentes;
 	}
 
+	
 
 }
